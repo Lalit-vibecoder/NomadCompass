@@ -67,6 +67,10 @@ class TripRepositoryImpl @Inject constructor(
     override suspend fun addAttachment(attachment: TripAttachment): Long =
         attachmentDao.insertAttachment(attachment.toEntity())
 
+    override suspend fun updateAttachments(attachments: List<TripAttachment>) {
+        attachmentDao.insertAttachments(attachments.map { it.toEntity() })
+    }
+
     override suspend fun deleteAttachment(attachmentId: Long) {
         attachmentDao.deleteAttachment(attachmentId)
     }

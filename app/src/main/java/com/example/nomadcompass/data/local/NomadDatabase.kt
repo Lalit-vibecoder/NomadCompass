@@ -27,7 +27,7 @@ import com.example.nomadcompass.data.local.entity.WeatherCacheEntity
         TripEntity::class,
         TripAttachmentEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false,
 )
 abstract class NomadDatabase : RoomDatabase() {

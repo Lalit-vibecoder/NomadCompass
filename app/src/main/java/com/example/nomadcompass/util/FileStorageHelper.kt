@@ -82,6 +82,23 @@ object FileStorageHelper {
         val value = sizeBytes / Math.pow(1024.0, index.toDouble())
         return String.format(Locale.US, "%.1f %s", value, units[index])
     }
+
+    fun getFileNameFromUri(context: Context, uri: Uri): String {
+        return try {
+            var fileName = "attachment"
+            context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex != -1) {
+                        fileName = cursor.getString(nameIndex) ?: fileName
+                    }
+                }
+            }
+            fileName
+        } catch (e: Exception) {
+            "attachment"
+        }
+    }
 }
 
 data class SavedFileInfo(

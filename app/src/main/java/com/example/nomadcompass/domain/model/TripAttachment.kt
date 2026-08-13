@@ -16,4 +16,5 @@ data class TripAttachment(
     val fileSize: Long = 0L,
     val mimeType: String = "",
     val createdAt: Long = System.currentTimeMillis(),
+    val displayOrder: Int = 0,
 )

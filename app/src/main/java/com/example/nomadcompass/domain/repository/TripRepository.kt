@@ -11,6 +11,7 @@ interface TripRepository {
 
     fun getAttachmentsForTrip(tripId: Int): Flow<List<TripAttachment>>
     suspend fun addAttachment(attachment: TripAttachment): Long
+    suspend fun updateAttachments(attachments: List<TripAttachment>)
     suspend fun deleteAttachment(attachmentId: Long)
 }
 

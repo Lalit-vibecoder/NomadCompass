@@ -10,11 +10,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TripAttachmentDao {
 
-    @Query("SELECT * FROM trip_attachments WHERE tripId = :tripId ORDER BY createdAt DESC")
+    @Query("SELECT * FROM trip_attachments WHERE tripId = :tripId ORDER BY displayOrder ASC, id ASC")
     fun getAttachmentsForTrip(tripId: Int): Flow<List<TripAttachmentEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAttachment(entity: TripAttachmentEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAttachments(entities: List<TripAttachmentEntity>)
 
     @Query("DELETE FROM trip_attachments WHERE id = :id")
     suspend fun deleteAttachment(id: Long)

@@ -293,8 +293,11 @@ fun PlannerScreen(
         TripWorkspaceModal(
             trip = uiState.activeWorkspaceTrip!!,
             attachments = uiState.workspaceAttachments,
-            onAddFileAttachment = { uri, type -> viewModel.addFileAttachment(context, uri, type) },
+            currencyCode = uiState.userCurrencyCode,
+            onAddFileAttachment = { uri, type, customTitle -> viewModel.addFileAttachment(context, uri, type, customTitle) },
             onAddNoteAttachment = { title, text -> viewModel.addNoteAttachment(title, text) },
+            onUpdateNoteAttachment = { id, title, text -> viewModel.updateNoteAttachment(id, title, text) },
+            onMoveAttachment = viewModel::moveAttachment,
             onDeleteAttachment = viewModel::deleteAttachment,
             onDismiss = viewModel::closeTripWorkspace
         )

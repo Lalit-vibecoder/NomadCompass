@@ -21,6 +21,7 @@ data class TripAttachmentEntity(
     val fileSize: Long = 0L,
     val mimeType: String = "",
     val createdAt: Long = System.currentTimeMillis(),
+    val displayOrder: Int = 0,
 )
 
 fun TripAttachmentEntity.toDomain(): TripAttachment = TripAttachment(
@@ -37,6 +38,7 @@ fun TripAttachmentEntity.toDomain(): TripAttachment = TripAttachment(
     fileSize = fileSize,
     mimeType = mimeType,
     createdAt = createdAt,
+    displayOrder = displayOrder,
 )
 
 fun TripAttachment.toEntity(): TripAttachmentEntity = TripAttachmentEntity(
@@ -49,4 +51,5 @@ fun TripAttachment.toEntity(): TripAttachmentEntity = TripAttachmentEntity(
     fileSize = fileSize,
     mimeType = mimeType,
     createdAt = createdAt,
+    displayOrder = displayOrder,
 )

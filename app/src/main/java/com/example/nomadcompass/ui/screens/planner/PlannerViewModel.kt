@@ -102,19 +102,22 @@ class PlannerViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(activeWorkspaceTrip = null)
     }
 
-    fun addFileAttachment(context: Context, uri: Uri, type: AttachmentType) {
+    fun addFileAttachment(context: Context, uri: Uri, type: AttachmentType, customTitle: String) {
         val currentTrip = uiState.value.activeWorkspaceTrip ?: return
         viewModelScope.launch {
             val fileInfo = FileStorageHelper.saveUriToInternalStorage(context, uri)
             if (fileInfo != null) {
+                val titleToUse = customTitle.ifBlank { fileInfo.title }
+                val nextOrder = (uiState.value.workspaceAttachments.maxOfOrNull { it.displayOrder } ?: -1) + 1
                 val attachment = TripAttachment(
                     tripId = currentTrip.id,
                     type = type,
-                    title = fileInfo.title,
+                    title = titleToUse,
                     filePath = fileInfo.filePath,
                     fileSize = fileInfo.fileSize,
                     mimeType = fileInfo.mimeType,
-                    createdAt = System.currentTimeMillis()
+                    createdAt = System.currentTimeMillis(),
+                    displayOrder = nextOrder
                 )
                 tripRepository.addAttachment(attachment)
             }
@@ -124,14 +127,41 @@ class PlannerViewModel @Inject constructor(
     fun addNoteAttachment(title: String, text: String) {
         val currentTrip = uiState.value.activeWorkspaceTrip ?: return
         viewModelScope.launch {
+            val nextOrder = (uiState.value.workspaceAttachments.maxOfOrNull { it.displayOrder } ?: -1) + 1
             val attachment = TripAttachment(
                 tripId = currentTrip.id,
                 type = AttachmentType.NOTE,
                 title = title.ifBlank { "Trip Note" },
                 content = text,
-                createdAt = System.currentTimeMillis()
+                createdAt = System.currentTimeMillis(),
+                displayOrder = nextOrder
             )
             tripRepository.addAttachment(attachment)
+        }
+    }
+
+    fun updateNoteAttachment(attachmentId: Long, title: String, text: String) {
+        val existing = uiState.value.workspaceAttachments.find { it.id == attachmentId } ?: return
+        viewModelScope.launch {
+            val updated = existing.copy(
+                title = title.ifBlank { "Trip Note" },
+                content = text
+            )
+            tripRepository.addAttachment(updated)
+        }
+    }
+
+    fun moveAttachment(fromIndex: Int, toIndex: Int) {
+        val currentAttachments = uiState.value.workspaceAttachments.toMutableList()
+        if (fromIndex !in currentAttachments.indices || toIndex !in currentAttachments.indices) return
+        val movedItem = currentAttachments.removeAt(fromIndex)
+        currentAttachments.add(toIndex, movedItem)
+
+        val reordered = currentAttachments.mapIndexed { index, item ->
+            item.copy(displayOrder = index)
+        }
+        viewModelScope.launch {
+            tripRepository.updateAttachments(reordered)
         }
     }
 

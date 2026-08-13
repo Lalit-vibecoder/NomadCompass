@@ -1,0 +1,120 @@
+package com.example.nomadcompass.ui.theme
+
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
+
+class ThemeController(initialDark: Boolean = true) {
+    var isDarkMode by mutableStateOf(initialDark)
+        private set
+
+    fun toggleTheme() {
+        isDarkMode = !isDarkMode
+    }
+
+    fun updateTheme(dark: Boolean) {
+        isDarkMode = dark
+    }
+}
+
+val LocalThemeController = staticCompositionLocalOf { ThemeController() }
+
+private val DarkColorScheme = darkColorScheme(
+    primary = PrimaryDark,
+    onPrimary = OnPrimaryDark,
+    primaryContainer = PrimaryContainerDark,
+    onPrimaryContainer = OnPrimaryContainerDark,
+    secondary = SecondaryDark,
+    onSecondary = OnSecondaryDark,
+    secondaryContainer = SecondaryContainerDark,
+    onSecondaryContainer = OnSecondaryContainerDark,
+    background = BackgroundDark,
+    onBackground = OnBackgroundDark,
+    surface = SurfaceDark,
+    onSurface = OnSurfaceDark,
+    onSurfaceVariant = OnSurfaceVariantDark,
+    surfaceContainer = SurfaceContainerDark,
+    surfaceContainerHigh = SurfaceContainerHighDark,
+    surfaceContainerHighest = SurfaceContainerHighestDark,
+    surfaceContainerLow = SurfaceContainerLowDark,
+    surfaceContainerLowest = SurfaceContainerLowestDark,
+    surfaceBright = SurfaceBrightDark,
+    error = Error,
+    onError = OnError,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer,
+    outline = Outline,
+    outlineVariant = OutlineVariant,
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = PrimaryLight,
+    onPrimary = OnPrimaryLight,
+    primaryContainer = PrimaryContainerLight,
+    onPrimaryContainer = OnPrimaryContainerLight,
+    secondary = SecondaryLight,
+    onSecondary = OnSecondaryLight,
+    secondaryContainer = SecondaryContainerLight,
+    onSecondaryContainer = OnSecondaryContainerLight,
+    background = BackgroundLight,
+    onBackground = OnBackgroundLight,
+    surface = SurfaceLight,
+    onSurface = OnSurfaceLight,
+    onSurfaceVariant = OnSurfaceVariantLight,
+    surfaceContainer = SurfaceContainerLight,
+    surfaceContainerHigh = SurfaceContainerHighLight,
+    surfaceContainerHighest = SurfaceContainerHighestLight,
+    surfaceContainerLow = SurfaceContainerLowLight,
+    surfaceContainerLowest = SurfaceContainerLowestLight,
+    surfaceBright = SurfaceBrightLight,
+    error = Error,
+    onError = OnError,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer,
+    outline = Outline,
+    outlineVariant = OutlineVariant,
+)
+
+// Dynamic Compose Theme Helper Properties
+val Background @Composable get() = MaterialTheme.colorScheme.background
+val Surface @Composable get() = MaterialTheme.colorScheme.surface
+val SurfaceContainer @Composable get() = MaterialTheme.colorScheme.surfaceContainer
+val SurfaceContainerHigh @Composable get() = MaterialTheme.colorScheme.surfaceContainerHigh
+val SurfaceContainerLow @Composable get() = MaterialTheme.colorScheme.surfaceContainerLow
+val SurfaceContainerHighest @Composable get() = MaterialTheme.colorScheme.surfaceContainerHighest
+val SurfaceContainerLowest @Composable get() = MaterialTheme.colorScheme.surfaceContainerLowest
+val SurfaceBright @Composable get() = MaterialTheme.colorScheme.surfaceBright
+val OnSurface @Composable get() = MaterialTheme.colorScheme.onSurface
+val OnSurfaceVariant @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
+val OnBackground @Composable get() = MaterialTheme.colorScheme.onBackground
+val Primary @Composable get() = MaterialTheme.colorScheme.primary
+val OnPrimary @Composable get() = MaterialTheme.colorScheme.onPrimary
+val PrimaryContainer @Composable get() = MaterialTheme.colorScheme.primaryContainer
+val OnPrimaryContainer @Composable get() = MaterialTheme.colorScheme.onPrimaryContainer
+val Secondary @Composable get() = MaterialTheme.colorScheme.secondary
+val OnSecondary @Composable get() = MaterialTheme.colorScheme.onSecondary
+val SecondaryContainer @Composable get() = MaterialTheme.colorScheme.secondaryContainer
+val OnSecondaryContainer @Composable get() = MaterialTheme.colorScheme.onSecondaryContainer
+
+@Composable
+fun NomadCompassTheme(
+    themeController: ThemeController = remember { ThemeController(initialDark = true) },
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (themeController.isDarkMode) DarkColorScheme else LightColorScheme
+
+    CompositionLocalProvider(LocalThemeController provides themeController) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = NomadTypography,
+            content = content,
+        )
+    }
+}

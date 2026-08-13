@@ -1,0 +1,353 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>NomadCompass | Explore</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Claymorphism styles */
+        .clay-surface {
+            background: #2a2a2e;
+            box-shadow: 
+                8px 8px 16px rgba(0, 0, 0, 0.4), 
+                -4px -4px 12px rgba(255, 255, 255, 0.05),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.05), 
+                inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .clay-pill-active {
+            background: #e8e2d8;
+            box-shadow: 
+                inset 2px 2px 4px rgba(0, 0, 0, 0.2), 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .clay-card-inner-shadow {
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        @media (min-width: 768px) {
+            .masonry-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
+        }
+    </style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary": "#621000",
+                "surface-container-high": "#2a2a2e",
+                "surface-container-highest": "#353439",
+                "on-tertiary-fixed": "#3d0700",
+                "outline": "#959087",
+                "primary-container": "#e8e2d8",
+                "on-tertiary-container": "#ad4127",
+                "primary-fixed": "#e8e2d8",
+                "on-primary": "#33302a",
+                "surface": "#131317",
+                "surface-tint": "#ccc6bc",
+                "secondary-container": "#4f483c",
+                "background": "#131317",
+                "on-surface-variant": "#ccc6bc",
+                "surface-variant": "#353439",
+                "on-secondary-fixed": "#201b11",
+                "on-primary-fixed-variant": "#4a463f",
+                "on-surface": "#e4e1e7",
+                "on-error-container": "#ffdad6",
+                "on-primary-fixed": "#1e1b15",
+                "inverse-primary": "#625e56",
+                "on-primary-container": "#68645c",
+                "secondary": "#cfc5b5",
+                "surface-container": "#1f1f23",
+                "on-secondary-container": "#c1b7a8",
+                "inverse-on-surface": "#303034",
+                "surface-container-low": "#1b1b1f",
+                "tertiary-fixed-dim": "#ffb4a3",
+                "on-tertiary-fixed-variant": "#84240d",
+                "on-background": "#e4e1e7",
+                "error-container": "#93000a",
+                "tertiary-fixed": "#ffdad2",
+                "error": "#ffb4ab",
+                "outline-variant": "#4a463f",
+                "secondary-fixed": "#ece1d1",
+                "tertiary-container": "#ffdad2",
+                "on-error": "#690005",
+                "inverse-surface": "#e4e1e7",
+                "surface-container-lowest": "#0e0e12",
+                "primary": "#ffffff",
+                "tertiary": "#ffffff",
+                "surface-dim": "#131317",
+                "on-secondary": "#353025",
+                "secondary-fixed-dim": "#cfc5b5",
+                "primary-fixed-dim": "#ccc6bc",
+                "on-secondary-fixed-variant": "#4c463a",
+                "surface-bright": "#39393d"
+        },
+        "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "section-margin": "48px",
+                "gutter": "16px",
+                "container-padding": "24px",
+                "stack-gap": "20px",
+                "unit": "8px",
+                "margin-edge": "24px"
+        },
+        "fontFamily": {
+                "headline-md": ["Plus Jakarta Sans"],
+                "label-sm": ["Be Vietnam Pro"],
+                "body-md": ["Be Vietnam Pro"],
+                "headline-lg": ["Plus Jakarta Sans"],
+                "body-lg": ["Be Vietnam Pro"],
+                "headline-lg-mobile": ["Plus Jakarta Sans"],
+                "display": ["Plus Jakarta Sans"],
+                "label-md": ["Be Vietnam Pro"],
+                "headline-sm": ["Plus Jakarta Sans"]
+        },
+        "fontSize": {
+                "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                "headline-sm": ["20px", {"lineHeight": "1.2", "fontWeight": "600"}]
+        }
+    },
+    },
+  }
+</script>
+<style>
+    body {
+      min-height: 100dvh;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- Top App Bar - Tactile Version -->
+<header class="bg-surface-container-high docked full-width top-0 sticky z-50 rounded-b-xl flex items-center justify-between px-margin-edge h-16 w-full shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.05)] border-b border-white/5"><div class="flex items-center w-full gap-4"><div class="relative flex-1 group"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span><input type="text" placeholder="Search destinations..." class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-on-surface font-body-md focus:ring-2 focus:ring-primary/20 transition-all shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]"></div><button class="w-10 h-10 rounded-full clay-surface flex items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-95"><span class="material-symbols-outlined text-[22px]">tune</span></button></div></header>
+<main class="pb-32">
+<!-- Hero Section -->
+<section class="px-margin-edge pt-8 pb-6">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-on-surface mb-2">Find your next base</h2>
+<p class="text-on-surface-variant font-body-md max-w-md">Discover top-rated destinations for digital nomads with real-time connectivity and safety scores.</p>
+</section>
+<!-- Category Pill Bar - Claymorphism -->
+<div class="sticky top-16 bg-background/90 backdrop-blur-sm z-40 py-4 mb-4">
+<div class="flex overflow-x-auto hide-scrollbar gap-4 px-margin-edge">
+<button class="px-7 py-2.5 rounded-full clay-pill-active text-on-primary font-label-md whitespace-nowrap transition-all active:scale-95">All</button>
+<button class="px-7 py-2.5 rounded-full clay-surface text-on-surface-variant font-label-md whitespace-nowrap hover:text-primary transition-all active:scale-95">My Favs</button>
+<button class="px-7 py-2.5 rounded-full clay-surface text-on-surface-variant font-label-md whitespace-nowrap hover:text-primary transition-all active:scale-95">Europe</button>
+<button class="px-7 py-2.5 rounded-full clay-surface text-on-surface-variant font-label-md whitespace-nowrap hover:text-primary transition-all active:scale-95">Asia</button>
+<button class="px-7 py-2.5 rounded-full clay-surface text-on-surface-variant font-label-md whitespace-nowrap hover:text-primary transition-all active:scale-95">Themes</button>
+</div>
+</div>
+<!-- Country Grid -->
+<div class="px-margin-edge">
+<div class="masonry-grid">
+<!-- Card 1 -->
+<div class="clay-surface rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:scale-[1.03] active:scale-95 group">
+<div class="relative h-48 md:h-64 m-2 rounded-2xl overflow-hidden clay-card-inner-shadow">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuAprKdjtZ5ymrkD6ywOWmLZhhDo64Hg6whpUikO3OwNzB4qblVh2310FScZiXZgtMyneu3zaImIkzgEgIzSsSPV-4YyOPz_cWU1MTNY6gD3w4tpxYzR85tmoX_KSwz5OpKAQ-CFYCRifCYs0wofIl1zRLFJlToQ3qRwZWcz--om-tF3FSmhmXwRfW_czmDE7V44SOnBr6jMAM1MXXxmKPJYDQJuBQ8YmDu9WawKsW7kqX5q6UnIDyNd&quot;);"></div>
+<div class="absolute top-3 right-3 z-10">
+<button class="w-9 h-9 rounded-full bg-background/50 backdrop-blur-md flex items-center justify-center text-secondary-fixed hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite" style="font-variation-settings: &quot;FILL&quot; 1;">favorite</span>
+</button>
+</div>
+</div>
+<div class="px-5 py-4 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-on-surface">Thailand</h3>
+<span class="text-xl">🇹🇭</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[16px]" data-icon="wifi">wifi</span>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Fast • 45 Mbps</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="clay-surface rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:scale-[1.03] active:scale-95 group">
+<div class="relative h-40 md:h-56 m-2 rounded-2xl overflow-hidden clay-card-inner-shadow">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD981lsMgCdgdbqKgxY1_lVpfKv1KazEZ3N3-bbQfGSxrstqF-i6tXgYSGZEMWMaVxNL-Gyf2lmqLR7AcXy4SuP2oAjZZBwPaEktxqnIj7BSGNSLZrhEYCMh8eUGeD4h5sqzfihBp1_RGEROvYSXSWjLlf6s47oktjH3Xb5E7Oirju1FqXUavmEMjlK1RqzHnXZzgf9Saj_7JpKETFwXeIdCoakjSLAlOo-v1SWm4__SIwlG8r0-tq3&quot;);"></div>
+<div class="absolute top-3 right-3 z-10">
+<button class="w-9 h-9 rounded-full bg-background/50 backdrop-blur-md flex items-center justify-center text-on-surface-variant hover:text-secondary-fixed transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+<div class="px-5 py-4 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-on-surface">Portugal</h3>
+<span class="text-xl">🇵🇹</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[16px]" data-icon="bolt">bolt</span>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Safe • Low Cost</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="clay-surface rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:scale-[1.03] active:scale-95 group">
+<div class="relative h-56 md:h-72 m-2 rounded-2xl overflow-hidden clay-card-inner-shadow">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuB-DBVDivTUN9S0hH3Z9Bbyp1s2RDXteMTbwq0p7E42w5TfPmZ4hY4yFMm_uHteyL3qohOi1L_Uk2d2LbfKlCc0fTDCen-CYzYkBT7TFbY8SEv8Ajil5mXdyPGOcBzCsERb7WUWhvsVD_nGNAa0ho-Al6aXemzqYF_omMqty0mgIJM0e00NrK8JvWe3DK4Tm1S27RxJd5sxiuDOR9I1OWPv96mU6fgQsBPKK6hp5sxPkKiAVlRZpwm6&quot;);"></div>
+<div class="absolute top-3 right-3 z-10">
+<button class="w-9 h-9 rounded-full bg-background/50 backdrop-blur-md flex items-center justify-center text-secondary-fixed hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite" style="font-variation-settings: &quot;FILL&quot; 1;">favorite</span>
+</button>
+</div>
+</div>
+<div class="px-5 py-4 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-on-surface">Japan</h3>
+<span class="text-xl">🇯🇵</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[16px]" data-icon="train">train</span>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Efficient • Metro</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="clay-surface rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:scale-[1.03] active:scale-95 group">
+<div class="relative h-44 md:h-60 m-2 rounded-2xl overflow-hidden clay-card-inner-shadow">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBmO4miAZ7n4nPZJhUEFnfrrx6EzophaKMzQs-loGxBDhcyklpvjq0fYJl7ZRRYu1dDi5swij1CnUAVVkr0LNY_iEJ1URw9i-ctz9_ifnwPgrP28BLdVFv_dSBV12z6VRtOVg1neyqRlLVd6bkY205HqdGHiarvOP_7Lg1hFxmiQJFXjaHGrO_BjXN97Fd0hupRwmnA5udFaWOshuGdcUSY79jllTfXYRc2dW4xIFVuUcdFbPFb3Iqy&quot;);"></div>
+<div class="absolute top-3 right-3 z-10">
+<button class="w-9 h-9 rounded-full bg-background/50 backdrop-blur-md flex items-center justify-center text-on-surface-variant hover:text-secondary-fixed transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+<div class="px-5 py-4 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-on-surface">Colombia</h3>
+<span class="text-xl">🇨🇴</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[16px]" data-icon="sunny">sunny</span>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Tropical • Warm</span>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="clay-surface rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:scale-[1.03] active:scale-95 group">
+<div class="relative h-52 md:h-68 m-2 rounded-2xl overflow-hidden clay-card-inner-shadow">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBa3jCtMCxZpK_BEQFrzujrcaehqW5ogpG9LV5riCt7Y8f5JUxlExSLMIkYS6MxyVBwVq1DlsOaghvc14i1mj8S3QfF-LFHJA0Lc4TnRi-1iK-j3AqXp6uHjo569aWhl4cUv3EE_8UXY8XJkrnjB35SpBeqdkY0PhjE8RVE9psxPMqKKzmHkpUOnEFaQEkL0d24X1qfVDqBcBZk86RccWYLV-S71WVPneWfMvZuqv-FZUh4Mh0pja_x&quot;);"></div>
+<div class="absolute top-3 right-3 z-10">
+<button class="w-9 h-9 rounded-full bg-background/50 backdrop-blur-md flex items-center justify-center text-on-surface-variant hover:text-secondary-fixed transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+<div class="px-5 py-4 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-on-surface">Indonesia</h3>
+<span class="text-xl">🇮🇩</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[16px]" data-icon="pool">pool</span>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Nature • Remote</span>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="clay-surface rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:scale-[1.03] active:scale-95 group">
+<div class="relative h-48 md:h-64 m-2 rounded-2xl overflow-hidden clay-card-inner-shadow">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCECDocDwJ_2PL2yA3i3OFyILuAsbikOEZJSOP1XCRktCKC80TzqF0iN8W9MZc6aYnSIY1lTP4wpUTLy2h5_TriazhG2YzrenPTPRmhQ7ea4-GIFZ9qMj10yj7EGlUpzctBXWNBdM0pX9Mj3CsE-z9ibqHU17w95L2NbmoSRvW8vl4XrKjAg63-HYH3Ys-dfgG_J1B_56_68ftsLJafubd0UAfIh_hvEEslpTLajgiJ8rpWTHUeuMf0&quot;);"></div>
+<div class="absolute top-3 right-3 z-10">
+<button class="w-9 h-9 rounded-full bg-background/50 backdrop-blur-md flex items-center justify-center text-on-surface-variant hover:text-secondary-fixed transition-colors shadow-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+<div class="px-5 py-4 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-on-surface">Germany</h3>
+<span class="text-xl">🇩🇪</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[16px]" data-icon="hub">hub</span>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Startup Hub • Tech</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar - Tactile version from COMPONENTS_12 -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-4 px-margin-edge pb-safe z-50 bg-surface-container-high rounded-t-xl shadow-[0px_-8px_20px_rgba(0,0,0,0.5)] border-t border-white/5">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-secondary font-bold rounded-2xl px-5 py-1.5 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.1)] transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: &quot;FILL&quot; 1;">explore</span>
+<span class="font-label-md">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span class="font-label-md">Planner</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md">Profile</span>
+</a>
+</nav>
+<!-- Interactions Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pillBar = document.querySelector('.hide-scrollbar');
+            if (pillBar) {
+                pillBar.addEventListener('wheel', (evt) => {
+                    evt.preventDefault();
+                    pillBar.scrollLeft += evt.deltaY;
+                });
+            }
+
+            const favButtons = document.querySelectorAll('[data-icon="favorite"]');
+            favButtons.forEach(btn => {
+                btn.parentElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const icon = btn;
+                    const isFilled = icon.style.fontVariationSettings.includes("'FILL' 1");
+                    if (isFilled) {
+                        icon.style.fontVariationSettings = "'FILL' 0";
+                        icon.parentElement.classList.replace('text-secondary-fixed', 'text-on-surface-variant');
+                        icon.parentElement.classList.remove('bg-secondary-fixed');
+                        icon.parentElement.classList.add('bg-background/50');
+                    } else {
+                        icon.style.fontVariationSettings = "'FILL' 1";
+                        icon.parentElement.classList.replace('text-on-surface-variant', 'text-secondary-fixed');
+                        // In some states we want the filled look to be more prominent
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

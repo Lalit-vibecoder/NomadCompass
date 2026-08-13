@@ -1,0 +1,223 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        @keyframes pulse-clay {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(204, 198, 188, 0.2); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(204, 198, 188, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(204, 198, 188, 0); }
+        }
+
+        .clay-card {
+            background: #2a2a2e;
+            border-radius: 9999px;
+            box-shadow: 
+                inset 4px 4px 8px rgba(255, 255, 255, 0.05),
+                inset -4px -4px 8px rgba(0, 0, 0, 0.4),
+                8px 8px 16px rgba(0, 0, 0, 0.4),
+                -2px -2px 8px rgba(255, 255, 255, 0.02);
+        }
+
+        .clay-inset {
+            background: #1b1b1f;
+            box-shadow: 
+                inset 6px 6px 12px rgba(0, 0, 0, 0.6),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.03);
+        }
+
+        .clay-thumb {
+            background: #e8e2d8;
+            box-shadow: 
+                inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+                2px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-segment {
+            height: 100%;
+            background: #ccc6bc;
+            border-radius: 9999px;
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.4);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#621000",
+                        "surface-container-high": "#2a2a2e",
+                        "surface-container-highest": "#353439",
+                        "on-tertiary-fixed": "#3d0700",
+                        "outline": "#959087",
+                        "primary-container": "#e8e2d8",
+                        "on-tertiary-container": "#ad4127",
+                        "primary-fixed": "#e8e2d8",
+                        "on-primary": "#33302a",
+                        "surface": "#131317",
+                        "surface-tint": "#ccc6bc",
+                        "secondary-container": "#4f483c",
+                        "background": "#131317",
+                        "on-surface-variant": "#ccc6bc",
+                        "surface-variant": "#353439",
+                        "on-secondary-fixed": "#201b11",
+                        "on-primary-fixed-variant": "#4a463f",
+                        "on-surface": "#e4e1e7",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#1e1b15",
+                        "inverse-primary": "#625e56",
+                        "on-primary-container": "#68645c",
+                        "secondary": "#cfc5b5",
+                        "surface-container": "#1f1f23",
+                        "on-secondary-container": "#c1b7a8",
+                        "inverse-on-surface": "#303034",
+                        "surface-container-low": "#1b1b1f",
+                        "tertiary-fixed-dim": "#ffb4a3",
+                        "on-tertiary-fixed-variant": "#84240d",
+                        "on-background": "#e4e1e7",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#ffdad2",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#4a463f",
+                        "secondary-fixed": "#ece1d1",
+                        "tertiary-container": "#ffdad2",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e4e1e7",
+                        "surface-container-lowest": "#0e0e12",
+                        "primary": "#ffffff",
+                        "tertiary": "#ffffff",
+                        "surface-dim": "#131317",
+                        "on-secondary": "#353025",
+                        "secondary-fixed-dim": "#cfc5b5",
+                        "primary-fixed-dim": "#ccc6bc",
+                        "on-secondary-fixed-variant": "#4c463a",
+                        "surface-bright": "#39393d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-margin": "48px",
+                        "gutter": "16px",
+                        "container-padding": "24px",
+                        "stack-gap": "20px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "label-md": ["Be Vietnam Pro"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-on-surface overflow-hidden font-body-md transition-opacity duration-1000 bg-surface-container-low">
+<main class="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+<!-- Deep Matte Background Layer -->
+
+<!-- Subtle Organic Gradients -->
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute top-[20%] left-[10%] w-[300px] h-[300px] bg-primary-container/5 rounded-full blur-[80px]"></div>
+<div class="absolute bottom-[20%] right-[10%] w-[400px] h-[400px] bg-secondary-container/5 rounded-full blur-[100px]"></div>
+</div>
+<!-- Logo Section -->
+
+<!-- Loading Section -->
+<div class="relative z-10 flex flex-col items-center gap-8">
+  <div class="w-[220px] h-[220px] relative"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5CHKSqMQTgx2BLOgwlmRLXFcGNU465XkDMgPfg5txPReOmo_vK3uymuNb9MJTDzK7G5nzuaXISqEdRR3s9IpuxYTWNS1N4281nf5b4ZJ0eJwhhm-Qp3npO1n0syHxfTQgTnNcYZqcrdX76xhjSDEgdxUyqrWqYDDcKw2gsqZBZeXQTFS1Dd5D7C9mwI3XmB6286emN7VN5npOhupG-eqjS5bNhsGmVtBqZn2HUf15M8HUSEKLybzezxOOpnBDTOt1Ig" alt="Nomad Compass Logo" id="compass-icon" class="w-full h-full object-contain transition-transform duration-300" style="transform: rotate(0deg);"></div>
+  <div class="flex flex-col items-center gap-2">
+    <h1 class="font-display text-headline-lg text-on-surface tracking-tight uppercase">Nomad Compass</h1>
+    <div class="w-48 h-1 bg-surface-variant rounded-full overflow-hidden">
+      <div id="progress-bar" class="loading-segment w-0 h-full"></div>
+    </div>
+    <div class="flex justify-between w-48 mt-1">
+      <span id="loading-text" class="font-label-sm text-label-sm text-on-surface-variant/30 transition-opacity duration-300">Initializing...</span>
+      <span id="progress-percent" class="font-label-sm text-label-sm text-on-surface-variant/30">0%</span>
+    </div>
+  </div>
+</div>
+<!-- Atmospheric Footer -->
+<div class="absolute bottom-12 left-0 w-full px-container-padding text-center flex flex-col gap-4">
+<div class="flex justify-center gap-6 text-on-surface-variant/30">
+<span class="material-symbols-outlined text-base">wifi_off</span>
+<span class="material-symbols-outlined text-base">public</span>
+<span class="material-symbols-outlined text-base">security</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/20 uppercase tracking-[0.2em]">v4.2.0 Stable Build</p>
+</div>
+</main>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            const loadingText = document.getElementById('loading-text');
+            const compassIcon = document.getElementById('compass-icon');
+            
+            let progress = 0;
+            const messages = [
+                "Seeding offline database...",
+                "Mapping terrain clusters...",
+                "Indexing safety protocols...",
+                "Optimizing navigation mesh...",
+                "Finalizing local environment..."
+            ];
+
+            const updateProgress = () => {
+                if (progress < 100) {
+                    progress += Math.floor(Math.random() * 8) + 1;
+                    if (progress > 100) progress = 100;
+                    
+                    progressBar.style.width = `${progress}%`;
+                    progressPercent.innerText = `${progress}%`;
+
+                    const msgIndex = Math.floor((progress / 100) * messages.length);
+                    if (messages[msgIndex] && loadingText.innerText !== messages[msgIndex]) {
+                        loadingText.style.opacity = 0;
+                        setTimeout(() => {
+                            loadingText.innerText = messages[msgIndex];
+                            loadingText.style.opacity = 1;
+                        }, 200);
+                    }
+
+                    compassIcon.style.transform = `rotate(${progress * 7.2}deg)`;
+                    const timeout = Math.floor(Math.random() * 400) + 150;
+                    setTimeout(updateProgress, timeout);
+                } else {
+                    loadingText.innerText = "Sync Complete";
+                    loadingText.classList.add('text-primary-fixed');
+                    
+                    setTimeout(() => {
+                        document.body.classList.add('opacity-0', 'transition-opacity', 'duration-1000');
+                    }, 800);
+                }
+            };
+
+            setTimeout(updateProgress, 1000);
+            
+            setInterval(() => {
+                const jitter = (Math.random() - 0.5) * 2;
+                compassIcon.style.textShadow = `0 0 ${Math.abs(jitter) + 2}px rgba(204, 198, 188, 0.3)`;
+            }, 150);
+        });
+    </script>
+
+
+</body></html>

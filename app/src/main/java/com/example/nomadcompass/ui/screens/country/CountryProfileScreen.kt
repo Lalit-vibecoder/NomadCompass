@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -482,9 +483,9 @@ fun CountryProfileScreen(
                             }
                         }
 
-                        // Destination Highlights Card (if available)
+                        // Destination Highlights & Occasions Card
                         val highlights = detail.highlights
-                        if (highlights != null && (highlights.topPlaces.isNotEmpty() || highlights.famousFestivals.isNotEmpty() || highlights.attractiveFeatures.isNotEmpty())) {
+                        if (highlights != null && (highlights.mediaItems.isNotEmpty() || highlights.topPlaces.isNotEmpty() || highlights.famousFestivals.isNotEmpty() || highlights.attractiveFeatures.isNotEmpty())) {
                             ClayCard(
                                 modifier = Modifier.fillMaxWidth(),
                                 cornerRadius = 24.dp,
@@ -496,9 +497,80 @@ fun CountryProfileScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Primary)
-                                        Text(text = "DESTINATION HIGHLIGHTS", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
+                                        Text(text = "DESTINATION HIGHLIGHTS & OCCASIONS", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
+
+                                    // Visual Media Cards Carousel
+                                    if (highlights.mediaItems.isNotEmpty()) {
+                                        LazyRow(
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            items(highlights.mediaItems, key = { it.title }) { media ->
+                                                Box(
+                                                    modifier = Modifier
+                                                        .width(180.dp)
+                                                        .height(125.dp)
+                                                        .clip(RoundedCornerShape(16.dp))
+                                                        .background(SurfaceContainerLow)
+                                                ) {
+                                                    AsyncImage(
+                                                        model = media.imageUrl,
+                                                        contentDescription = media.title,
+                                                        contentScale = ContentScale.Crop,
+                                                        modifier = Modifier.fillMaxSize()
+                                                    )
+
+                                                    // Dark Gradient Overlay for text contrast
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .fillMaxSize()
+                                                            .background(
+                                                                Brush.verticalGradient(
+                                                                    colors = listOf(
+                                                                        Color.Transparent,
+                                                                        Color.Black.copy(alpha = 0.85f)
+                                                                    )
+                                                                )
+                                                            )
+                                                    )
+
+                                                    // Category Badge at Top-Start
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .padding(8.dp)
+                                                            .align(Alignment.TopStart)
+                                                            .clip(RoundedCornerShape(6.dp))
+                                                            .background(Primary.copy(alpha = 0.85f))
+                                                            .padding(horizontal = 6.dp, vertical = 3.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = media.category,
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            color = OnPrimary,
+                                                            fontSize = 9.sp,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
+                                                    }
+
+                                                    // Title Overlay at Bottom-Start
+                                                    Text(
+                                                        text = media.title,
+                                                        style = MaterialTheme.typography.labelMedium,
+                                                        color = Color.White,
+                                                        fontWeight = FontWeight.SemiBold,
+                                                        maxLines = 2,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier = Modifier
+                                                            .align(Alignment.BottomStart)
+                                                            .padding(10.dp)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
 
                                     if (highlights.topPlaces.isNotEmpty()) {
                                         Text(text = "📍 Top Places", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)

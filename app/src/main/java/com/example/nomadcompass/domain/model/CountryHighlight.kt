@@ -1,9 +1,16 @@
 package com.example.nomadcompass.domain.model
 
+data class HighlightMediaItem(
+    val title: String,
+    val category: String,
+    val imageUrl: String,
+)
+
 data class CountryHighlight(
     val topPlaces: List<String> = emptyList(),
     val famousFestivals: List<String> = emptyList(),
     val attractiveFeatures: List<String> = emptyList(),
+    val mediaItems: List<HighlightMediaItem> = emptyList(),
 ) {
     /**
      * Dynamically selects a single formatted highlight string from available candidates,

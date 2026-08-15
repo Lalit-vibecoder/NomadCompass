@@ -2,66 +2,287 @@
   "JPN": {
     "top_places": ["Mount Fuji", "Kyoto Ancient Temples", "Shibuya Crossing", "Osaka Castle"],
     "famous_festivals": ["Cherry Blossom Festival", "Gion Matsuri", "Nebuta Festival"],
-    "attractive_features": ["Shinkansen Bullet Trains", "Onsen Hot Springs", "Authentic Ramen"]
+    "attractive_features": ["Shinkansen Bullet Trains", "Onsen Hot Springs", "Authentic Ramen"],
+    "highlight_items": [
+      {
+        "title": "Mount Fuji",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Cherry Blossom Festival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Kyoto Temples",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1492571350019-22de08371fd3?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "IND": {
     "top_places": ["Taj Mahal Agra", "Varanasi Ghats", "Goa Beaches", "Jaipur Palaces"],
     "famous_festivals": ["Diwali Festival of Lights", "Holi Festival of Colors", "Pushkar Fair"],
-    "attractive_features": ["Rich Ayurvedic Wellness", "Diverse Spice Cuisine", "Himalayan Trekking"]
+    "attractive_features": ["Rich Ayurvedic Wellness", "Diverse Spice Cuisine", "Himalayan Trekking"],
+    "highlight_items": [
+      {
+        "title": "Taj Mahal Agra",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Holi Festival of Colors",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1603228254119-e6a4d095dc59?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Varanasi Ganges Ghats",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "FRA": {
     "top_places": ["Eiffel Tower Paris", "Louvre Museum", "French Riviera", "Mont Saint-Michel"],
     "famous_festivals": ["Bastille Day", "Cannes Film Festival", "Nice Carnival"],
-    "attractive_features": ["World-class Wine Tasting", "Artisan Pastries & Bakeries", "Haute Couture Fashion"]
+    "attractive_features": ["World-class Wine Tasting", "Artisan Pastries & Bakeries", "Haute Couture Fashion"],
+    "highlight_items": [
+      {
+        "title": "Eiffel Tower Paris",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Cannes Film Festival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Louvre Museum",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "USA": {
     "top_places": ["Grand Canyon National Park", "Statue of Liberty", "Yellowstone National Park", "Yosemite Valley"],
     "famous_festivals": ["Mardi Gras New Orleans", "Coachella Music Festival", "Macy's Thanksgiving Parade"],
-    "attractive_features": ["Iconic Cross-Country Road Trips", "Broadway Theater Shows", "Diverse National Parks"]
+    "attractive_features": ["Iconic Cross-Country Road Trips", "Broadway Theater Shows", "Diverse National Parks"],
+    "highlight_items": [
+      {
+        "title": "Grand Canyon National Park",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Mardi Gras New Orleans",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Statue of Liberty",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1605130284535-11dd9ede6523?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "DEU": {
     "top_places": ["Neuschwanstein Castle", "Brandenburg Gate Berlin", "Black Forest", "Cologne Cathedral"],
     "famous_festivals": ["Munich Oktoberfest", "Berlin International Film Festival", "Nuremberg Christmas Market"],
-    "attractive_features": ["Scenic Autobahn Driving", "Fairy Tale Castles", "Historic Beer Gardens"]
+    "attractive_features": ["Scenic Autobahn Driving", "Fairy Tale Castles", "Historic Beer Gardens"],
+    "highlight_items": [
+      {
+        "title": "Neuschwanstein Castle",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Munich Oktoberfest",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Brandenburg Gate",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "GBR": {
     "top_places": ["Big Ben & Parliament", "Stonehenge Monument", "Scottish Highlands", "Roman Baths Bath"],
     "famous_festivals": ["Glastonbury Music Festival", "Notting Hill Carnival", "Edinburgh Festival Fringe"],
-    "attractive_features": ["Historic Royal Palaces", "Traditional Afternoon Tea", "Cozy Village Pubs"]
+    "attractive_features": ["Historic Royal Palaces", "Traditional Afternoon Tea", "Cozy Village Pubs"],
+    "highlight_items": [
+      {
+        "title": "Big Ben & Parliament",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Glastonbury Festival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Stonehenge Monument",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1599833975787-5c143f373c30?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "ITA": {
     "top_places": ["Colosseum in Rome", "Venice Canals", "Amalfi Coastline", "Leaning Tower of Pisa"],
     "famous_festivals": ["Carnival of Venice", "Palio di Siena Horse Race", "Battle of the Oranges"],
-    "attractive_features": ["Authentic Artisanal Pizza", "Renaissance Masterpieces", "Tuscan Vineyard Tours"]
+    "attractive_features": ["Authentic Artisanal Pizza", "Renaissance Masterpieces", "Tuscan Vineyard Tours"],
+    "highlight_items": [
+      {
+        "title": "Colosseum in Rome",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Carnival of Venice",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Amalfi Coastline",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "ESP": {
     "top_places": ["Sagrada Familia Barcelona", "Alhambra Palace Granada", "Ibiza Island Beaches", "Park Güell"],
     "famous_festivals": ["La Tomatina Tomato Festival", "San Fermin Running of the Bulls", "Feria de Abril Seville"],
-    "attractive_features": ["Tapas Tasting Culture", "Passionate Flamenco Dance", "Sunny Mediterranean Beaches"]
+    "attractive_features": ["Tapas Tasting Culture", "Passionate Flamenco Dance", "Sunny Mediterranean Beaches"],
+    "highlight_items": [
+      {
+        "title": "Sagrada Familia Barcelona",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "La Tomatina Festival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Alhambra Palace Granada",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1568402102990-bc541580b59f?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "AUS": {
     "top_places": ["Sydney Opera House", "Great Barrier Reef", "Uluru Sacred Monolith", "Bondi Beach Sydney"],
     "famous_festivals": ["Sydney Harbour New Year", "Vivid Sydney Light Show", "Moomba Festival Melbourne"],
-    "attractive_features": ["Unique Kangaroos & Koalas", "World-Class Surfing Coast", "Outback Wilderness Expeditions"]
+    "attractive_features": ["Unique Kangaroos & Koalas", "World-Class Surfing Coast", "Outback Wilderness Expeditions"],
+    "highlight_items": [
+      {
+        "title": "Sydney Opera House",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Vivid Sydney Light Show",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Uluru Sacred Monolith",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1529108190281-9a4f620bc2d8?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "BRA": {
     "top_places": ["Christ the Redeemer Rio", "Amazon Rainforest Basin", "Iguazu Waterfalls", "Copacabana Beach"],
     "famous_festivals": ["Rio de Janeiro Carnival", "Festa Junina Celebrations", "Salvador Street Carnival"],
-    "attractive_features": ["Samba Rhythms & Dance", "Biodiverse Amazon Safaris", "Passionate Football Culture"]
+    "attractive_features": ["Samba Rhythms & Dance", "Biodiverse Amazon Safaris", "Passionate Football Culture"],
+    "highlight_items": [
+      {
+        "title": "Christ the Redeemer Rio",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Rio de Janeiro Carnival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Amazon Rainforest Safaris",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "CAN": {
     "top_places": ["Niagara Falls Ontario", "Banff National Park Alberta", "CN Tower Toronto", "Old Quebec Historic Quarter"],
     "famous_festivals": ["Calgary Stampede Rodeo", "Quebec Winter Carnival", "Montreal International Jazz Festival"],
-    "attractive_features": ["Northern Lights Aurora Display", "Maple Syrup Harvesting", "Untamed Alpine Lakes"]
+    "attractive_features": ["Northern Lights Aurora Display", "Maple Syrup Harvesting", "Untamed Alpine Lakes"],
+    "highlight_items": [
+      {
+        "title": "Niagara Falls Ontario",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Quebec Winter Carnival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Northern Lights Aurora",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "EGY": {
     "top_places": ["Great Pyramids of Giza", "Luxor Karnak Temples", "Nile River Cruise", "Red Sea Coral Reefs"],
     "famous_festivals": ["Abu Simbel Sun Festival", "Sham El-Nessim Spring Celebration", "Leylet en-Nuktah"],
-    "attractive_features": ["Ancient Pharaoh Tombs", "Sahara Desert Camel Safaris", "World-Class Red Sea Scuba Diving"]
+    "attractive_features": ["Ancient Pharaoh Tombs", "Sahara Desert Camel Safaris", "World-Class Red Sea Scuba Diving"],
+    "highlight_items": [
+      {
+        "title": "Great Pyramids of Giza",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Abu Simbel Sun Festival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1572252821143-035a7428f7ee?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Red Sea Coral Scuba",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   },
   "THA": {
     "top_places": ["Grand Palace Bangkok", "Phi Phi Islands Krabi", "Chiang Mai Mountain Temples", "Railay Beach"],
     "famous_festivals": ["Songkran Water Festival", "Yi Peng Sky Lantern Festival", "Loi Krathong Floating Lights"],
-    "attractive_features": ["Vibrant Night Market Street Food", "Traditional Thai Massage", "Crystal Clear Island Hopping"]
+    "attractive_features": ["Vibrant Night Market Street Food", "Traditional Thai Massage", "Crystal Clear Island Hopping"],
+    "highlight_items": [
+      {
+        "title": "Grand Palace Bangkok",
+        "category": "TOP PLACE",
+        "image_url": "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Songkran Water Festival",
+        "category": "FESTIVAL",
+        "image_url": "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        "title": "Phi Phi Tropical Islands",
+        "category": "ATTRACTION",
+        "image_url": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80"
+      }
+    ]
   }
 }

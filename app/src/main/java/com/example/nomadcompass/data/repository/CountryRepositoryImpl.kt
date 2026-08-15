@@ -8,6 +8,7 @@ import com.example.nomadcompass.data.remote.dto.RestCountryDto
 import com.example.nomadcompass.data.remote.dto.CountryHighlightDto
 import com.example.nomadcompass.domain.model.Country
 import com.example.nomadcompass.domain.model.CountryHighlight
+import com.example.nomadcompass.domain.model.HighlightMediaItem
 import com.example.nomadcompass.domain.repository.CountryRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -81,11 +82,19 @@ class CountryRepositoryImpl @Inject constructor(
             )
             val adapter = moshi.adapter<Map<String, CountryHighlightDto>>(type)
             val dtoMap = adapter.fromJson(json) ?: emptyMap()
+
             dtoMap.mapKeys { it.key.uppercase() }.mapValues { (_, dto) ->
                 CountryHighlight(
                     topPlaces = dto.topPlaces,
                     famousFestivals = dto.famousFestivals,
                     attractiveFeatures = dto.attractiveFeatures,
+                    mediaItems = dto.highlightItems.map {
+                        HighlightMediaItem(
+                            title = it.title,
+                            category = it.category,
+                            imageUrl = it.imageUrl,
+                        )
+                    }
                 )
             }
         } catch (_: Exception) {

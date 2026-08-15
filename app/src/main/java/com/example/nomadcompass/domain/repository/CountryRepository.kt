@@ -1,6 +1,7 @@
 package com.example.nomadcompass.domain.repository
 
 import com.example.nomadcompass.domain.model.Country
+import com.example.nomadcompass.domain.model.CountryHighlight
 import kotlinx.coroutines.flow.Flow
 
 interface CountryRepository {
@@ -11,4 +12,5 @@ interface CountryRepository {
     suspend fun getCountriesByCodes(cca3s: List<String>): List<Country>
     suspend fun toggleFavorite(cca3: String)
     suspend fun seedIfNeeded()
+    fun getCountryHighlight(cca3: String): CountryHighlight?
 }

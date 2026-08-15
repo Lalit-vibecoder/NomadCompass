@@ -1,0 +1,67 @@
+{
+  "JPN": {
+    "top_places": ["Mount Fuji", "Kyoto Ancient Temples", "Shibuya Crossing", "Osaka Castle"],
+    "famous_festivals": ["Cherry Blossom Festival", "Gion Matsuri", "Nebuta Festival"],
+    "attractive_features": ["Shinkansen Bullet Trains", "Onsen Hot Springs", "Authentic Ramen"]
+  },
+  "IND": {
+    "top_places": ["Taj Mahal Agra", "Varanasi Ghats", "Goa Beaches", "Jaipur Palaces"],
+    "famous_festivals": ["Diwali Festival of Lights", "Holi Festival of Colors", "Pushkar Fair"],
+    "attractive_features": ["Rich Ayurvedic Wellness", "Diverse Spice Cuisine", "Himalayan Trekking"]
+  },
+  "FRA": {
+    "top_places": ["Eiffel Tower Paris", "Louvre Museum", "French Riviera", "Mont Saint-Michel"],
+    "famous_festivals": ["Bastille Day", "Cannes Film Festival", "Nice Carnival"],
+    "attractive_features": ["World-class Wine Tasting", "Artisan Pastries & Bakeries", "Haute Couture Fashion"]
+  },
+  "USA": {
+    "top_places": ["Grand Canyon National Park", "Statue of Liberty", "Yellowstone National Park", "Yosemite Valley"],
+    "famous_festivals": ["Mardi Gras New Orleans", "Coachella Music Festival", "Macy's Thanksgiving Parade"],
+    "attractive_features": ["Iconic Cross-Country Road Trips", "Broadway Theater Shows", "Diverse National Parks"]
+  },
+  "DEU": {
+    "top_places": ["Neuschwanstein Castle", "Brandenburg Gate Berlin", "Black Forest", "Cologne Cathedral"],
+    "famous_festivals": ["Munich Oktoberfest", "Berlin International Film Festival", "Nuremberg Christmas Market"],
+    "attractive_features": ["Scenic Autobahn Driving", "Fairy Tale Castles", "Historic Beer Gardens"]
+  },
+  "GBR": {
+    "top_places": ["Big Ben & Parliament", "Stonehenge Monument", "Scottish Highlands", "Roman Baths Bath"],
+    "famous_festivals": ["Glastonbury Music Festival", "Notting Hill Carnival", "Edinburgh Festival Fringe"],
+    "attractive_features": ["Historic Royal Palaces", "Traditional Afternoon Tea", "Cozy Village Pubs"]
+  },
+  "ITA": {
+    "top_places": ["Colosseum in Rome", "Venice Canals", "Amalfi Coastline", "Leaning Tower of Pisa"],
+    "famous_festivals": ["Carnival of Venice", "Palio di Siena Horse Race", "Battle of the Oranges"],
+    "attractive_features": ["Authentic Artisanal Pizza", "Renaissance Masterpieces", "Tuscan Vineyard Tours"]
+  },
+  "ESP": {
+    "top_places": ["Sagrada Familia Barcelona", "Alhambra Palace Granada", "Ibiza Island Beaches", "Park Güell"],
+    "famous_festivals": ["La Tomatina Tomato Festival", "San Fermin Running of the Bulls", "Feria de Abril Seville"],
+    "attractive_features": ["Tapas Tasting Culture", "Passionate Flamenco Dance", "Sunny Mediterranean Beaches"]
+  },
+  "AUS": {
+    "top_places": ["Sydney Opera House", "Great Barrier Reef", "Uluru Sacred Monolith", "Bondi Beach Sydney"],
+    "famous_festivals": ["Sydney Harbour New Year", "Vivid Sydney Light Show", "Moomba Festival Melbourne"],
+    "attractive_features": ["Unique Kangaroos & Koalas", "World-Class Surfing Coast", "Outback Wilderness Expeditions"]
+  },
+  "BRA": {
+    "top_places": ["Christ the Redeemer Rio", "Amazon Rainforest Basin", "Iguazu Waterfalls", "Copacabana Beach"],
+    "famous_festivals": ["Rio de Janeiro Carnival", "Festa Junina Celebrations", "Salvador Street Carnival"],
+    "attractive_features": ["Samba Rhythms & Dance", "Biodiverse Amazon Safaris", "Passionate Football Culture"]
+  },
+  "CAN": {
+    "top_places": ["Niagara Falls Ontario", "Banff National Park Alberta", "CN Tower Toronto", "Old Quebec Historic Quarter"],
+    "famous_festivals": ["Calgary Stampede Rodeo", "Quebec Winter Carnival", "Montreal International Jazz Festival"],
+    "attractive_features": ["Northern Lights Aurora Display", "Maple Syrup Harvesting", "Untamed Alpine Lakes"]
+  },
+  "EGY": {
+    "top_places": ["Great Pyramids of Giza", "Luxor Karnak Temples", "Nile River Cruise", "Red Sea Coral Reefs"],
+    "famous_festivals": ["Abu Simbel Sun Festival", "Sham El-Nessim Spring Celebration", "Leylet en-Nuktah"],
+    "attractive_features": ["Ancient Pharaoh Tombs", "Sahara Desert Camel Safaris", "World-Class Red Sea Scuba Diving"]
+  },
+  "THA": {
+    "top_places": ["Grand Palace Bangkok", "Phi Phi Islands Krabi", "Chiang Mai Mountain Temples", "Railay Beach"],
+    "famous_festivals": ["Songkran Water Festival", "Yi Peng Sky Lantern Festival", "Loi Krathong Floating Lights"],
+    "attractive_features": ["Vibrant Night Market Street Food", "Traditional Thai Massage", "Crystal Clear Island Hopping"]
+  }
+}

@@ -54,6 +54,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.nomadcompass.domain.model.Country
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
@@ -62,6 +63,7 @@ import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
+import com.example.nomadcompass.ui.theme.Primary
 import com.example.nomadcompass.ui.theme.Secondary
 import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
@@ -358,6 +360,27 @@ fun CountryCardItem(
                         color = OnSurfaceVariant,
                         fontSize = 11.sp
                     )
+                }
+
+                // Dynamic Country Highlight Chip (gracefully hides if null or blank)
+                if (!country.highlightSnippet.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Primary.copy(alpha = 0.12f))
+                            .padding(horizontal = 8.dp, vertical = 5.dp)
+                    ) {
+                        Text(
+                            text = country.highlightSnippet,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Primary,
+                            fontSize = 10.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }

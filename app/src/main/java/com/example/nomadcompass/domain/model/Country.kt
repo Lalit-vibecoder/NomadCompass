@@ -18,4 +18,5 @@ data class Country(
     val latitude: Double,
     val longitude: Double,
     val isFavorite: Boolean = false,
+    val highlightSnippet: String? = null,
 )

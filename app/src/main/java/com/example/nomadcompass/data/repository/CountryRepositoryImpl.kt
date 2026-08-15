@@ -5,7 +5,9 @@ import com.example.nomadcompass.data.local.dao.CountryDao
 import com.example.nomadcompass.data.local.entity.CountryEntity
 import com.example.nomadcompass.data.remote.api.RestCountriesApi
 import com.example.nomadcompass.data.remote.dto.RestCountryDto
+import com.example.nomadcompass.data.remote.dto.CountryHighlightDto
 import com.example.nomadcompass.domain.model.Country
+import com.example.nomadcompass.domain.model.CountryHighlight
 import com.example.nomadcompass.domain.repository.CountryRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -23,22 +25,29 @@ class CountryRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : CountryRepository {
 
+    private val highlightsMap: Map<String, CountryHighlight> by lazy {
+        loadHighlightsFromAssets()
+    }
+
     override fun getAllCountries(): Flow<List<Country>> =
-        countryDao.getAll().map { entities -> entities.map { it.toDomain() } }
+        countryDao.getAll().map { entities -> entities.map { it.toDomain(highlightsMap) } }
 
     override fun getFavorites(): Flow<List<Country>> =
-        countryDao.getFavorites().map { entities -> entities.map { it.toDomain() } }
+        countryDao.getFavorites().map { entities -> entities.map { it.toDomain(highlightsMap) } }
 
     override fun search(query: String): Flow<List<Country>> =
-        countryDao.search(query).map { entities -> entities.map { it.toDomain() } }
+        countryDao.search(query).map { entities -> entities.map { it.toDomain(highlightsMap) } }
 
     override suspend fun getCountryByCode(cca3: String): Country? =
-        countryDao.getByCode(cca3)?.toDomain()
+        countryDao.getByCode(cca3)?.toDomain(highlightsMap)
 
     override suspend fun getCountriesByCodes(cca3s: List<String>): List<Country> {
         if (cca3s.isEmpty()) return emptyList()
-        return countryDao.getByCodes(cca3s).map { it.toDomain() }
+        return countryDao.getByCodes(cca3s).map { it.toDomain(highlightsMap) }
     }
+
+    override fun getCountryHighlight(cca3: String): CountryHighlight? =
+        highlightsMap[cca3.uppercase()]
 
     override suspend fun toggleFavorite(cca3: String) {
         countryDao.toggleFavorite(cca3)
@@ -58,6 +67,30 @@ class CountryRepositoryImpl @Inject constructor(
         val type = Types.newParameterizedType(List::class.java, RestCountryDto::class.java)
         val adapter = moshi.adapter<List<RestCountryDto>>(type)
         return adapter.fromJson(json) ?: emptyList()
+    }
+
+    private fun loadHighlightsFromAssets(): Map<String, CountryHighlight> {
+        return try {
+            val json = context.assets.open("country_highlights.json")
+                .bufferedReader()
+                .use { it.readText() }
+            val type = Types.newParameterizedType(
+                Map::class.java,
+                String::class.java,
+                CountryHighlightDto::class.java
+            )
+            val adapter = moshi.adapter<Map<String, CountryHighlightDto>>(type)
+            val dtoMap = adapter.fromJson(json) ?: emptyMap()
+            dtoMap.mapKeys { it.key.uppercase() }.mapValues { (_, dto) ->
+                CountryHighlight(
+                    topPlaces = dto.topPlaces,
+                    famousFestivals = dto.famousFestivals,
+                    attractiveFeatures = dto.attractiveFeatures,
+                )
+            }
+        } catch (_: Exception) {
+            emptyMap()
+        }
     }
 }
 
@@ -86,22 +119,27 @@ private fun RestCountryDto.toEntity(): CountryEntity? {
     )
 }
 
-private fun CountryEntity.toDomain(): Country = Country(
-    cca3 = cca3,
-    cca2 = cca2,
-    commonName = commonName,
-    officialName = officialName,
-    capital = capital,
-    region = region,
-    subregion = subregion,
-    flagEmoji = flagEmoji,
-    flagUrl = flagUrl,
-    currencyCode = currencyCode,
-    currencyName = currencyName,
-    currencySymbol = currencySymbol,
-    languages = languages,
-    borders = if (borders.isBlank()) emptyList() else borders.split(","),
-    latitude = latitude,
-    longitude = longitude,
-    isFavorite = isFavorite,
-)
+private fun CountryEntity.toDomain(highlightsMap: Map<String, CountryHighlight>): Country {
+    val highlight = highlightsMap[cca3.uppercase()]
+    val snippet = highlight?.getRandomHighlightString()
+    return Country(
+        cca3 = cca3,
+        cca2 = cca2,
+        commonName = commonName,
+        officialName = officialName,
+        capital = capital,
+        region = region,
+        subregion = subregion,
+        flagEmoji = flagEmoji,
+        flagUrl = flagUrl,
+        currencyCode = currencyCode,
+        currencyName = currencyName,
+        currencySymbol = currencySymbol,
+        languages = languages,
+        borders = if (borders.isBlank()) emptyList() else borders.split(","),
+        latitude = latitude,
+        longitude = longitude,
+        isFavorite = isFavorite,
+        highlightSnippet = snippet,
+    )
+}

@@ -67,6 +67,8 @@ import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 
+import androidx.compose.foundation.layout.statusBarsPadding
+
 @Composable
 fun ExploreScreen(
     viewModel: ExploreViewModel,
@@ -80,14 +82,14 @@ fun ExploreScreen(
 
     Scaffold(
         topBar = {
-            // Sticky Top Search Header (Pushed down with additional top padding)
+            // Sticky Top Search Header with System Status Bar Padding
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(88.dp)
                     .background(SurfaceContainerHigh)
                     .border(1.dp, Color.White.copy(alpha = 0.05f))
-                    .padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 12.dp),
+                    .statusBarsPadding()
+                    .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -202,7 +204,7 @@ fun ExploreScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
-                items(pills) { pill ->
+                items(pills, key = { it }) { pill ->
                     ClayPill(
                         text = pill,
                         isActive = pill == uiState.selectedPill,

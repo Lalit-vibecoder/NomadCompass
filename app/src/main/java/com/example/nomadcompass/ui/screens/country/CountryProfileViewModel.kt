@@ -21,6 +21,7 @@ data class CountryProfileUiState(
     val isLoading: Boolean = true,
     val detail: CountryDetailResult? = null,
     val baseCurrencyCode: String = "USD",
+    val tempUnit: String = "C",
     val targetCurrencyCode: String = "USD",
     val exchangeRate: Double = 1.0,
     val inputAmount: String = "1.0",
@@ -54,6 +55,7 @@ class CountryProfileViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
             val profile = getProfileUseCase().firstOrNull()
             val baseCurrency = profile?.baseCurrencyCode ?: "USD"
+            val userTempUnit = profile?.tempUnit?.ifBlank { "C" } ?: "C"
             val result = getCountryDetailUseCase(cca3, baseCurrency)
             val targetCurrency = result?.country?.currencyCode ?: "USD"
             val rate = result?.currencyRate?.rate ?: 1.0
@@ -65,6 +67,7 @@ class CountryProfileViewModel @Inject constructor(
                 isLoading = false,
                 detail = result,
                 baseCurrencyCode = baseCurrency,
+                tempUnit = userTempUnit,
                 targetCurrencyCode = targetCurrency,
                 exchangeRate = rate,
                 convertedCurrencyAmount = currentInput * effectiveRate

@@ -26,6 +26,10 @@ import javax.inject.Inject
 
 import com.example.nomadcompass.domain.usecase.GetProfileUseCase
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+
 data class PlannerUiState(
     val trips: List<Trip> = emptyList(),
     val availableCountries: List<Country> = emptyList(),
@@ -61,6 +65,14 @@ class PlannerViewModel @Inject constructor(
 
     private val _activeTripId = MutableStateFlow<Int?>(null)
 
+    private val _sortedCountriesFlow = getAllCountriesUseCase().map { countries ->
+        withContext(Dispatchers.Default) {
+            countries.sortedWith(
+                compareByDescending<Country> { it.isFavorite }.thenBy { it.commonName }
+            )
+        }
+    }
+
     private val _attachmentsFlow = _activeTripId.flatMapLatest { tripId ->
         if (tripId != null) {
             tripRepository.getAttachmentsForTrip(tripId)
@@ -72,13 +84,10 @@ class PlannerViewModel @Inject constructor(
     val uiState: StateFlow<PlannerUiState> = combine(
         _uiState,
         tripRepository.getAllTrips(),
-        getAllCountriesUseCase(),
+        _sortedCountriesFlow,
         _attachmentsFlow,
         getProfileUseCase()
-    ) { state, trips, countries, attachments, profile ->
-        val sortedCountries = countries.sortedWith(
-            compareByDescending<Country> { it.isFavorite }.thenBy { it.commonName }
-        )
+    ) { state, trips, sortedCountries, attachments, profile ->
         val currency = profile?.baseCurrencyCode?.ifBlank { "USD" } ?: "USD"
         state.copy(
             trips = trips,

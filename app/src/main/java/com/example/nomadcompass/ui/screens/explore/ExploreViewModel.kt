@@ -8,7 +8,9 @@ import com.example.nomadcompass.domain.usecase.GetAllCountriesUseCase
 import com.example.nomadcompass.domain.usecase.SearchCountriesUseCase
 import com.example.nomadcompass.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -51,21 +53,23 @@ class ExploreViewModel @Inject constructor(
             }
         }
     ) { query, pill, countryList ->
-        val filtered = when (pill) {
-            "My Favs" -> countryList.filter { it.isFavorite }
-            "Europe" -> countryList.filter { it.region.contains("Europe", ignoreCase = true) }
-            "Asia" -> countryList.filter { it.region.contains("Asia", ignoreCase = true) }
-            "Americas" -> countryList.filter { it.region.contains("Americas", ignoreCase = true) }
-            "Africa" -> countryList.filter { it.region.contains("Africa", ignoreCase = true) }
-            "Oceania" -> countryList.filter { it.region.contains("Oceania", ignoreCase = true) }
-            "Themes" -> countryList.take(6)
-            else -> countryList
+        withContext(Dispatchers.Default) {
+            val filtered = when (pill) {
+                "My Favs" -> countryList.filter { it.isFavorite }
+                "Europe" -> countryList.filter { it.region.contains("Europe", ignoreCase = true) }
+                "Asia" -> countryList.filter { it.region.contains("Asia", ignoreCase = true) }
+                "Americas" -> countryList.filter { it.region.contains("Americas", ignoreCase = true) }
+                "Africa" -> countryList.filter { it.region.contains("Africa", ignoreCase = true) }
+                "Oceania" -> countryList.filter { it.region.contains("Oceania", ignoreCase = true) }
+                "Themes" -> countryList.take(6)
+                else -> countryList
+            }
+            ExploreUiState(
+                searchQuery = query,
+                selectedPill = pill,
+                countries = filtered
+            )
         }
-        ExploreUiState(
-            searchQuery = query,
-            selectedPill = pill,
-            countries = filtered
-        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),

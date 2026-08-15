@@ -41,7 +41,8 @@ class GetCountryDetailUseCase @Inject constructor(
             val currencyRateDeferred = async { currencyRepository.getRate(baseCurrency, country.currencyCode) }
             val advisoryDeferred = async { advisoryRepository.getAdvisory(country.cca3) }
             val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-            val holidaysDeferred = async { holidayRepository.getHolidays(country.cca3, currentYear) }
+            val holidayCountryCode = country.cca2.ifBlank { country.cca3.take(2) }
+            val holidaysDeferred = async { holidayRepository.getHolidays(holidayCountryCode, currentYear) }
 
             val weather = weatherDeferred.await()
             val currencyRate = currencyRateDeferred.await()
@@ -49,8 +50,10 @@ class GetCountryDetailUseCase @Inject constructor(
             val holidays = holidaysDeferred.await()
             val nci = calculateNciUseCase(weather, advisory)
 
-            val neighbors = country.borders.mapNotNull { borderCode ->
-                countryRepository.getCountryByCode(borderCode)
+            val neighbors = if (country.borders.isNotEmpty()) {
+                countryRepository.getCountriesByCodes(country.borders)
+            } else {
+                emptyList()
             }
 
             CountryDetailResult(

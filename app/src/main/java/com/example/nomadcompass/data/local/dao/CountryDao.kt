@@ -31,6 +31,9 @@ interface CountryDao {
     @Query("SELECT * FROM countries WHERE cca3 = :cca3 LIMIT 1")
     suspend fun getByCode(cca3: String): CountryEntity?
 
+    @Query("SELECT * FROM countries WHERE cca3 IN (:cca3s)")
+    suspend fun getByCodes(cca3s: List<String>): List<CountryEntity>
+
     @Query("UPDATE countries SET isFavorite = NOT isFavorite WHERE cca3 = :cca3")
     suspend fun toggleFavorite(cca3: String)
 

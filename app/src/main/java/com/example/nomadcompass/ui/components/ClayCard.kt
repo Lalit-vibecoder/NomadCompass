@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -67,6 +68,7 @@ fun ClayCard(
 
 /**
  * Custom shadow modifier using Canvas Paint blur for soft drop-shadow effect.
+ * Uses drawWithCache to prevent object allocations on every draw frame.
  */
 fun Modifier.clayShadow(
     cornerRadius: Dp = 32.dp,
@@ -74,27 +76,36 @@ fun Modifier.clayShadow(
     blurRadius: Dp = 12.dp,
     offsetX: Dp = 4.dp,
     offsetY: Dp = 4.dp,
-): Modifier = this.drawBehind {
-    drawIntoCanvas { canvas ->
-        val paint = Paint().also {
-            val frameworkPaint = it.asFrameworkPaint()
-            frameworkPaint.color = shadowColor.toArgb()
-            frameworkPaint.setShadowLayer(
-                blurRadius.toPx(),
-                offsetX.toPx(),
-                offsetY.toPx(),
-                shadowColor.toArgb(),
-            )
-        }
-        val cornerPx = cornerRadius.toPx()
-        canvas.drawRoundRect(
-            left = 0f,
-            top = 0f,
-            right = size.width,
-            bottom = size.height,
-            radiusX = cornerPx,
-            radiusY = cornerPx,
-            paint = paint,
+): Modifier = this.drawWithCache {
+    val cornerPx = cornerRadius.toPx()
+    val blurPx = blurRadius.toPx().coerceAtLeast(1f)
+    val offX = offsetX.toPx()
+    val offY = offsetY.toPx()
+    val argbColor = shadowColor.toArgb()
+
+    val paint = Paint().also {
+        val frameworkPaint = it.asFrameworkPaint()
+        frameworkPaint.color = argbColor
+        frameworkPaint.setShadowLayer(
+            blurPx,
+            offX,
+            offY,
+            argbColor
         )
     }
+
+    onDrawBehind {
+        drawIntoCanvas { canvas ->
+            canvas.drawRoundRect(
+                left = 0f,
+                top = 0f,
+                right = size.width,
+                bottom = size.height,
+                radiusX = cornerPx,
+                radiusY = cornerPx,
+                paint = paint,
+            )
+        }
+    }
 }
+

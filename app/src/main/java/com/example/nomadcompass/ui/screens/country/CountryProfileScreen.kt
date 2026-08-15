@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -79,13 +80,13 @@ fun CountryProfileScreen(
 
     Scaffold(
         topBar = {
-            // Header Top Navigation
+            // Header Top Navigation with System Status Bar Padding
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(64.dp)
                     .background(Background.copy(alpha = 0.8f))
-                    .padding(horizontal = 20.dp),
+                    .statusBarsPadding()
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -335,13 +336,17 @@ fun CountryProfileScreen(
                                     val tempC = detail.weather?.temperatureCelsius?.toInt() ?: 22
                                     val tempF = detail.weather?.temperatureFahrenheit?.toInt() ?: 72
                                     val desc = detail.weather?.weatherDescription ?: "Sunny"
+                                    val isFahrenheit = uiState.tempUnit.equals("F", ignoreCase = true)
+                                    val headlineTemp = if (isFahrenheit) "${tempF}°F" else "${tempC}°C"
+                                    val subTemp = if (isFahrenheit) "$desc • ${tempC}°C" else "$desc • ${tempF}°F"
+
                                     Text(
-                                        text = "${tempC}°C",
+                                        text = headlineTemp,
                                         style = MaterialTheme.typography.headlineLarge,
                                         color = OnSurface
                                     )
                                     Text(
-                                        text = "$desc • ${tempF}°F",
+                                        text = subTemp,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = OnSurfaceVariant
                                     )
@@ -397,7 +402,13 @@ fun CountryProfileScreen(
                         }
 
                         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                            // Timezone Card
+                            // Dynamic Timezone Card using TimezoneHelper
+                            val tzInfo = com.example.nomadcompass.util.TimezoneHelper.getTimezoneInfo(
+                                cca3 = country.cca3,
+                                cca2 = country.cca2,
+                                longitude = country.longitude
+                            )
+
                             ClayCard(
                                 modifier = Modifier.weight(1f),
                                 cornerRadius = 24.dp,
@@ -412,12 +423,35 @@ fun CountryProfileScreen(
                                         Text(text = "TIMEZONE", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
-                                    Text(text = "UTC +9", style = MaterialTheme.typography.headlineSmall, color = OnSurface)
-                                    Text(text = "17:23 (Local)", style = MaterialTheme.typography.bodySmall, color = OnSurfaceVariant)
+                                    Text(text = tzInfo.utcDisplay, style = MaterialTheme.typography.headlineSmall, color = OnSurface)
+                                    Text(text = tzInfo.localTimeDisplay, style = MaterialTheme.typography.bodySmall, color = OnSurfaceVariant)
                                 }
                             }
 
-                            // Next Holiday Card
+                            // Dynamic Next Holiday Card
+                            val todayStr = try {
+                                java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date())
+                            } catch (_: Exception) {
+                                "2026-01-01"
+                            }
+
+                            val upcomingHolidays = detail.holidays.filter { it.date >= todayStr }
+                            val nextHoliday = upcomingHolidays.firstOrNull() ?: detail.holidays.lastOrNull() ?: detail.holidays.firstOrNull()
+
+                            val holidayName = nextHoliday?.name?.ifBlank { nextHoliday.localName } ?: "No Upcoming Holidays"
+                            val holidayDateFormatted = if (nextHoliday != null && nextHoliday.date.isNotBlank()) {
+                                try {
+                                    val inFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                                    val outFormat = java.text.SimpleDateFormat("MMM dd, yyyy", Locale.US)
+                                    val dateObj = inFormat.parse(nextHoliday.date)
+                                    if (dateObj != null) outFormat.format(dateObj) else nextHoliday.date
+                                } catch (_: Exception) {
+                                    nextHoliday.date
+                                }
+                            } else {
+                                "None"
+                            }
+
                             ClayCard(
                                 modifier = Modifier.weight(1f),
                                 cornerRadius = 24.dp,
@@ -432,15 +466,14 @@ fun CountryProfileScreen(
                                         Text(text = "NEXT HOLIDAY", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
-                                    val nextHoliday = detail.holidays.firstOrNull()
                                     Text(
-                                        text = nextHoliday?.name ?: "Marine Day",
+                                        text = holidayName,
                                         style = MaterialTheme.typography.titleMedium,
                                         color = OnSurface,
                                         maxLines = 1
                                     )
                                     Text(
-                                        text = nextHoliday?.date ?: "July 15",
+                                        text = holidayDateFormatted,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = OnSurfaceVariant
                                     )
@@ -474,7 +507,7 @@ fun CountryProfileScreen(
                             LazyRow(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                items(detail.neighbors) { neighbor ->
+                                items(detail.neighbors, key = { it.cca3 }) { neighbor ->
                                     ClayCard(
                                         modifier = Modifier
                                             .width(200.dp)

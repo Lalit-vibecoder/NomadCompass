@@ -35,16 +35,20 @@ class CountryRepositoryImpl @Inject constructor(
     override suspend fun getCountryByCode(cca3: String): Country? =
         countryDao.getByCode(cca3)?.toDomain()
 
+    override suspend fun getCountriesByCodes(cca3s: List<String>): List<Country> {
+        if (cca3s.isEmpty()) return emptyList()
+        return countryDao.getByCodes(cca3s).map { it.toDomain() }
+    }
+
     override suspend fun toggleFavorite(cca3: String) {
         countryDao.toggleFavorite(cca3)
     }
 
     override suspend fun seedIfNeeded() {
+        if (countryDao.count() > 0) return
         val seedDtos = loadSeedFromAssets()
-        if (countryDao.count() < seedDtos.size) {
-            val entities = seedDtos.mapNotNull { it.toEntity() }
-            countryDao.insertAll(entities)
-        }
+        val entities = seedDtos.mapNotNull { it.toEntity() }
+        countryDao.insertAll(entities)
     }
 
     private fun loadSeedFromAssets(): List<RestCountryDto> {
@@ -64,6 +68,7 @@ private fun RestCountryDto.toEntity(): CountryEntity? {
     val firstCurrency = currencies?.entries?.firstOrNull()
     return CountryEntity(
         cca3 = code,
+        cca2 = cca2 ?: "",
         commonName = name?.common ?: "",
         officialName = name?.official ?: "",
         capital = capital?.firstOrNull() ?: "",
@@ -83,6 +88,7 @@ private fun RestCountryDto.toEntity(): CountryEntity? {
 
 private fun CountryEntity.toDomain(): Country = Country(
     cca3 = cca3,
+    cca2 = cca2,
     commonName = commonName,
     officialName = officialName,
     capital = capital,

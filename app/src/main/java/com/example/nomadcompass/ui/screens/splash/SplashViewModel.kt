@@ -46,9 +46,9 @@ class SplashViewModel @Inject constructor(
             countryRepository.seedIfNeeded()
             val hasProfile = profileRepository.hasProfile()
 
-            // Simulate smooth progress loading matching HTML screen
+            // Smooth progress loading matching splash animation
             for (p in 1..100) {
-                delay(20)
+                delay(5)
                 val msgIndex = (p / 25).coerceIn(0, messages.size - 1)
                 _uiState.value = _uiState.value.copy(
                     progress = p,
@@ -56,7 +56,7 @@ class SplashViewModel @Inject constructor(
                 )
             }
 
-            delay(500)
+            delay(100)
             _uiState.value = _uiState.value.copy(
                 isComplete = true,
                 hasProfile = hasProfile

@@ -73,6 +73,8 @@ import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 
+import androidx.compose.foundation.layout.statusBarsPadding
+
 @Composable
 fun PlannerScreen(
     viewModel: PlannerViewModel,
@@ -86,10 +88,10 @@ fun PlannerScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(72.dp)
                     .background(SurfaceContainerHigh)
                     .border(1.dp, Color.White.copy(alpha = 0.05f))
-                    .padding(horizontal = 24.dp),
+                    .statusBarsPadding()
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

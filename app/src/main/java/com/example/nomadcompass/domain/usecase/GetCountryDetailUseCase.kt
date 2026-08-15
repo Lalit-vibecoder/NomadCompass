@@ -23,6 +23,7 @@ data class CountryDetailResult(
     val holidays: List<Holiday>,
     val nci: NciResult,
     val neighbors: List<Country>,
+    val highlights: com.example.nomadcompass.domain.model.CountryHighlight? = null,
 )
 
 class GetCountryDetailUseCase @Inject constructor(
@@ -49,6 +50,7 @@ class GetCountryDetailUseCase @Inject constructor(
             val advisory = advisoryDeferred.await()
             val holidays = holidaysDeferred.await()
             val nci = calculateNciUseCase(weather, advisory)
+            val highlights = countryRepository.getCountryHighlight(country.cca3)
 
             val neighbors = if (country.borders.isNotEmpty()) {
                 countryRepository.getCountriesByCodes(country.borders)
@@ -64,6 +66,7 @@ class GetCountryDetailUseCase @Inject constructor(
                 holidays = holidays,
                 nci = nci,
                 neighbors = neighbors,
+                highlights = highlights,
             )
         }
     }

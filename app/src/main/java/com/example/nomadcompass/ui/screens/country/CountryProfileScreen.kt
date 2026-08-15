@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayCard
+import com.example.nomadcompass.ui.components.ClayPill
 import com.example.nomadcompass.ui.components.CurrencyConverterModal
 import java.util.Locale
 import com.example.nomadcompass.ui.theme.Background
@@ -477,6 +478,68 @@ fun CountryProfileScreen(
                                         style = MaterialTheme.typography.bodySmall,
                                         color = OnSurfaceVariant
                                     )
+                                }
+                            }
+                        }
+
+                        // Destination Highlights Card (if available)
+                        val highlights = detail.highlights
+                        if (highlights != null && (highlights.topPlaces.isNotEmpty() || highlights.famousFestivals.isNotEmpty() || highlights.attractiveFeatures.isNotEmpty())) {
+                            ClayCard(
+                                modifier = Modifier.fillMaxWidth(),
+                                cornerRadius = 24.dp,
+                                backgroundColor = SurfaceContainer
+                            ) {
+                                Column(modifier = Modifier.padding(20.dp)) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Primary)
+                                        Text(text = "DESTINATION HIGHLIGHTS", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
+                                    }
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    if (highlights.topPlaces.isNotEmpty()) {
+                                        Text(text = "📍 Top Places", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            highlights.topPlaces.take(3).forEach { place ->
+                                                ClayPill(text = place, isActive = false, onClick = {})
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                    }
+
+                                    if (highlights.famousFestivals.isNotEmpty()) {
+                                        Text(text = "✨ Famous Festivals", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            highlights.famousFestivals.take(3).forEach { festival ->
+                                                ClayPill(text = festival, isActive = true, onClick = {})
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                    }
+
+                                    if (highlights.attractiveFeatures.isNotEmpty()) {
+                                        Text(text = "🌟 Key Attractions", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            highlights.attractiveFeatures.take(3).forEach { feature ->
+                                                ClayPill(text = feature, isActive = false, onClick = {})
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -47,8 +47,10 @@ class CountryRepositoryImpl @Inject constructor(
         return countryDao.getByCodes(cca3s).map { it.toDomain(highlightsMap) }
     }
 
-    override fun getCountryHighlight(cca3: String): CountryHighlight? =
-        highlightsMap[cca3.uppercase()]
+    override fun getCountryHighlight(cca3: String): CountryHighlight? {
+        val code = cca3.uppercase()
+        return highlightsMap[code] ?: createFallbackHighlight(code)
+    }
 
     override suspend fun toggleFavorite(cca3: String) {
         countryDao.toggleFavorite(cca3)
@@ -101,6 +103,44 @@ class CountryRepositoryImpl @Inject constructor(
             emptyMap()
         }
     }
+
+    private fun createFallbackHighlight(code: String): CountryHighlight {
+        val p1 = "$code Historic Center"
+        val p2 = "$code National Parks"
+        val p3 = "$code Scenic Valleys"
+        val f1 = "$code Heritage Festival"
+        val f2 = "$code Arts & Music Gala"
+        val a1 = "Traditional Culinary Delights"
+        val a2 = "Scenic Nature Trails"
+        val a3 = "Historic Monuments"
+
+        val samplePhotos = listOf(
+            "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1599833975787-5c143f373c30?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1568402102990-bc541580b59f?auto=format&fit=crop&w=600&q=80"
+        )
+
+        return CountryHighlight(
+            topPlaces = listOf(p1, p2, p3),
+            famousFestivals = listOf(f1, f2),
+            attractiveFeatures = listOf(a1, a2, a3),
+            mediaItems = listOf(
+                HighlightMediaItem(p1, "TOP PLACE", samplePhotos[0]),
+                HighlightMediaItem(p2, "TOP PLACE", samplePhotos[1]),
+                HighlightMediaItem(p3, "TOP PLACE", samplePhotos[2]),
+                HighlightMediaItem(f1, "FESTIVAL", samplePhotos[3]),
+                HighlightMediaItem(f2, "FESTIVAL", samplePhotos[4]),
+                HighlightMediaItem(a1, "ATTRACTION", samplePhotos[5]),
+                HighlightMediaItem(a2, "ATTRACTION", samplePhotos[6]),
+                HighlightMediaItem(a3, "ATTRACTION", samplePhotos[7])
+            )
+        )
+    }
 }
 
 // ── Mappers ──
@@ -129,8 +169,17 @@ private fun RestCountryDto.toEntity(): CountryEntity? {
 }
 
 private fun CountryEntity.toDomain(highlightsMap: Map<String, CountryHighlight>): Country {
-    val highlight = highlightsMap[cca3.uppercase()]
-    val snippet = highlight?.getRandomHighlightString()
+    val code = cca3.uppercase()
+    val highlight = highlightsMap[code] ?: CountryHighlight(
+        topPlaces = listOf("$code Historic Center", "$code National Parks"),
+        famousFestivals = listOf("$code Cultural Festival"),
+        attractiveFeatures = listOf("Traditional Cuisine", "Scenic Nature"),
+        mediaItems = listOf(
+            HighlightMediaItem("$code Historic Center", "TOP PLACE", "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80"),
+            HighlightMediaItem("$code Cultural Festival", "FESTIVAL", "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80")
+        )
+    )
+    val snippet = highlight.getRandomHighlightString()
     return Country(
         cca3 = cca3,
         cca2 = cca2,

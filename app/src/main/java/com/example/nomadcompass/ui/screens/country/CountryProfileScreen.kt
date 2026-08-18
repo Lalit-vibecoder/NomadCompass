@@ -18,7 +18,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -501,86 +504,15 @@ fun CountryProfileScreen(
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
 
-                                    // Visual Media Cards Carousel
-                                    if (highlights.mediaItems.isNotEmpty()) {
-                                        LazyRow(
-                                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            items(highlights.mediaItems, key = { it.title }) { media ->
-                                                Box(
-                                                    modifier = Modifier
-                                                        .width(180.dp)
-                                                        .height(125.dp)
-                                                        .clip(RoundedCornerShape(16.dp))
-                                                        .background(SurfaceContainerLow)
-                                                ) {
-                                                    AsyncImage(
-                                                        model = media.imageUrl,
-                                                        contentDescription = media.title,
-                                                        contentScale = ContentScale.Crop,
-                                                        modifier = Modifier.fillMaxSize()
-                                                    )
-
-                                                    // Dark Gradient Overlay for text contrast
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .fillMaxSize()
-                                                            .background(
-                                                                Brush.verticalGradient(
-                                                                    colors = listOf(
-                                                                        Color.Transparent,
-                                                                        Color.Black.copy(alpha = 0.85f)
-                                                                    )
-                                                                )
-                                                            )
-                                                    )
-
-                                                    // Category Badge at Top-Start
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .padding(8.dp)
-                                                            .align(Alignment.TopStart)
-                                                            .clip(RoundedCornerShape(6.dp))
-                                                            .background(Primary.copy(alpha = 0.85f))
-                                                            .padding(horizontal = 6.dp, vertical = 3.dp)
-                                                    ) {
-                                                        Text(
-                                                            text = media.category,
-                                                            style = MaterialTheme.typography.labelSmall,
-                                                            color = OnPrimary,
-                                                            fontSize = 9.sp,
-                                                            fontWeight = FontWeight.Bold
-                                                        )
-                                                    }
-
-                                                    // Title Overlay at Bottom-Start
-                                                    Text(
-                                                        text = media.title,
-                                                        style = MaterialTheme.typography.labelMedium,
-                                                        color = Color.White,
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        maxLines = 2,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        modifier = Modifier
-                                                            .align(Alignment.BottomStart)
-                                                            .padding(10.dp)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        Spacer(modifier = Modifier.height(16.dp))
-                                    }
-
                                     if (highlights.topPlaces.isNotEmpty()) {
                                         Text(text = "📍 Top Places", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                         Spacer(modifier = Modifier.height(6.dp))
-                                        Row(
+                                        LazyRow(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            highlights.topPlaces.take(3).forEach { place ->
-                                                ClayPill(text = place, isActive = false, onClick = {})
+                                            items(highlights.topPlaces.size) { idx ->
+                                                ClayPill(text = highlights.topPlaces[idx], isActive = false, onClick = {})
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(12.dp))
@@ -589,12 +521,12 @@ fun CountryProfileScreen(
                                     if (highlights.famousFestivals.isNotEmpty()) {
                                         Text(text = "✨ Famous Festivals", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                         Spacer(modifier = Modifier.height(6.dp))
-                                        Row(
+                                        LazyRow(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            highlights.famousFestivals.take(3).forEach { festival ->
-                                                ClayPill(text = festival, isActive = true, onClick = {})
+                                            items(highlights.famousFestivals.size) { idx ->
+                                                ClayPill(text = highlights.famousFestivals[idx], isActive = true, onClick = {})
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(12.dp))
@@ -603,12 +535,12 @@ fun CountryProfileScreen(
                                     if (highlights.attractiveFeatures.isNotEmpty()) {
                                         Text(text = "🌟 Key Attractions", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                         Spacer(modifier = Modifier.height(6.dp))
-                                        Row(
+                                        LazyRow(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            highlights.attractiveFeatures.take(3).forEach { feature ->
-                                                ClayPill(text = feature, isActive = false, onClick = {})
+                                            items(highlights.attractiveFeatures.size) { idx ->
+                                                ClayPill(text = highlights.attractiveFeatures[idx], isActive = false, onClick = {})
                                             }
                                         }
                                     }

@@ -1,207 +1,230 @@
 {
   "AFG": {
     "top_places": [
-      "Kabul Historic Quarter",
-      "National Parks of Afghanistan",
-      "Alpine Valleys & Trails of Afghanistan"
+      "Band-e Amir National Lakes",
+      "Kabul Babur Gardens",
+      "Minaret of Jam Ghor",
+      "Herat Citadel"
     ],
     "famous_festivals": [
-      "Afghanistan Cultural Heritage Festival",
-      "Afghanistan National Music & Arts Gala"
+      "Nowruz New Year Celebration",
+      "Jashn-e-Staqlal Independence Day",
+      "Eid al-Fitr Festivities"
     ],
     "attractive_features": [
-      "Traditional Afghanistan Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Authentic Kabuli Pulao Cuisine",
+      "Handcrafted Afghan Carpets",
+      "Hindu Kush Mountain Landscapes"
     ],
     "highlight_items": []
   },
   "ARM": {
     "top_places": [
-      "Yerevan Historic Quarter",
-      "National Parks of Armenia",
-      "Alpine Valleys & Trails of Armenia"
+      "Lake Sevan & Sevanavank Monastery",
+      "Tatev Monastery & Cable Car",
+      "Yerevan Cascade Complex",
+      "Garni Pagan Temple"
     ],
     "famous_festivals": [
-      "Armenia Cultural Heritage Festival",
-      "Armenia National Music & Arts Gala"
+      "Vardavar Water Splashing Festival",
+      "Yerevan Wine Days Festival",
+      "Golden Apricot Film Gala"
     ],
     "attractive_features": [
-      "Traditional Armenia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Lavash Flatbread & Dolma",
+      "Centuries-Old Brandy Distilleries",
+      "Historic Alpine Monasteries"
     ],
     "highlight_items": []
   },
   "AZE": {
     "top_places": [
-      "Baku Historic Quarter",
-      "National Parks of Azerbaijan",
-      "Alpine Valleys & Trails of Azerbaijan"
+      "Baku Old City Icherisheher",
+      "Flame Towers & Boulevard Baku",
+      "Gobustan Mud Volcanoes & Petroglyphs",
+      "Sheki Khan Palace"
     ],
     "famous_festivals": [
-      "Azerbaijan Cultural Heritage Festival",
-      "Azerbaijan National Music & Arts Gala"
+      "Novruz Bayram Spring Gala",
+      "Baku Jazz Festival",
+      "Silk Road Music Festival Sheki"
     ],
     "attractive_features": [
-      "Traditional Azerbaijan Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Plov & Black Tea",
+      "Caspian Sea Waterfront Promenades",
+      "Fire Mountain Yanar Dag Natural Gas"
     ],
     "highlight_items": []
   },
   "BHR": {
     "top_places": [
-      "Manama Historic Quarter",
-      "National Parks of Bahrain",
-      "Alpine Valleys & Trails of Bahrain"
+      "Bahrain Fort Qal'at al-Bahrain",
+      "Al Fateh Grand Mosque",
+      "Tree of Life Desert Landmark",
+      "Bab Al Bahrain Souq"
     ],
     "famous_festivals": [
-      "Bahrain Cultural Heritage Festival",
-      "Bahrain National Music & Arts Gala"
+      "Spring of Culture Festival",
+      "Bahrain Grand Prix F1 Gala",
+      "National Day Celebrations Manama"
     ],
     "attractive_features": [
-      "Traditional Bahrain Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Machboos Rice Dishes",
+      "Pearling Path Heritage Walk",
+      "Formula 1 Racing Night Atmosphere"
     ],
     "highlight_items": []
   },
   "BGD": {
     "top_places": [
-      "Dhaka Historic Quarter",
-      "National Parks of Bangladesh",
-      "Alpine Valleys & Trails of Bangladesh"
+      "Sundarbans Mangrove Forest & Tigers",
+      "Cox's Bazar Longest Sea Beach",
+      "Sreemangal Tea Gardens",
+      "Lalbagh Fort Dhaka"
     ],
     "famous_festivals": [
-      "Bangladesh Cultural Heritage Festival",
-      "Bangladesh National Music & Arts Gala"
+      "Pohela Boishakh Bengali New Year",
+      "Shakrain Kite Festival Old Dhaka",
+      "Durga Puja Celebrations"
     ],
     "attractive_features": [
-      "Traditional Bangladesh Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Authentic Kacchi Biryani & Hilsa Fish",
+      "World's Largest Mangrove Tiger Reserve",
+      "Vibrant Rickshaw Art Culture"
     ],
     "highlight_items": []
   },
   "BTN": {
     "top_places": [
-      "Thimphu Historic Quarter",
-      "National Parks of Bhutan",
-      "Alpine Valleys & Trails of Bhutan"
+      "Paro Taktsang Tiger's Nest Monastery",
+      "Punakha Dzong Fortress",
+      "Thimphu Buddha Dordenma Statue",
+      "Phobjikha Valley Crane Sanctuary"
     ],
     "famous_festivals": [
-      "Bhutan Cultural Heritage Festival",
-      "Bhutan National Music & Arts Gala"
+      "Paro Tshechu Festival",
+      "Punakha Drubchen Festival",
+      "Thimphu Tshechu Gala"
     ],
     "attractive_features": [
-      "Traditional Bhutan Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Authentic Ema Datshi Spicy Cheese",
+      "Himalayan Mountain Trekking Passes",
+      "Gross National Happiness Culture"
     ],
     "highlight_items": []
   },
   "BRN": {
     "top_places": [
-      "Bandar Seri Begawan Historic Quarter",
-      "National Parks of Brunei",
-      "Alpine Valleys & Trails of Brunei"
+      "Sultan Omar Ali Saifuddien Mosque",
+      "Kampong Ayer Stilt Village",
+      "Istana Nurul Iman Palace",
+      "Ulu Temburong National Park"
     ],
     "famous_festivals": [
-      "Brunei Cultural Heritage Festival",
-      "Brunei National Music & Arts Gala"
+      "Sultan's Birthday Celebrations Bandar",
+      "Hari Raya Aidilfitri Open Houses",
+      "Brunei National Day Parades"
     ],
     "attractive_features": [
-      "Traditional Brunei Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Authentic Ambuyat Local Dish",
+      "Golden Dome Islamic Architecture",
+      "Canopy Walk Above Temburong Rainforest"
     ],
     "highlight_items": []
   },
   "KHM": {
     "top_places": [
-      "Angkor Wat Siem Reap",
-      "Bayon Temple Faces",
-      "Tonle Sap Floating Villages",
-      "Royal Palace Phnom Penh"
+      "Angkor Wat Temple Siem Reap",
+      "Bayon Smiling Stone Faces",
+      "Phnom Penh Royal Palace",
+      "Koh Rong Island Beaches"
     ],
     "famous_festivals": [
+      "Bon Om Touk Water Festival",
       "Khmer New Year Choul Chnam Thmey",
-      "Water Festival Bon Om Touk",
-      "Pchum Ben Remembrance"
+      "Pchum Ben Ancestors Day"
     ],
     "attractive_features": [
-      "Ancient Khmer Temple Architecture",
-      "Traditional Apsara Dance",
-      "Tuk-Tuk Countryside Tours"
+      "Authentic Fish Amok Curry",
+      "Angkor Archaeological Park Exploration",
+      "Tonlé Sap Floating Village Boat Tours"
     ],
     "highlight_items": []
   },
   "CHN": {
     "top_places": [
-      "Beijing Historic Quarter",
-      "National Parks of China",
-      "Alpine Valleys & Trails of China"
+      "Great Wall of China Badaling",
+      "Forbidden City Beijing",
+      "Terracotta Army Xi'an",
+      "Li River Guilin",
+      "The Bund Shanghai"
     ],
     "famous_festivals": [
-      "China Cultural Heritage Festival",
-      "China National Music & Arts Gala"
+      "Chinese Spring Festival Lunar New Year",
+      "Harbin Ice & Snow Festival",
+      "Dragon Boat Races"
     ],
     "attractive_features": [
-      "Traditional China Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Asia"
+      "Peking Duck & Dim Sum Delights",
+      "High-Speed Maglev Rail Travel",
+      "Giant Panda Research Centers"
     ],
     "highlight_items": []
   },
   "CYP": {
     "top_places": [
-      "Nicosia Historic Quarter",
-      "National Parks of Cyprus",
-      "Alpine Valleys & Trails of Cyprus"
+      "Aphrodite's Rock & Beach Paphos",
+      "Kourion Ancient Theater Limassol",
+      "Troodos Mountain Monasteries",
+      "Ayia Napa Nissi Beach"
     ],
     "famous_festivals": [
-      "Cyprus Cultural Heritage Festival",
-      "Cyprus National Music & Arts Gala"
+      "Limassol Carnival Festival",
+      "Kataklysmos Water Festival",
+      "Cyprus Wine Festival Limassol"
     ],
     "attractive_features": [
-      "Traditional Cyprus Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Halloumi Cheese & Meze",
+      "Birthplace of Aphrodite Mythology",
+      "Pristine Blue Flag Beaches"
     ],
     "highlight_items": []
   },
   "GEO": {
     "top_places": [
-      "Tbilisi Historic Quarter",
-      "National Parks of Georgia",
-      "Alpine Valleys & Trails of Georgia"
+      "Tbilisi Old Town & Narikala Fortress",
+      "Kazbegi Mount Gergeti Trinity Church",
+      "Signagi City of Love Kakheti",
+      "Vardzia Cave Monastery"
     ],
     "famous_festivals": [
-      "Georgia Cultural Heritage Festival",
-      "Georgia National Music & Arts Gala"
+      "Tbilisoba City Festival",
+      "Rtveli Grape Harvest Festival",
+      "Shatili Fest High Mountain Gala"
     ],
     "attractive_features": [
-      "Traditional Georgia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Khachapuri Cheese Bread & Khinkali",
+      "8,000-Year-Old Qvevri Wine Tradition",
+      "Stunning Caucasus Mountain Peaks"
     ],
     "highlight_items": []
   },
   "HKG": {
     "top_places": [
-      "City of Victoria Historic Quarter",
-      "National Parks of Hong Kong",
-      "Alpine Valleys & Trails of Hong Kong"
+      "Victoria Peak Panorama",
+      "Big Buddha Lantau Island",
+      "Tsim Sha Tsui Promenade",
+      "Star Ferry Harbor Cruise"
     ],
     "famous_festivals": [
-      "Hong Kong Cultural Heritage Festival",
-      "Hong Kong National Music & Arts Gala"
+      "Hong Kong Wine & Dine Festival",
+      "Cheung Chau Bun Festival",
+      "Lunar New Year Fireworks"
     ],
     "attractive_features": [
-      "Traditional Hong Kong Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Asia"
+      "Michelin Dim Sum Dining",
+      "Symphony of Lights Skyline Show",
+      "Traditional Tram Ding Dong Rides"
     ],
     "highlight_items": []
   },
@@ -227,69 +250,76 @@
   },
   "IDN": {
     "top_places": [
-      "Jakarta Historic Quarter",
-      "National Parks of Indonesia",
-      "Alpine Valleys & Trails of Indonesia"
+      "Ubud Rice Terraces Bali",
+      "Tanah Lot Temple",
+      "Komodo National Park",
+      "Borobudur Temple Magelang",
+      "Gili Islands Lombok"
     ],
     "famous_festivals": [
-      "Indonesia Cultural Heritage Festival",
-      "Indonesia National Music & Arts Gala"
+      "Galungan & Kuningan Bali",
+      "Bali Arts Festival Denpasar",
+      "Toraja Funeral Ceremony Sulawesi"
     ],
     "attractive_features": [
-      "Traditional Indonesia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Authentic Nasi Goreng & Satay",
+      "Surfing Kuta & Uluwatu",
+      "Tropical Volcanic Treks"
     ],
     "highlight_items": []
   },
   "IRN": {
     "top_places": [
-      "Tehran Historic Quarter",
-      "National Parks of Iran",
-      "Alpine Valleys & Trails of Iran"
+      "Persepolis Ancient Ruins Shiraz",
+      "Naqsh-e Jahan Square Isfahan",
+      "Golestan Palace Tehran",
+      "Yazd Adobe Historical City"
     ],
     "famous_festivals": [
-      "Iran Cultural Heritage Festival",
-      "Iran National Music & Arts Gala"
+      "Nowruz Persian New Year",
+      "Yalda Night Winter Solstice",
+      "Rosewater Festival Kashan"
     ],
     "attractive_features": [
-      "Traditional Iran Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Authentic Fesenjan & Persian Kebabs",
+      "Handwoven Persian Silk Carpets",
+      "Intricate Islamic Tile Architecture"
     ],
     "highlight_items": []
   },
   "IRQ": {
     "top_places": [
-      "Baghdad Historic Quarter",
-      "National Parks of Iraq",
-      "Alpine Valleys & Trails of Iraq"
+      "Iraq Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Iraq",
+      "Scenic Coastal & Mountain Trails of Iraq"
     ],
     "famous_festivals": [
-      "Iraq Cultural Heritage Festival",
-      "Iraq National Music & Arts Gala"
+      "Iraq Cultural Heritage & Arts Festival",
+      "Iraq National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Iraq Culinary Delights",
+      "Traditional Iraq Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ISR": {
     "top_places": [
-      "Jerusalem Historic Quarter",
-      "National Parks of Israel",
-      "Alpine Valleys & Trails of Israel"
+      "Jerusalem Western Wall & Old City",
+      "Tel Aviv Beaches & Promenade",
+      "Dead Sea Floating Waters",
+      "Masada Fortress Fortress"
     ],
     "famous_festivals": [
-      "Israel Cultural Heritage Festival",
-      "Israel National Music & Arts Gala"
+      "Purim Street Carnival",
+      "Tel Aviv Pride Festival",
+      "Israel Festival Jerusalem"
     ],
     "attractive_features": [
-      "Traditional Israel Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Floating Weightless in Dead Sea",
+      "Authentic Shakshuka & Hummus",
+      "Vibrant Mediterranean Nightlife"
     ],
     "highlight_items": []
   },
@@ -315,772 +345,838 @@
   },
   "JOR": {
     "top_places": [
-      "Petra Al-Khazneh Treasury",
-      "Wadi Rum Red Desert",
-      "Dead Sea Salt Beach",
+      "Petra Treasury Rock Carvings",
+      "Wadi Rum Red Desert Dunes",
+      "Dead Sea Mineral Beaches",
       "Jerash Roman Ruins"
     ],
     "famous_festivals": [
       "Jerash Festival of Culture & Arts",
       "Amman Opera Festival",
-      "Aqaba Traditional Music Fest"
+      "Aqaba Traditional Music Gala"
     ],
     "attractive_features": [
-      "Bedouin Star Camping",
-      "Buoyant Dead Sea Swimming",
-      "Historic Biblical Pilgrimage Sites"
+      "Authentic Mansaf Lamb & Rice",
+      "Bedouin Desert Camp Stargazing",
+      "Floating in Dead Sea Minerals"
     ],
     "highlight_items": []
   },
   "KAZ": {
     "top_places": [
-      "Astana Historic Quarter",
-      "National Parks of Kazakhstan",
-      "Alpine Valleys & Trails of Kazakhstan"
+      "Charyn Canyon Almaty",
+      "Astana Bayterek Tower",
+      "Big Almaty Lake",
+      "Medeo Ice Rink Mountain Resort"
     ],
     "famous_festivals": [
-      "Kazakhstan Cultural Heritage Festival",
-      "Kazakhstan National Music & Arts Gala"
+      "Nauryz Spring Festival",
+      "Spirit of Tengri Ethno-Music Gala",
+      "Astana Day Celebrations"
     ],
     "attractive_features": [
-      "Traditional Kazakhstan Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Asia"
+      "Authentic Beshbarmak & Horse Meat",
+      "Tian Shan Mountain Skiing",
+      "Nomadic Yurt Heritage Culture"
     ],
     "highlight_items": []
   },
   "KWT": {
     "top_places": [
-      "Kuwait City Historic Quarter",
-      "National Parks of Kuwait",
-      "Alpine Valleys & Trails of Kuwait"
+      "Kuwait Towers Waterfront",
+      "Grand Mosque Kuwait City",
+      "Souk Al-Mubarakiya Bazaar",
+      "Failaka Island Historic Ruins"
     ],
     "famous_festivals": [
-      "Kuwait Cultural Heritage Festival",
-      "Kuwait National Music & Arts Gala"
+      "Hala February Spring Festival",
+      "Kuwait National Day Parades",
+      "Pearl Diving Festival"
     ],
     "attractive_features": [
-      "Traditional Kuwait Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Machboos Laham Cuisine",
+      "Modern Arabian Gulf Architecture",
+      "Historic Souk Spice Markets"
     ],
     "highlight_items": []
   },
   "KGZ": {
     "top_places": [
-      "Bishkek Historic Quarter",
-      "National Parks of Kyrgyzstan",
-      "Alpine Valleys & Trails of Kyrgyzstan"
+      "Kyrgyzstan Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Kyrgyzstan",
+      "Scenic Coastal & Mountain Trails of Kyrgyzstan"
     ],
     "famous_festivals": [
-      "Kyrgyzstan Cultural Heritage Festival",
-      "Kyrgyzstan National Music & Arts Gala"
+      "Kyrgyzstan Cultural Heritage & Arts Festival",
+      "Kyrgyzstan National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Kyrgyzstan Culinary Delights",
+      "Traditional Kyrgyzstan Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LAO": {
     "top_places": [
-      "Vientiane Historic Quarter",
-      "National Parks of Laos",
-      "Alpine Valleys & Trails of Laos"
+      "Luang Prabang UNESCO Heritage Town",
+      "Kuang Si Turquoise Waterfalls",
+      "Vang Vieng Limestone Karsts",
+      "Pha That Luang Stupa Vientiane"
     ],
     "famous_festivals": [
-      "Laos Cultural Heritage Festival",
-      "Laos National Music & Arts Gala"
+      "Boun Pi Mai Lao New Year",
+      "Boun That Luang Festival",
+      "Rocket Festival Boun Bang Fai"
     ],
     "attractive_features": [
-      "Traditional Laos Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Authentic Sticky Rice & Laap Salad",
+      "Alms Giving Ceremony Monks Luang Prabang",
+      "Mekong River Sunset Cruising"
     ],
     "highlight_items": []
   },
   "LBN": {
     "top_places": [
-      "Beirut Historic Quarter",
-      "National Parks of Lebanon",
-      "Alpine Valleys & Trails of Lebanon"
+      "Jeita Grotto Limestone Caves",
+      "Baalbek Ancient Roman Temples",
+      "Byblos Historic Port Town",
+      "Beirut Corniche Waterfront"
     ],
     "famous_festivals": [
-      "Lebanon Cultural Heritage Festival",
-      "Lebanon National Music & Arts Gala"
+      "Baalbeck International Music Gala",
+      "Byblos International Festival",
+      "Beirut Cultural Week"
     ],
     "attractive_features": [
-      "Traditional Lebanon Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Mezze & Hummus Dining",
+      "Cedar Tree Forests Hiking",
+      "Vibrant Beirut Nightlife Scene"
     ],
     "highlight_items": []
   },
   "MAC": {
     "top_places": [
-      "Macau Capital Landmarks",
-      "National Parks of Macau",
-      "Alpine Valleys & Trails of Macau"
+      "Ruins of St. Paul's Church",
+      "Senado Square Historic Center",
+      "The Venetian Macao Cotai Strip",
+      "A-Ma Temple"
     ],
     "famous_festivals": [
-      "Macau Cultural Heritage Festival",
-      "Macau National Music & Arts Gala"
+      "Macau International Fireworks Display",
+      "Macau Grand Prix Racing Gala",
+      "Macau Arts Festival"
     ],
     "attractive_features": [
-      "Traditional Macau Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Asia"
+      "Authentic Macanese Egg Tarts",
+      "UNESCO Portuguese-Chinese Heritage",
+      "World-Class Casino Cotai Strip"
     ],
     "highlight_items": []
   },
   "MYS": {
     "top_places": [
-      "Kuala Lumpur Historic Quarter",
-      "National Parks of Malaysia",
-      "Alpine Valleys & Trails of Malaysia"
+      "Petronas Twin Towers KL",
+      "Batu Caves Temple",
+      "George Town Penang Heritage",
+      "Langkawi Archipelago Beaches"
     ],
     "famous_festivals": [
-      "Malaysia Cultural Heritage Festival",
-      "Malaysia National Music & Arts Gala"
+      "Hari Raya Aidilfitri",
+      "Thaipusam Batu Caves",
+      "Penang International Food Festival"
     ],
     "attractive_features": [
-      "Traditional Malaysia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Penang Street Food Paradise",
+      "Borneo Rainforest Wildlife",
+      "Cameron Highlands Tea Plantations"
     ],
     "highlight_items": []
   },
   "MDV": {
     "top_places": [
-      "Malé Historic Quarter",
-      "National Parks of Maldives",
-      "Alpine Valleys & Trails of Maldives"
+      "Malé Atoll Overwater Resorts",
+      "Maafushi Island Local Beach",
+      "Baa Atoll Biosphere Reserve",
+      "Banana Reef Diving Site"
     ],
     "famous_festivals": [
-      "Maldives Cultural Heritage Festival",
-      "Maldives National Music & Arts Gala"
+      "Maldives National Day Parades",
+      "Eid Celebrations Island-Wide",
+      "Bodu Beru Drumming Galas"
     ],
     "attractive_features": [
-      "Traditional Maldives Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Luxurious Overwater Bungalow Stay",
+      "Swimming with Whale Sharks & Rays",
+      "Authentic Garudhiya Fish Soup"
     ],
     "highlight_items": []
   },
   "MNG": {
     "top_places": [
-      "Ulaanbaatar Historic Quarter",
-      "National Parks of Mongolia",
-      "Alpine Valleys & Trails of Mongolia"
+      "Gobi Desert Sand Dunes",
+      "Terelj National Park & Turtle Rock",
+      "Genghis Khan Statue Complex",
+      "Lake Khövsgöl Crystal Water"
     ],
     "famous_festivals": [
-      "Mongolia Cultural Heritage Festival",
-      "Mongolia National Music & Arts Gala"
+      "Naadam Festival Wrestling & Archery",
+      "Golden Eagle Festival Bayan-Ölgii",
+      "Ice Festival Lake Khövsgöl"
     ],
     "attractive_features": [
-      "Traditional Mongolia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Asia"
+      "Authentic Khorkhog Mutton BBQ",
+      "Traditional Nomad Yurt Ger Stay",
+      "Horseback Riding Across Steppe"
     ],
     "highlight_items": []
   },
   "MMR": {
     "top_places": [
-      "Naypyidaw Historic Quarter",
-      "National Parks of Myanmar",
-      "Alpine Valleys & Trails of Myanmar"
+      "Myanmar Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Myanmar",
+      "Scenic Coastal & Mountain Trails of Myanmar"
     ],
     "famous_festivals": [
-      "Myanmar Cultural Heritage Festival",
-      "Myanmar National Music & Arts Gala"
+      "Myanmar Cultural Heritage & Arts Festival",
+      "Myanmar National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Myanmar Culinary Delights",
+      "Traditional Myanmar Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "NPL": {
     "top_places": [
-      "Kathmandu Historic Quarter",
-      "National Parks of Nepal",
-      "Alpine Valleys & Trails of Nepal"
+      "Mount Everest Base Camp",
+      "Kathmandu Durbar Square",
+      "Pokhara Fewa Lake & Annapurna",
+      "Chitwan National Park Safari"
     ],
     "famous_festivals": [
-      "Nepal Cultural Heritage Festival",
-      "Nepal National Music & Arts Gala"
+      "Dashain & Tihar Lights Festival",
+      "Holi Festival Kathmandu",
+      "Bisket Jatra Bhaktapur"
     ],
     "attractive_features": [
-      "Traditional Nepal Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Himalayan Mountain Trekking Circuits",
+      "Authentic Dal Bhat Power Meals",
+      "Rhino & Tiger Safaris Chitwan"
     ],
     "highlight_items": []
   },
   "PRK": {
     "top_places": [
-      "Pyongyang Historic Quarter",
-      "National Parks of North Korea",
-      "Alpine Valleys & Trails of North Korea"
+      "North Korea Historic Center & Landmarks",
+      "National Parks & Natural Reserves of North Korea",
+      "Scenic Coastal & Mountain Trails of North Korea"
     ],
     "famous_festivals": [
-      "North Korea Cultural Heritage Festival",
-      "North Korea National Music & Arts Gala"
+      "North Korea Cultural Heritage & Arts Festival",
+      "North Korea National Music Gala"
     ],
     "attractive_features": [
-      "Traditional North Korea Culinary Delights",
+      "Traditional North Korea Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "OMN": {
     "top_places": [
-      "Muscat Historic Quarter",
-      "National Parks of Oman",
-      "Alpine Valleys & Trails of Oman"
+      "Sultan Qaboos Grand Mosque Muscat",
+      "Wahiba Sands Desert Dunes",
+      "Jebel Akhdar Green Mountain",
+      "Bimmah Sinkhole Swimming"
     ],
     "famous_festivals": [
-      "Oman Cultural Heritage Festival",
-      "Oman National Music & Arts Gala"
+      "Muscat Festival Culture Gala",
+      "Khareef Salalah Monsoon Festival",
+      "Oman Heritage Days"
     ],
     "attractive_features": [
-      "Traditional Oman Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Omani Shuwa Lamb & Frankincense",
+      "Desert Dune Bashing Camps",
+      "Coastal Turtle Nesting Ras al Jinz"
     ],
     "highlight_items": []
   },
   "PAK": {
     "top_places": [
-      "Islamabad Historic Quarter",
-      "National Parks of Pakistan",
-      "Alpine Valleys & Trails of Pakistan"
+      "Badshahi Mosque Lahore",
+      "Hunza Valley Karakoram Peaks",
+      "Faisal Mosque Islamabad",
+      "Fairy Meadows & Nanga Parbat"
     ],
     "famous_festivals": [
-      "Pakistan Cultural Heritage Festival",
-      "Pakistan National Music & Arts Gala"
+      "Basant Kite Flying Festival",
+      "Shandur Polo Festival Upper Dir",
+      "Lahore Literary Festival"
     ],
     "attractive_features": [
-      "Traditional Pakistan Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Authentic Biryani & Nihari Cuisine",
+      "Scenic Karakoram Highway Road Trips",
+      "Historic Mughal Architecture"
     ],
     "highlight_items": []
   },
   "PSE": {
     "top_places": [
-      "Ramallah Historic Quarter",
-      "National Parks of Palestine",
-      "Alpine Valleys & Trails of Palestine"
+      "Palestine Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Palestine",
+      "Scenic Coastal & Mountain Trails of Palestine"
     ],
     "famous_festivals": [
-      "Palestine Cultural Heritage Festival",
-      "Palestine National Music & Arts Gala"
+      "Palestine Cultural Heritage & Arts Festival",
+      "Palestine National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Palestine Culinary Delights",
+      "Traditional Palestine Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "PHL": {
     "top_places": [
-      "Manila Historic Quarter",
-      "National Parks of Philippines",
-      "Alpine Valleys & Trails of Philippines"
+      "Boracay White Beach",
+      "El Nido Bacuit Archipelago",
+      "Chocolate Hills Bohol",
+      "Intramuros Historic Manila"
     ],
     "famous_festivals": [
-      "Philippines Cultural Heritage Festival",
-      "Philippines National Music & Arts Gala"
+      "Sinulog Festival Cebu",
+      "Ati-Atihan Kalibo",
+      "MassKara Festival Bacolod"
     ],
     "attractive_features": [
-      "Traditional Philippines Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Crystal Clear Island Hopping",
+      "Authentic Adobo & Lechon Cuisine",
+      "World-Class Scuba Diving"
     ],
     "highlight_items": []
   },
   "QAT": {
     "top_places": [
-      "Doha Historic Quarter",
-      "National Parks of Qatar",
-      "Alpine Valleys & Trails of Qatar"
+      "Souq Waqif Heritage Market",
+      "Museum of Islamic Art Doha",
+      "The Pearl-Qatar Artificial Island",
+      "Khor Al Adaid Inland Sea"
     ],
     "famous_festivals": [
-      "Qatar Cultural Heritage Festival",
-      "Qatar National Music & Arts Gala"
+      "Qatar International Food Festival",
+      "Doha Cultural Festival",
+      "Katara International Amber Gala"
     ],
     "attractive_features": [
-      "Traditional Qatar Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Machboos & Arabic Coffee",
+      "Dhow Harbor Sunset Cruises",
+      "Dune Bashing to Inland Sea"
     ],
     "highlight_items": []
   },
   "SAU": {
     "top_places": [
-      "Riyadh Historic Quarter",
-      "National Parks of Saudi Arabia",
-      "Alpine Valleys & Trails of Saudi Arabia"
+      "AlUla Hegra Nabataean Tombs",
+      "Diriyah Historic Mud City Riyadh",
+      "Edge of the World Cliff",
+      "Red Sea Project Coral Coast"
     ],
     "famous_festivals": [
-      "Saudi Arabia Cultural Heritage Festival",
-      "Saudi Arabia National Music & Arts Gala"
+      "Riyadh Season Entertainment Gala",
+      "Janadriyah Cultural Festival",
+      "Winter at Tantora AlUla"
     ],
     "attractive_features": [
-      "Traditional Saudi Arabia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Kabsa Rice & Arabic Coffee",
+      "Ancient Rock Art & Hegra Tombs",
+      "Red Sea Coral Reef Diving"
     ],
     "highlight_items": []
   },
   "SGP": {
     "top_places": [
-      "Singapore Capital Landmarks",
-      "National Parks of Singapore",
-      "Alpine Valleys & Trails of Singapore"
+      "Marina Bay Sands SkyPark",
+      "Gardens by the Bay",
+      "Sentosa Island Beach Resort",
+      "Chinatown & Kampong Glam"
     ],
     "famous_festivals": [
-      "Singapore Cultural Heritage Festival",
-      "Singapore National Music & Arts Gala"
+      "Singapore Food Festival",
+      "Mid-Autumn Lantern Festival",
+      "Thaipusam Procession"
     ],
     "attractive_features": [
-      "Traditional Singapore Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "World-Class Hawker Center Dining",
+      "Futuristic Supertree Grove",
+      "Changi Jewel Indoor Waterfall"
     ],
     "highlight_items": []
   },
   "KOR": {
     "top_places": [
-      "Seoul Historic Quarter",
-      "National Parks of South Korea",
-      "Alpine Valleys & Trails of South Korea"
+      "Gyeongbokgung Palace Seoul",
+      "Namsan Seoul Tower",
+      "Jeju Island Volcanic Coast",
+      "Haeundae Beach Busan"
     ],
     "famous_festivals": [
-      "South Korea Cultural Heritage Festival",
-      "South Korea National Music & Arts Gala"
+      "Boryeong Mud Festival",
+      "Jinju Lantern Festival",
+      "Chuseok Harvest Celebration"
     ],
     "attractive_features": [
-      "Traditional South Korea Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Asia"
+      "Authentic K-BBQ & Kimchi Culture",
+      "Traditional Hanok Village Walks",
+      "K-Pop & Trendy Gangnam District"
     ],
     "highlight_items": []
   },
   "LKA": {
     "top_places": [
-      "Sri Jayawardenepura Kotte Historic Quarter",
-      "National Parks of Sri Lanka",
-      "Alpine Valleys & Trails of Sri Lanka"
+      "Sigiriya Lion Rock Fortress",
+      "Kandy Temple of the Tooth",
+      "Ella Nine Arch Bridge & Peak",
+      "Yala National Park Leopard Safari"
     ],
     "famous_festivals": [
-      "Sri Lanka Cultural Heritage Festival",
-      "Sri Lanka National Music & Arts Gala"
+      "Kandy Esala Perahera Festival",
+      "Sinhala & Tamil New Year",
+      "Vesak Lantern Festival"
     ],
     "attractive_features": [
-      "Traditional Sri Lanka Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Asia"
+      "Authentic Ceylon Tea Plantation Rail Trip",
+      "Leopard & Elephant Safaris Yala",
+      "Surfing Arugam Bay Waves"
     ],
     "highlight_items": []
   },
   "SYR": {
     "top_places": [
-      "Damascus Historic Quarter",
-      "National Parks of Syria",
-      "Alpine Valleys & Trails of Syria"
+      "Syria Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Syria",
+      "Scenic Coastal & Mountain Trails of Syria"
     ],
     "famous_festivals": [
-      "Syria Cultural Heritage Festival",
-      "Syria National Music & Arts Gala"
+      "Syria Cultural Heritage & Arts Festival",
+      "Syria National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Syria Culinary Delights",
+      "Traditional Syria Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "TWN": {
     "top_places": [
-      "Taipei Historic Quarter",
-      "National Parks of Taiwan",
-      "Alpine Valleys & Trails of Taiwan"
+      "Taipei 101 Tower",
+      "Taroko Gorge National Park",
+      "Sun Moon Lake Nantou",
+      "Jiufen Old Street"
     ],
     "famous_festivals": [
-      "Taiwan Cultural Heritage Festival",
-      "Taiwan National Music & Arts Gala"
+      "Pingxi Sky Lantern Festival",
+      "Yanshui Beehive Fireworks",
+      "Dragon Boat Rowing Gala"
     ],
     "attractive_features": [
-      "Traditional Taiwan Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Asia"
+      "Vibrant Night Market Street Food",
+      "Authentic Bubble Tea Culture",
+      "Thermal Hot Springs Beitou"
     ],
     "highlight_items": []
   },
   "TJK": {
     "top_places": [
-      "Dushanbe Historic Quarter",
-      "National Parks of Tajikistan",
-      "Alpine Valleys & Trails of Tajikistan"
+      "Tajikistan Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Tajikistan",
+      "Scenic Coastal & Mountain Trails of Tajikistan"
     ],
     "famous_festivals": [
-      "Tajikistan Cultural Heritage Festival",
-      "Tajikistan National Music & Arts Gala"
+      "Tajikistan Cultural Heritage & Arts Festival",
+      "Tajikistan National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Tajikistan Culinary Delights",
+      "Traditional Tajikistan Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "THA": {
     "top_places": [
       "Grand Palace Bangkok",
+      "Chiang Mai Old City Temples",
       "Phi Phi Islands Krabi",
-      "Chiang Mai Doi Suthep Temple",
-      "Railay Beach"
+      "Ayutthaya Historical Park"
     ],
     "famous_festivals": [
       "Songkran Water Festival",
-      "Yi Peng Sky Lantern Festival",
-      "Loi Krathong Floating Lights"
+      "Loy Krathong Floating Lanterns",
+      "Chiang Mai Yi Peng Lantern Gala"
     ],
     "attractive_features": [
-      "Vibrant Night Market Street Food",
-      "Traditional Thai Massage",
-      "Crystal Clear Island Hopping"
+      "Authentic Pad Thai & Tom Yum",
+      "Floating Market Longtail Boats",
+      "Traditional Thai Massage & Spas"
     ],
     "highlight_items": []
   },
   "TLS": {
     "top_places": [
-      "Dili Historic Quarter",
-      "National Parks of Timor-Leste",
-      "Alpine Valleys & Trails of Timor-Leste"
+      "Timor-Leste Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Timor-Leste",
+      "Scenic Coastal & Mountain Trails of Timor-Leste"
     ],
     "famous_festivals": [
-      "Timor-Leste Cultural Heritage Festival",
-      "Timor-Leste National Music & Arts Gala"
+      "Timor-Leste Cultural Heritage & Arts Festival",
+      "Timor-Leste National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Timor-Leste Culinary Delights",
+      "Traditional Timor-Leste Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "TUR": {
     "top_places": [
-      "Ankara Historic Quarter",
-      "National Parks of Turkey",
-      "Alpine Valleys & Trails of Turkey"
+      "Hagia Sophia & Blue Mosque Istanbul",
+      "Cappadocia Hot Air Balloon Valley",
+      "Pamukkale Thermal Terraces",
+      "Ephesus Ancient Ruins"
     ],
     "famous_festivals": [
-      "Turkey Cultural Heritage Festival",
-      "Turkey National Music & Arts Gala"
+      "Istanbul International Film Festival",
+      "Cappadocia Balloon Gala",
+      "Kırkpınar Oil Wrestling Championship"
     ],
     "attractive_features": [
-      "Traditional Turkey Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Authentic Turkish Baklava & Coffee",
+      "Bosphorus Ferry Sunset Cruise",
+      "Traditional Grand Bazaar Shopping"
     ],
     "highlight_items": []
   },
   "TKM": {
     "top_places": [
-      "Ashgabat Historic Quarter",
-      "National Parks of Turkmenistan",
-      "Alpine Valleys & Trails of Turkmenistan"
+      "Turkmenistan Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Turkmenistan",
+      "Scenic Coastal & Mountain Trails of Turkmenistan"
     ],
     "famous_festivals": [
-      "Turkmenistan Cultural Heritage Festival",
-      "Turkmenistan National Music & Arts Gala"
+      "Turkmenistan Cultural Heritage & Arts Festival",
+      "Turkmenistan National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Turkmenistan Culinary Delights",
+      "Traditional Turkmenistan Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ARE": {
     "top_places": [
-      "Burj Khalifa Dubai",
+      "Burj Khalifa & Dubai Mall",
       "Sheikh Zayed Grand Mosque Abu Dhabi",
-      "Palm Jumeirah Resort",
-      "Louvre Abu Dhabi"
+      "Louvre Abu Dhabi",
+      "Palm Jumeirah Resort"
     ],
     "famous_festivals": [
       "Dubai Shopping Festival",
-      "Abu Dhabi Grand Prix",
-      "Dubai Food Festival"
+      "Abu Dhabi Formula 1 Grand Prix",
+      "Dubai International Film Gala"
     ],
     "attractive_features": [
-      "Desert Dune Bashing Safaris",
-      "Luxury Ultra-Modern Malls",
-      "Gold Souk & Traditional Markets"
+      "World's Tallest Skyscraper Views",
+      "Authentic Shawarma & Camel Milk Chocolate",
+      "Desert Safari Dune Bashing"
     ],
     "highlight_items": []
   },
   "UZB": {
     "top_places": [
-      "Tashkent Historic Quarter",
-      "National Parks of Uzbekistan",
-      "Alpine Valleys & Trails of Uzbekistan"
+      "Registan Square Samarkand",
+      "Khiva Itchan Kala Walled City",
+      "Bukhara Historic Center Ark",
+      "Tashkent Metro Station Art"
     ],
     "famous_festivals": [
-      "Uzbekistan Cultural Heritage Festival",
-      "Uzbekistan National Music & Arts Gala"
+      "Silk and Spices Festival Bukhara",
+      "Sharq Taronalari Music Gala Samarkand",
+      "Navruz Spring Gala"
     ],
     "attractive_features": [
-      "Traditional Uzbekistan Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Asia"
+      "Authentic Uzbek Plov & Bread",
+      "Intricate Blue Tile Islamic Architecture",
+      "Silk Road Caravan Heritage"
     ],
     "highlight_items": []
   },
   "VNM": {
     "top_places": [
-      "Hanoi Historic Quarter",
-      "National Parks of Vietnam",
-      "Alpine Valleys & Trails of Vietnam"
+      "Ha Long Bay Limestone Islands",
+      "Hoi An Ancient Lantern Town",
+      "Phong Nha Caves",
+      "Cu Chi Tunnels Ho Chi Minh"
     ],
     "famous_festivals": [
-      "Vietnam Cultural Heritage Festival",
-      "Vietnam National Music & Arts Gala"
+      "Tet Lunar New Year",
+      "Hoi An Full Moon Lantern Festival",
+      "Perfume Pagoda Festival"
     ],
     "attractive_features": [
-      "Traditional Vietnam Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South-Eastern Asia"
+      "Authentic Pho & Egg Coffee",
+      "Mekong Delta River Cruising",
+      "Sapa Terraced Mountain Hikes"
     ],
     "highlight_items": []
   },
   "YEM": {
     "top_places": [
-      "Sana'a Historic Quarter",
-      "National Parks of Yemen",
-      "Alpine Valleys & Trails of Yemen"
+      "Yemen Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Yemen",
+      "Scenic Coastal & Mountain Trails of Yemen"
     ],
     "famous_festivals": [
-      "Yemen Cultural Heritage Festival",
-      "Yemen National Music & Arts Gala"
+      "Yemen Cultural Heritage & Arts Festival",
+      "Yemen National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Yemen Culinary Delights",
+      "Traditional Yemen Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Asia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ALB": {
     "top_places": [
-      "Tirana Historic Quarter",
-      "National Parks of Albania",
-      "Alpine Valleys & Trails of Albania"
+      "Ksamil & Albanian Riviera Beaches",
+      "Berat Thousand Windows City",
+      "Gjirokastër Fortress Town",
+      "Theth National Park Alps"
     ],
     "famous_festivals": [
-      "Albania Cultural Heritage Festival",
-      "Albania National Music & Arts Gala"
+      "Körça Beer Festival",
+      "Dita e Verës Spring Day Festival",
+      "Gjirokastër Folk Festival"
     ],
     "attractive_features": [
-      "Traditional Albania Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Tavë Kosi Cuisine",
+      "Pristine Ionian Coastal Bays",
+      "Hiking the Accursed Mountains"
     ],
     "highlight_items": []
   },
   "AND": {
     "top_places": [
-      "Andorra la Vella Historic Quarter",
-      "National Parks of Andorra",
-      "Alpine Valleys & Trails of Andorra"
+      "Grandvalira Ski Resort",
+      "Caldea Thermal Spa Complex",
+      "Vallnord Mountain Bike Park",
+      "Sant Joan de Caselles Church"
     ],
     "famous_festivals": [
-      "Andorra Cultural Heritage Festival",
-      "Andorra National Music & Arts Gala"
+      "Andorra la Vella Annual Festival",
+      "Nostra Senyora de Meritxell Day",
+      "Escaldes-Engordany International Jazz Gala"
     ],
     "attractive_features": [
-      "Traditional Andorra Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Duty-Free Shopping Boulevards",
+      "Thermal Mineral Springs",
+      "Pyrenean Mountain Hiking Trails"
     ],
     "highlight_items": []
   },
   "AUT": {
     "top_places": [
-      "Vienna Historic Quarter",
-      "National Parks of Austria",
-      "Alpine Valleys & Trails of Austria"
+      "Schönbrunn Palace Vienna",
+      "Hallstatt Lake Village",
+      "Salzburg Historic Old Town",
+      "Innsbruck Alpine Peaks"
     ],
     "famous_festivals": [
-      "Austria Cultural Heritage Festival",
-      "Austria National Music & Arts Gala"
+      "Salzburg Music Festival",
+      "Vienna Opera Ball",
+      "Vienna Christmas Markets"
     ],
     "attractive_features": [
-      "Traditional Austria Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Europe"
+      "Authentic Wiener Schnitzel & Sachertorte",
+      "Classic Alpine Skiing & Snowboarding",
+      "Viennese Coffeehouse Culture"
     ],
     "highlight_items": []
   },
   "BLR": {
     "top_places": [
-      "Minsk Historic Quarter",
-      "National Parks of Belarus",
-      "Alpine Valleys & Trails of Belarus"
+      "Mir Castle Complex",
+      "Nesvizh Palace & Park",
+      "Brest Fortress Memorial",
+      "Belovezhskaya Pushcha National Park"
     ],
     "famous_festivals": [
-      "Belarus Cultural Heritage Festival",
-      "Belarus National Music & Arts Gala"
+      "Kupalle Summer Solstice Festival",
+      "Slavianski Bazaar Festival Vitebsk",
+      "Minsk International Film Festival"
     ],
     "attractive_features": [
-      "Traditional Belarus Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Europe"
+      "Authentic Draniki Potato Pancakes",
+      "Bison Watching in Primeval Forests",
+      "Historic Brick Gothic Castles"
     ],
     "highlight_items": []
   },
   "BEL": {
     "top_places": [
-      "Brussels Historic Quarter",
-      "National Parks of Belgium",
-      "Alpine Valleys & Trails of Belgium"
+      "Grand Place Brussels",
+      "Bruges Canals & Belfry",
+      "Ghent Gravensteen Castle",
+      "Antwerp Central Station & Cathedral"
     ],
     "famous_festivals": [
-      "Belgium Cultural Heritage Festival",
-      "Belgium National Music & Arts Gala"
+      "Tomorrowland Electronic Music Festival",
+      "Carnival of Binche UNESCO",
+      "Gentse Feesten City Gala"
     ],
     "attractive_features": [
-      "Traditional Belgium Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Europe"
+      "Artisan Belgian Chocolates & Waffles",
+      "Trapist Craft Beer Culture",
+      "Medieval Cobblestone Canal Walks"
     ],
     "highlight_items": []
   },
   "BIH": {
     "top_places": [
-      "Sarajevo Historic Quarter",
-      "National Parks of Bosnia and Herzegovina",
-      "Alpine Valleys & Trails of Bosnia and Herzegovina"
+      "Stari Most Old Bridge Mostar",
+      "Sarajevo Baščaršija Old Bazaar",
+      "Kravica Waterfalls",
+      "Blagaj Tekke Monastery"
     ],
     "famous_festivals": [
-      "Bosnia and Herzegovina Cultural Heritage Festival",
-      "Bosnia and Herzegovina National Music & Arts Gala"
+      "Sarajevo Film Festival",
+      "Mostar Bridge Diving Competition",
+      "BANJA LUKA Fest"
     ],
     "attractive_features": [
-      "Traditional Bosnia and Herzegovina Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Ćevapi & Bosnian Coffee",
+      "Traditional Copper Crafting Baščaršija",
+      "White-Water Rafting Tara River"
     ],
     "highlight_items": []
   },
   "BGR": {
     "top_places": [
-      "Sofia Historic Quarter",
-      "National Parks of Bulgaria",
-      "Alpine Valleys & Trails of Bulgaria"
+      "Rila Monastery UNESCO",
+      "Plovdiv Ancient Roman Theater",
+      "Alexander Nevsky Cathedral Sofia",
+      "Veliko Tarnovo Tsarevets Fortress"
     ],
     "famous_festivals": [
-      "Bulgaria Cultural Heritage Festival",
-      "Bulgaria National Music & Arts Gala"
+      "Rose Festival Kazanlak",
+      "Surva International Kukeri Festival",
+      "Sofia Film Gala"
     ],
     "attractive_features": [
-      "Traditional Bulgaria Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Europe"
+      "Authentic Banitsa & Shopska Salad",
+      "Kazanlak Rose Oil Valley",
+      "Black Sea Coastal Resort Beaches"
     ],
     "highlight_items": []
   },
   "HRV": {
     "top_places": [
-      "Zagreb Historic Quarter",
-      "National Parks of Croatia",
-      "Alpine Valleys & Trails of Croatia"
+      "Dubrovnik Old Town Walls",
+      "Plitvice Lakes National Park",
+      "Split Diocletian's Palace",
+      "Hvar Island Sun & Yacht Port"
     ],
     "famous_festivals": [
-      "Croatia Cultural Heritage Festival",
-      "Croatia National Music & Arts Gala"
+      "Dubrovnik Summer Festival",
+      "Rijeka Carnival Parades",
+      "Ultra Europe Festival Split"
     ],
     "attractive_features": [
-      "Traditional Croatia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Peka & Dalmatian Seafood",
+      "Sailing the Dalmatian Archipelago",
+      "Game of Thrones King's Landing Locations"
     ],
     "highlight_items": []
   },
   "CZE": {
     "top_places": [
-      "Prague Historic Quarter",
-      "National Parks of Czech Republic",
-      "Alpine Valleys & Trails of Czech Republic"
+      "Charles Bridge & Prague Castle",
+      "Old Town Square & Astronomical Clock",
+      "Český Krumlov Historic Center",
+      "Karlovy Vary Spa Town"
     ],
     "famous_festivals": [
-      "Czech Republic Cultural Heritage Festival",
-      "Czech Republic National Music & Arts Gala"
+      "Prague Spring International Music Gala",
+      "Bohemian Carnival Prague",
+      "Karlovy Vary Film Festival"
     ],
     "attractive_features": [
-      "Traditional Czech Republic Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Europe"
+      "World-Famous Czech Pilsner Beers",
+      "Gothic Architecture & Fairy Castles",
+      "Authentic Svíčková Roast Beef"
     ],
     "highlight_items": []
   },
   "DNK": {
     "top_places": [
-      "Copenhagen Historic Quarter",
-      "National Parks of Denmark",
-      "Alpine Valleys & Trails of Denmark"
+      "Nyhavn Waterfront Harbor Copenhagen",
+      "Tivoli Gardens Amusement Park",
+      "The Little Mermaid Statue",
+      "Kronborg Castle Elsinore"
     ],
     "famous_festivals": [
-      "Denmark Cultural Heritage Festival",
-      "Denmark National Music & Arts Gala"
+      "Roskilde Music Festival",
+      "Copenhagen Jazz Festival",
+      "Distortion Street Culture Gala"
     ],
     "attractive_features": [
-      "Traditional Denmark Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Hygge Cozy Lifestyle Concept",
+      "Artisan Smørrebrød Open Sandwiches",
+      "World-Leading Biking City Culture"
     ],
     "highlight_items": []
   },
   "EST": {
     "top_places": [
-      "Tallinn Historic Quarter",
-      "National Parks of Estonia",
-      "Alpine Valleys & Trails of Estonia"
+      "Tallinn Old Town Cobblestone Center",
+      "Lahemaa National Park Coast",
+      "Pärnu Summer Beach Resort",
+      "Saaremaa Island Castle"
     ],
     "famous_festivals": [
-      "Estonia Cultural Heritage Festival",
-      "Estonia National Music & Arts Gala"
+      "Estonian Song and Dance Celebration UNESCO",
+      "Tallinn Black Nights Film Gala",
+      "Viljandi Folk Music Festival"
     ],
     "attractive_features": [
-      "Traditional Estonia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Medieval Guild Architecture Tallinn",
+      "Traditional Smoke Sauna Culture",
+      "World-Leading E-Government Nation"
     ],
     "highlight_items": []
   },
   "FIN": {
     "top_places": [
-      "Helsinki Historic Quarter",
-      "National Parks of Finland",
-      "Alpine Valleys & Trails of Finland"
+      "Helsinki Senate Square & Cathedral",
+      "Santa Claus Village Rovaniemi",
+      "Suomenlinna Sea Fortress",
+      "Saimaa Lake District"
     ],
     "famous_festivals": [
-      "Finland Cultural Heritage Festival",
-      "Finland National Music & Arts Gala"
+      "Midsummer Juhannus Fires",
+      "Helsinki Festival of Arts",
+      "Tangomarkkinat Tango Festival"
     ],
     "attractive_features": [
-      "Traditional Finland Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Authentic Wood-Fired Finnish Sauna",
+      "Husky & Reindeer Sledging Lapland",
+      "Northern Lights Glass Igloo Stay"
     ],
     "highlight_items": []
   },
@@ -1106,505 +1202,536 @@
   },
   "DEU": {
     "top_places": [
-      "Neuschwanstein Castle",
       "Brandenburg Gate Berlin",
-      "Black Forest Bavaria",
-      "Cologne Cathedral"
+      "Neuschwanstein Castle Bavaria",
+      "Cologne Cathedral Rhine",
+      "Marienplatz Munich"
     ],
     "famous_festivals": [
-      "Munich Oktoberfest",
+      "Oktoberfest Munich Beer Gala",
       "Berlin International Film Festival",
       "Nuremberg Christmas Market"
     ],
     "attractive_features": [
-      "Autobahn Highway Network",
-      "Fairy Tale Rhine Castles",
-      "Historic Bavarian Beer Gardens"
+      "Bavarian Pretzel & Bratwurst",
+      "Auto Museum BMW & Mercedes",
+      "Scenic Rhine River Cruises"
     ],
     "highlight_items": []
   },
   "GIB": {
     "top_places": [
-      "Gibraltar Capital Landmarks",
-      "National Parks of Gibraltar",
-      "Alpine Valleys & Trails of Gibraltar"
+      "Gibraltar Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Gibraltar",
+      "Scenic Coastal & Mountain Trails of Gibraltar"
     ],
     "famous_festivals": [
-      "Gibraltar Cultural Heritage Festival",
-      "Gibraltar National Music & Arts Gala"
+      "Gibraltar Cultural Heritage & Arts Festival",
+      "Gibraltar National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Gibraltar Culinary Delights",
+      "Traditional Gibraltar Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "GRC": {
     "top_places": [
-      "Acropolis of Athens",
+      "Acropolis & Parthenon Athens",
       "Santorini Caldera Oia",
-      "Mykonos Windmills",
-      "Meteora Monasteries"
+      "Mykonos Windmills & Beaches",
+      "Meteora Hanging Monasteries"
     ],
     "famous_festivals": [
       "Apokries Greek Carnival",
-      "Orthodox Easter Celebrations",
-      "Athens Epidavros Festival"
+      "Athens & Epidaurus Theater Gala",
+      "Santorini Sunset Wine Festival"
     ],
     "attractive_features": [
-      "Authentic Greek Mezze & Olive Oil",
-      "Aegean Island Hopping",
-      "Ancient Greek Mythology Sites"
+      "Authentic Moussaka & Gyros",
+      "Aegean Island Hopping Cruises",
+      "Ancient Olympic Ruins Olympia"
     ],
     "highlight_items": []
   },
   "HUN": {
     "top_places": [
-      "Budapest Historic Quarter",
-      "National Parks of Hungary",
-      "Alpine Valleys & Trails of Hungary"
+      "Buda Castle & Fisherman's Bastion",
+      "Hungarian Parliament Building",
+      "Széchenyi Thermal Bath Budapest",
+      "Lake Balaton Resort"
     ],
     "famous_festivals": [
-      "Hungary Cultural Heritage Festival",
-      "Hungary National Music & Arts Gala"
+      "Sziget Music Festival Budapest",
+      "Busójárás Carnival Mohács",
+      "Budapest Wine Festival"
     ],
     "attractive_features": [
-      "Traditional Hungary Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Europe"
+      "Authentic Goulash Stew & Tokaji Wine",
+      "Historical Mineral Thermal Baths",
+      "Ruin Bars Nightlife District"
     ],
     "highlight_items": []
   },
   "ISL": {
     "top_places": [
-      "Reykjavík Historic Quarter",
-      "National Parks of Iceland",
-      "Alpine Valleys & Trails of Iceland"
+      "Blue Lagoon Geothermal Spa",
+      "Golden Circle Geysir & Gullfoss",
+      "Jökulsárlón Glacier Lagoon",
+      "Reynisfjara Black Sand Beach"
     ],
     "famous_festivals": [
-      "Iceland Cultural Heritage Festival",
-      "Iceland National Music & Arts Gala"
+      "Iceland Airwaves Music Gala",
+      "Winter Lights Festival Reykjavík",
+      "Secret Solstice Midnight Sun Gala"
     ],
     "attractive_features": [
-      "Traditional Iceland Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Bathing in Thermal Blue Lagoons",
+      "Aurora Borealis Northern Lights",
+      "Thundering Glacial Waterfalls"
     ],
     "highlight_items": []
   },
   "IRL": {
     "top_places": [
-      "Dublin Historic Quarter",
-      "National Parks of Ireland",
-      "Alpine Valleys & Trails of Ireland"
+      "Cliffs of Moher Clare",
+      "Ring of Kerry Coastal Drive",
+      "Temple Bar Dublin",
+      "Blarney Castle & Kissing Stone"
     ],
     "famous_festivals": [
-      "Ireland Cultural Heritage Festival",
-      "Ireland National Music & Arts Gala"
+      "St. Patrick's Day Festival Dublin",
+      "Galway International Arts Gala",
+      "Fleadh Cheoil Traditional Music"
     ],
     "attractive_features": [
-      "Traditional Ireland Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Traditional Irish Pub Fiddle Sessions",
+      "Authentic Guinness & Irish Stew",
+      "Wild Atlantic Way Ocean Views"
     ],
     "highlight_items": []
   },
   "ITA": {
     "top_places": [
-      "Colosseum in Rome",
-      "Venice Grand Canal",
-      "Amalfi Coast Positano",
-      "Leaning Tower of Pisa",
-      "Florence Duomo"
+      "Colosseum & Roman Forum",
+      "Canals of Venice Grand Canal",
+      "Florence Duomo Cathedral",
+      "Amalfi Coast Ravello"
     ],
     "famous_festivals": [
-      "Carnival of Venice",
+      "Carnevale di Venezia Venice",
       "Palio di Siena Horse Race",
-      "Battle of the Oranges Ivrea"
+      "Verona Opera Festival"
     ],
     "attractive_features": [
-      "Authentic Artisanal Pizza",
-      "Uffizi Gallery Renaissance Art",
-      "Tuscan Vineyard Wine Tours"
+      "Artisan Gelato & Neapolitan Pizza",
+      "Tuscan Vineyard Wine Tours",
+      "High Fashion Shopping Milan"
     ],
     "highlight_items": []
   },
   "XKX": {
     "top_places": [
-      "Pristina Historic Quarter",
-      "National Parks of Kosovo",
-      "Alpine Valleys & Trails of Kosovo"
+      "Kosovo Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Kosovo",
+      "Scenic Coastal & Mountain Trails of Kosovo"
     ],
     "famous_festivals": [
-      "Kosovo Cultural Heritage Festival",
-      "Kosovo National Music & Arts Gala"
+      "Kosovo Cultural Heritage & Arts Festival",
+      "Kosovo National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Kosovo Culinary Delights",
+      "Traditional Kosovo Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LVA": {
     "top_places": [
-      "Riga Historic Quarter",
-      "National Parks of Latvia",
-      "Alpine Valleys & Trails of Latvia"
+      "Latvia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Latvia",
+      "Scenic Coastal & Mountain Trails of Latvia"
     ],
     "famous_festivals": [
-      "Latvia Cultural Heritage Festival",
-      "Latvia National Music & Arts Gala"
+      "Latvia Cultural Heritage & Arts Festival",
+      "Latvia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Latvia Culinary Delights",
+      "Traditional Latvia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LIE": {
     "top_places": [
-      "Vaduz Historic Quarter",
-      "National Parks of Liechtenstein",
-      "Alpine Valleys & Trails of Liechtenstein"
+      "Liechtenstein Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Liechtenstein",
+      "Scenic Coastal & Mountain Trails of Liechtenstein"
     ],
     "famous_festivals": [
-      "Liechtenstein Cultural Heritage Festival",
-      "Liechtenstein National Music & Arts Gala"
+      "Liechtenstein Cultural Heritage & Arts Festival",
+      "Liechtenstein National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Liechtenstein Culinary Delights",
+      "Traditional Liechtenstein Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LTU": {
     "top_places": [
-      "Vilnius Historic Quarter",
-      "National Parks of Lithuania",
-      "Alpine Valleys & Trails of Lithuania"
+      "Lithuania Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Lithuania",
+      "Scenic Coastal & Mountain Trails of Lithuania"
     ],
     "famous_festivals": [
-      "Lithuania Cultural Heritage Festival",
-      "Lithuania National Music & Arts Gala"
+      "Lithuania Cultural Heritage & Arts Festival",
+      "Lithuania National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Lithuania Culinary Delights",
+      "Traditional Lithuania Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LUX": {
     "top_places": [
-      "Luxembourg Capital Landmarks",
-      "National Parks of Luxembourg",
-      "Alpine Valleys & Trails of Luxembourg"
+      "Luxembourg Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Luxembourg",
+      "Scenic Coastal & Mountain Trails of Luxembourg"
     ],
     "famous_festivals": [
-      "Luxembourg Cultural Heritage Festival",
-      "Luxembourg National Music & Arts Gala"
+      "Luxembourg Cultural Heritage & Arts Festival",
+      "Luxembourg National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Luxembourg Culinary Delights",
+      "Traditional Luxembourg Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MLT": {
     "top_places": [
-      "Valletta Historic Quarter",
-      "National Parks of Malta",
-      "Alpine Valleys & Trails of Malta"
+      "Valletta Grand Harbor & Upper Barrakka",
+      "Blue Lagoon Comino Island",
+      "Mdina Silent City Fortress",
+      "Gozo Azure Window Site"
     ],
     "famous_festivals": [
-      "Malta Cultural Heritage Festival",
-      "Malta National Music & Arts Gala"
+      "Malta International Fireworks Festival",
+      "Notte Bianca Valletta",
+      "Isle of MTV Malta Music Gala"
     ],
     "attractive_features": [
-      "Traditional Malta Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Stuffat Tal-Fenek Rabbit Stew",
+      "Knights of Malta Medieval Fortresses",
+      "Crystal Clear Scuba Diving Wrecks"
     ],
     "highlight_items": []
   },
   "MDA": {
     "top_places": [
-      "Chișinău Historic Quarter",
-      "National Parks of Moldova",
-      "Alpine Valleys & Trails of Moldova"
+      "Cricova Underground Wine Cellars",
+      "Orheiul Vechi Cave Monastery",
+      "Chisinau Central Park & Cathedral",
+      "Soroca Fortress"
     ],
     "famous_festivals": [
-      "Moldova Cultural Heritage Festival",
-      "Moldova National Music & Arts Gala"
+      "National Wine Day Chisinau",
+      "Ethno-Jazz Festival Moldova",
+      "Martisor Spring Festival"
     ],
     "attractive_features": [
-      "Traditional Moldova Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Europe"
+      "Authentic Mămăligă & Placinte",
+      "World's Largest Underground Wine Cellars",
+      "Picturesque Dniester River Valleys"
     ],
     "highlight_items": []
   },
   "MCO": {
     "top_places": [
-      "Monaco Capital Landmarks",
-      "National Parks of Monaco",
-      "Alpine Valleys & Trails of Monaco"
+      "Monte Carlo Casino Square",
+      "Prince's Palace of Monaco",
+      "Oceanographic Museum Cliffside",
+      "Larvotto Beach Promenade"
     ],
     "famous_festivals": [
-      "Monaco Cultural Heritage Festival",
-      "Monaco National Music & Arts Gala"
+      "Monaco Formula 1 Grand Prix",
+      "Monte-Carlo International Circus Festival",
+      "Monaco Yacht Show"
     ],
     "attractive_features": [
-      "Traditional Monaco Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Europe"
+      "Formula 1 Racing Track Promenade",
+      "Luxury Yacht Marina Views",
+      "Authentic Barbajuan Pastries"
     ],
     "highlight_items": []
   },
   "MNE": {
     "top_places": [
-      "Podgorica Historic Quarter",
-      "National Parks of Montenegro",
-      "Alpine Valleys & Trails of Montenegro"
+      "Kotor Bay Fjord & Fortress",
+      "Budva Old Town Riviera",
+      "Durmitor National Park & Tara Canyon",
+      "Sveti Stefan Islet"
     ],
     "famous_festivals": [
-      "Montenegro Cultural Heritage Festival",
-      "Montenegro National Music & Arts Gala"
+      "Boka Night Festival Kotor",
+      "Mimosa Festival Herceg Novi",
+      "Sea Dance Festival Budva"
     ],
     "attractive_features": [
-      "Traditional Montenegro Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Njeguški Pršut Ham",
+      "Ziplining Europe's Deepest Tara Canyon",
+      "Scenic Bay of Kotor Cruises"
     ],
     "highlight_items": []
   },
   "NLD": {
     "top_places": [
+      "Rijksmuseum & Van Gogh Museum Amsterdam",
+      "Canals of Amsterdam Belt",
       "Keukenhof Tulip Gardens",
-      "Amsterdam Grand Canals",
-      "Zaanse Schans Windmills",
-      "Rijksmuseum Amsterdam"
+      "Zaanse Schans Windmills"
     ],
     "famous_festivals": [
-      "King's Day Orange Celebrations",
-      "Amsterdam Light Festival",
+      "King's Day Orange Street Party",
+      "Amsterdam Dance Event ADE",
       "Rotterdam Summer Carnival"
     ],
     "attractive_features": [
-      "Iconic Cycling City Culture",
-      "Artisan Dutch Cheese Tasting",
-      "Historic Canal House Architecture"
+      "Authentic Stroopwafels & Gouda Cheese",
+      "Iconic Dutch Canal Biking Culture",
+      "Historic Wooden Windmills"
     ],
     "highlight_items": []
   },
   "MKD": {
     "top_places": [
-      "Skopje Historic Quarter",
-      "National Parks of North Macedonia",
-      "Alpine Valleys & Trails of North Macedonia"
+      "North Macedonia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of North Macedonia",
+      "Scenic Coastal & Mountain Trails of North Macedonia"
     ],
     "famous_festivals": [
-      "North Macedonia Cultural Heritage Festival",
-      "North Macedonia National Music & Arts Gala"
+      "North Macedonia Cultural Heritage & Arts Festival",
+      "North Macedonia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional North Macedonia Culinary Delights",
+      "Traditional North Macedonia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "NOR": {
     "top_places": [
-      "Oslo Historic Quarter",
-      "National Parks of Norway",
-      "Alpine Valleys & Trails of Norway"
+      "Geirangerfjord & Nærøyfjord",
+      "Trolltunga & Preikestolen Hikes",
+      "Lofoten Archipelago Islands",
+      "Bryggen Historic Waterfront Bergen"
     ],
     "famous_festivals": [
-      "Norway Cultural Heritage Festival",
-      "Norway National Music & Arts Gala"
+      "Constitution Day May 17 Parades",
+      "Riddu Riđđu Sámi Culture Festival",
+      "Bergen International Festival"
     ],
     "attractive_features": [
-      "Traditional Norway Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Scenic Flåm Railway Journey",
+      "Northern Lights & Midnight Sun",
+      "Authentic Fresh Norwegian Salmon"
     ],
     "highlight_items": []
   },
   "POL": {
     "top_places": [
-      "Warsaw Historic Quarter",
-      "National Parks of Poland",
-      "Alpine Valleys & Trails of Poland"
+      "Kraków Main Market Square & Wawel",
+      "Wieliczka Salt Mine",
+      "Warsaw Old Town Restored Center",
+      "Tatra Mountains Zakopane"
     ],
     "famous_festivals": [
-      "Poland Cultural Heritage Festival",
-      "Poland National Music & Arts Gala"
+      "Kraków Film Festival",
+      "Jewish Culture Festival Kraków",
+      "Open'er Music Festival Gdynia"
     ],
     "attractive_features": [
-      "Traditional Poland Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Europe"
+      "Authentic Pierogi & Barszcz Soup",
+      "Highland Alpine Hiking Zakopane",
+      "Gothic Brick Castles Malbork"
     ],
     "highlight_items": []
   },
   "PRT": {
     "top_places": [
-      "Lisbon Historic Quarter",
-      "National Parks of Portugal",
-      "Alpine Valleys & Trails of Portugal"
+      "Belém Tower & Monastery Lisbon",
+      "Pena Palace Sintra",
+      "Ribeira Waterfront Porto",
+      "Algarve Sea Caves Lagos"
     ],
     "famous_festivals": [
-      "Portugal Cultural Heritage Festival",
-      "Portugal National Music & Arts Gala"
+      "Festa de São João Porto",
+      "Santo António Carnival Lisbon",
+      "Madeira Flower Festival"
     ],
     "attractive_features": [
-      "Traditional Portugal Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Pastéis de Nata",
+      "Port Wine Cellar Tasting",
+      "Surfing Nazaré Massive Waves"
     ],
     "highlight_items": []
   },
   "ROU": {
     "top_places": [
-      "Bucharest Historic Quarter",
-      "National Parks of Romania",
-      "Alpine Valleys & Trails of Romania"
+      "Bran Castle Dracula Castle",
+      "Peles Castle Sinaia",
+      "Transfăgărășan Mountain Road",
+      "Sighișoara Citadel UNESCO"
     ],
     "famous_festivals": [
-      "Romania Cultural Heritage Festival",
-      "Romania National Music & Arts Gala"
+      "Untold Electronic Music Festival Cluj",
+      "Electric Castle Festival",
+      "Sibiu International Theater Gala"
     ],
     "attractive_features": [
-      "Traditional Romania Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Europe"
+      "Authentic Sarmale & Mămăligă",
+      "Transylvanian Gothic Castles",
+      "Driving Epic Transfăgărășan Pass"
     ],
     "highlight_items": []
   },
   "RUS": {
     "top_places": [
-      "Moscow Historic Quarter",
-      "National Parks of Russia",
-      "Alpine Valleys & Trails of Russia"
+      "Red Square & Kremlin Moscow",
+      "Hermitage Museum St Petersburg",
+      "Lake Baikal Deepest Lake",
+      "Church of the Savior on Blood"
     ],
     "famous_festivals": [
-      "Russia Cultural Heritage Festival",
-      "Russia National Music & Arts Gala"
+      "White Nights Festival St Petersburg",
+      "Maslenitsa Pancake Festival",
+      "Moscow International Film Gala"
     ],
     "attractive_features": [
-      "Traditional Russia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Europe"
+      "Authentic Borscht & Beef Stroganoff",
+      "Trans-Siberian Express Railway",
+      "Onion-Domed Cathedral Architecture"
     ],
     "highlight_items": []
   },
   "SMR": {
     "top_places": [
-      "City of San Marino Historic Quarter",
-      "National Parks of San Marino",
-      "Alpine Valleys & Trails of San Marino"
+      "San Marino Historic Center & Landmarks",
+      "National Parks & Natural Reserves of San Marino",
+      "Scenic Coastal & Mountain Trails of San Marino"
     ],
     "famous_festivals": [
-      "San Marino Cultural Heritage Festival",
-      "San Marino National Music & Arts Gala"
+      "San Marino Cultural Heritage & Arts Festival",
+      "San Marino National Music Gala"
     ],
     "attractive_features": [
-      "Traditional San Marino Culinary Delights",
+      "Traditional San Marino Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SRB": {
     "top_places": [
-      "Belgrade Historic Quarter",
-      "National Parks of Serbia",
-      "Alpine Valleys & Trails of Serbia"
+      "Kalemegdan Fortress Belgrade",
+      "Novi Sad Petrovaradin Citadel",
+      "Tara National Park Drina River",
+      "Studenica Monastery"
     ],
     "famous_festivals": [
-      "Serbia Cultural Heritage Festival",
-      "Serbia National Music & Arts Gala"
+      "EXIT Music Festival Novi Sad",
+      "Guča Trumpet Festival",
+      "Belgrade Beer Fest"
     ],
     "attractive_features": [
-      "Traditional Serbia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Pljeskavica & Rakija",
+      "Floating River Club Nightlife Splavovi",
+      "Scenic Drina River House Views"
     ],
     "highlight_items": []
   },
   "SVK": {
     "top_places": [
-      "Bratislava Historic Quarter",
-      "National Parks of Slovakia",
-      "Alpine Valleys & Trails of Slovakia"
+      "High Tatras Alpine Mountains",
+      "Bratislava Castle & Danube",
+      "Spiš Castle Ruins UNESCO",
+      "Demänovská Cave of Liberty"
     ],
     "famous_festivals": [
-      "Slovakia Cultural Heritage Festival",
-      "Slovakia National Music & Arts Gala"
+      "Pohoda Festival Trenčín",
+      "Východná Folklore Festival",
+      "Bratislava Jazz Days"
     ],
     "attractive_features": [
-      "Traditional Slovakia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central Europe"
+      "Authentic Bryndzové Halušky Gnocchi",
+      "Alpine Mountain Peak Hiking Tatras",
+      "Medieval Castle Ruins Exploring"
     ],
     "highlight_items": []
   },
   "SVN": {
     "top_places": [
-      "Ljubljana Historic Quarter",
-      "National Parks of Slovenia",
-      "Alpine Valleys & Trails of Slovenia"
+      "Lake Bled Island & Castle",
+      "Postojna Cave & Predjama Castle",
+      "Ljubljana Triple Bridge Old Town",
+      "Soča River Valley Bovec"
     ],
     "famous_festivals": [
-      "Slovenia Cultural Heritage Festival",
-      "Slovenia National Music & Arts Gala"
+      "Kurentovanje Carnival Ptuj",
+      "Ljubljana Festival of Performing Arts",
+      "Bled Days Festival"
     ],
     "attractive_features": [
-      "Traditional Slovenia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Authentic Potica Walnut Cake",
+      "Emerald Green Soča Water Rafting",
+      "Charming Eco-Friendly Capital Vibe"
     ],
     "highlight_items": []
   },
   "ESP": {
     "top_places": [
-      "Sagrada Familia Barcelona",
+      "Sagrada Família Barcelona",
       "Alhambra Palace Granada",
-      "Ibiza Island Beaches",
-      "Park Güell Barcelona"
+      "Plaza Mayor Madrid",
+      "Seville Cathedral & Giralda"
     ],
     "famous_festivals": [
-      "La Tomatina Tomato Festival",
-      "San Fermin Running of the Bulls",
+      "La Tomatina Buñol",
+      "San Fermín Running of the Bulls",
       "Feria de Abril Seville"
     ],
     "attractive_features": [
-      "Tapas & Sangria Culture",
-      "Passionate Flamenco Performances",
+      "Authentic Tapas & Paella",
+      "Flamenco Dancing Shows",
       "Sunny Mediterranean Beaches"
     ],
     "highlight_items": []
   },
   "SWE": {
     "top_places": [
-      "Stockholm Historic Quarter",
-      "National Parks of Sweden",
-      "Alpine Valleys & Trails of Sweden"
+      "Gamla Stan Old Town Stockholm",
+      "Vasa Museum Stockholm",
+      "ICEHOTEL Jukkasjärvi",
+      "Gothenburg Archipelago"
     ],
     "famous_festivals": [
-      "Sweden Cultural Heritage Festival",
-      "Sweden National Music & Arts Gala"
+      "Midsummer Festival Celebrations",
+      "Lucia Candlelight Processions",
+      "Stockholm Culture Festival"
     ],
     "attractive_features": [
-      "Traditional Sweden Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Europe"
+      "Traditional Fika Coffee & Pastries",
+      "Northern Lights Lapland Tours",
+      "Swedish Meatballs & Lingonberry"
     ],
     "highlight_items": []
   },
@@ -1629,18 +1756,20 @@
   },
   "UKR": {
     "top_places": [
-      "Kyiv Historic Quarter",
-      "National Parks of Ukraine",
-      "Alpine Valleys & Trails of Ukraine"
+      "Kyiv Pechersk Lavra Monastery",
+      "Lviv Historic Old Town Market",
+      "Odesa Opera Theater & Black Sea",
+      "Carpathian Mountains Yaremche"
     ],
     "famous_festivals": [
-      "Ukraine Cultural Heritage Festival",
-      "Ukraine National Music & Arts Gala"
+      "Kyiv International Short Film Gala",
+      "Lviv Coffee Festival",
+      "Malanka Winter Festival"
     ],
     "attractive_features": [
-      "Traditional Ukraine Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Europe"
+      "Authentic Borscht & Varenyky",
+      "Cobblestone European Charm Lviv",
+      "Carpathian Hiking & Skiing"
     ],
     "highlight_items": []
   },
@@ -1648,911 +1777,976 @@
     "top_places": [
       "Big Ben & Parliament London",
       "Stonehenge Monument",
-      "Scottish Highlands Isle of Skye",
-      "Roman Baths Bath"
+      "Edinburgh Castle Scotland",
+      "Roman Baths City of Bath"
     ],
     "famous_festivals": [
       "Glastonbury Music Festival",
-      "Notting Hill Carnival",
-      "Edinburgh Festival Fringe"
+      "Edinburgh Festival Fringe",
+      "Notting Hill Carnival London"
     ],
     "attractive_features": [
-      "Historic Royal Palaces",
-      "Traditional Afternoon Tea",
-      "Cozy Countryside Pubs"
+      "Authentic Fish & Chips & Afternoon Tea",
+      "Classic Red Double-Decker Bus Tours",
+      "Historic West End Theater Musicals"
     ],
     "highlight_items": []
   },
   "VAT": {
     "top_places": [
-      "Vatican City Capital Landmarks",
-      "National Parks of Vatican City",
-      "Alpine Valleys & Trails of Vatican City"
+      "Vatican City Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Vatican City",
+      "Scenic Coastal & Mountain Trails of Vatican City"
     ],
     "famous_festivals": [
-      "Vatican City Cultural Heritage Festival",
-      "Vatican City National Music & Arts Gala"
+      "Vatican City Cultural Heritage & Arts Festival",
+      "Vatican City National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Vatican City Culinary Delights",
+      "Traditional Vatican City Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Europe"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ATG": {
     "top_places": [
-      "St. John's Historic Quarter",
-      "National Parks of Antigua and Barbuda",
-      "Alpine Valleys & Trails of Antigua and Barbuda"
+      "Antigua and Barbuda Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Antigua and Barbuda",
+      "Scenic Coastal & Mountain Trails of Antigua and Barbuda"
     ],
     "famous_festivals": [
-      "Antigua and Barbuda Cultural Heritage Festival",
-      "Antigua and Barbuda National Music & Arts Gala"
+      "Antigua and Barbuda Cultural Heritage & Arts Festival",
+      "Antigua and Barbuda National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Antigua and Barbuda Culinary Delights",
+      "Traditional Antigua and Barbuda Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ARG": {
     "top_places": [
-      "Buenos Aires Historic Quarter",
-      "National Parks of Argentina",
-      "Alpine Valleys & Trails of Argentina"
+      "Iguazú Falls Misiones",
+      "La Boca & San Telmo Buenos Aires",
+      "Perito Moreno Glacier Calafate",
+      "Bariloche Lake District"
     ],
     "famous_festivals": [
-      "Argentina Cultural Heritage Festival",
-      "Argentina National Music & Arts Gala"
+      "Buenos Aires Tango Festival",
+      "Fiesta Nacional de la Vendimia Mendoza",
+      "Cosquín Folk Festival"
     ],
     "attractive_features": [
-      "Traditional Argentina Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Authentic Asado Steak & Malbec Wine",
+      "Milonga Tango Dancing Nights",
+      "Patagonian Mountain Trekking"
     ],
     "highlight_items": []
   },
   "BHS": {
     "top_places": [
-      "Nassau Historic Quarter",
-      "National Parks of Bahamas",
-      "Alpine Valleys & Trails of Bahamas"
+      "Nassau Cable Beach",
+      "Exuma Cays Pig Beach",
+      "Paradise Island Atlantis Resort",
+      "Harbour Island Pink Sands Beach"
     ],
     "famous_festivals": [
-      "Bahamas Cultural Heritage Festival",
-      "Bahamas National Music & Arts Gala"
+      "Junkanoo Street Festival Carnival",
+      "Bahamas International Film Gala",
+      "Pineapple Festival Eleuthera"
     ],
     "attractive_features": [
-      "Traditional Bahamas Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Authentic Conch Fritters & Seafood",
+      "Clear Turquoise Water Diving",
+      "Pig Swimming in Exuma Cays"
     ],
     "highlight_items": []
   },
   "BRB": {
     "top_places": [
-      "Bridgetown Historic Quarter",
-      "National Parks of Barbados",
-      "Alpine Valleys & Trails of Barbados"
+      "Carlisle Bay Marine Park",
+      "Harrison's Cave Eco-Park",
+      "Bathsheba Beach East Coast",
+      "St. Nicholas Abbey Rum Distillery"
     ],
     "famous_festivals": [
-      "Barbados Cultural Heritage Festival",
-      "Barbados National Music & Arts Gala"
+      "Crop Over Carnival Festival",
+      "Barbados Food & Rum Festival",
+      "Holetown Festival"
     ],
     "attractive_features": [
-      "Traditional Barbados Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Authentic Flying Fish & Cou-Cou",
+      "Barbados Mount Gay Rum Tours",
+      "World-Class Surfing Soup Bowl"
     ],
     "highlight_items": []
   },
   "BLZ": {
     "top_places": [
-      "Belmopan Historic Quarter",
-      "National Parks of Belize",
-      "Alpine Valleys & Trails of Belize"
+      "Great Blue Hole Reef Sinkhole",
+      "Ambergris Caye & San Pedro",
+      "Xunantunich Maya Ruins",
+      "Caye Caulker Island"
     ],
     "famous_festivals": [
-      "Belize Cultural Heritage Festival",
-      "Belize National Music & Arts Gala"
+      "Costa Maya Festival San Pedro",
+      "Belize Carnival Parades",
+      "Garifuna Settlement Day"
     ],
     "attractive_features": [
-      "Traditional Belize Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central America"
+      "Authentic Rice & Beans with Stewed Chicken",
+      "Snorkeling Hol Chan Marine Reserve",
+      "Ancient Mayan Cave Explorations"
     ],
     "highlight_items": []
   },
   "BOL": {
     "top_places": [
-      "Sucre Historic Quarter",
-      "National Parks of Bolivia",
-      "Alpine Valleys & Trails of Bolivia"
+      "Salar de Uyuni Salt Flats",
+      "Lake Titicaca & Isla del Sol",
+      "Tiwanaku Pre-Inca Ruins",
+      "La Paz Teleférico Cable Car"
     ],
     "famous_festivals": [
-      "Bolivia Cultural Heritage Festival",
-      "Bolivia National Music & Arts Gala"
+      "Carnaval de Oruro UNESCO",
+      "Gran Poder Festival La Paz",
+      "Urkupiña Festival Cochabamba"
     ],
     "attractive_features": [
-      "Traditional Bolivia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Authentic Salteñas & Piquete Macho",
+      "Mirror Effect on Salt Flats Uyuni",
+      "Surreal High-Altitude Andean Peak Views"
     ],
     "highlight_items": []
   },
   "BRA": {
     "top_places": [
       "Christ the Redeemer Rio",
-      "Amazon Rainforest Basin",
-      "Iguazu Waterfalls",
-      "Copacabana Beach Rio"
+      "Sugarloaf Mountain Rio",
+      "Iguazu Falls Paraná",
+      "Pelourinho Historic Salvador"
     ],
     "famous_festivals": [
-      "Rio de Janeiro Carnival",
-      "Festa Junina Celebrations",
-      "Salvador Street Carnival"
+      "Rio de Janeiro Carnival Parade",
+      "Festa Junina Nationwide",
+      "Parintins Folklore Festival"
     ],
     "attractive_features": [
-      "Samba Music & Dance Culture",
-      "Biodiverse Amazon River Safaris",
-      "Passionate Football Culture"
+      "Authentic Feijoada & Caipirinha",
+      "Samba Music & Dance Clubs",
+      "Amazon Rainforest River Safaris"
     ],
     "highlight_items": []
   },
   "CAN": {
     "top_places": [
       "Niagara Falls Ontario",
-      "Banff National Park Lake Louise",
-      "CN Tower Toronto",
-      "Old Quebec Historic Quarter"
+      "Banff National Park Rockies",
+      "Old Quebec Historic District",
+      "CN Tower Toronto"
     ],
     "famous_festivals": [
       "Calgary Stampede Rodeo",
-      "Quebec Winter Carnival",
-      "Montreal International Jazz Festival"
+      "Montreal International Jazz Gala",
+      "Winterlude Ottawa"
     ],
     "attractive_features": [
-      "Northern Lights Aurora Displays",
-      "Maple Syrup Harvesting",
-      "Untamed Alpine Lakes"
+      "Authentic Poutine & Maple Syrup",
+      "Northern Lights Aurora Watching",
+      "Rocky Mountaineer Rail Trip"
     ],
     "highlight_items": []
   },
   "CHL": {
     "top_places": [
-      "Santiago Historic Quarter",
-      "National Parks of Chile",
-      "Alpine Valleys & Trails of Chile"
+      "Torres del Paine National Park",
+      "Atacama Desert Geysers & Stars",
+      "Easter Island Moai Statues",
+      "Valparaíso Hills & Funiculars"
     ],
     "famous_festivals": [
-      "Chile Cultural Heritage Festival",
-      "Chile National Music & Arts Gala"
+      "Fiestas Patrias Dieciocho Celebrations",
+      "Tapati Rapa Nui Easter Island",
+      "Viña del Mar Song Festival"
     ],
     "attractive_features": [
-      "Traditional Chile Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Authentic Empanadas & Carmenère Wine",
+      "Stargazing in Atacama Desert",
+      "Patagonian Glacier & Fjords Cruising"
     ],
     "highlight_items": []
   },
   "COL": {
     "top_places": [
-      "Bogotá Historic Quarter",
-      "National Parks of Colombia",
-      "Alpine Valleys & Trails of Colombia"
+      "Cartagena Walled Historic City",
+      "Medellín Comuna 13 & Cable Car",
+      "Tayrona National Park Coast",
+      "Coffee Triangle Salento"
     ],
     "famous_festivals": [
-      "Colombia Cultural Heritage Festival",
-      "Colombia National Music & Arts Gala"
+      "Barranquilla Carnival",
+      "Feria de las Flores Medellín",
+      "Feria de Cali Salsa Festival"
     ],
     "attractive_features": [
-      "Traditional Colombia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "World-Class Colombian Coffee",
+      "Salsa Dance Clubs & Lessons",
+      "Carribean Coral Reef Islands"
     ],
     "highlight_items": []
   },
   "CRI": {
     "top_places": [
-      "San José Historic Quarter",
-      "National Parks of Costa Rica",
-      "Alpine Valleys & Trails of Costa Rica"
+      "Arenal Volcano & Hot Springs",
+      "Manuel Antonio National Park Beaches",
+      "Monteverde Cloud Forest Reserve",
+      "Tortuguero Sea Turtle Canals"
     ],
     "famous_festivals": [
-      "Costa Rica Cultural Heritage Festival",
-      "Costa Rica National Music & Arts Gala"
+      "Palmares Fiestas Carnival",
+      "Fiesta de los Diablitos Boruca",
+      "Envision Festival Uvita"
     ],
     "attractive_features": [
-      "Traditional Costa Rica Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central America"
+      "Pura Vida Eco-Tourism Lifestyle",
+      "Ziplining Cloud Forest Canopy",
+      "Authentic Gallo Pinto Breakfast"
     ],
     "highlight_items": []
   },
   "CUB": {
     "top_places": [
-      "Havana Historic Quarter",
-      "National Parks of Cuba",
-      "Alpine Valleys & Trails of Cuba"
+      "Old Havana Habano Historic Quarter",
+      "Viñales Valley Tobacco Farm",
+      "Trinidad Cobblestone Colonial Town",
+      "Varadero Caribbean Resort"
     ],
     "famous_festivals": [
-      "Cuba Cultural Heritage Festival",
-      "Cuba National Music & Arts Gala"
+      "Havana Carnival Street Parades",
+      "Habanos Cigar Festival",
+      "Fiesta del Fuego Santiago"
     ],
     "attractive_features": [
-      "Traditional Cuba Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Vintage 1950s Classic American Cars",
+      "Authentic Cuban Cigars & Mojitos",
+      "Live Son Music & Salsa Clubs"
     ],
     "highlight_items": []
   },
   "DMA": {
     "top_places": [
-      "Roseau Historic Quarter",
-      "National Parks of Dominica",
-      "Alpine Valleys & Trails of Dominica"
+      "Dominica Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Dominica",
+      "Scenic Coastal & Mountain Trails of Dominica"
     ],
     "famous_festivals": [
-      "Dominica Cultural Heritage Festival",
-      "Dominica National Music & Arts Gala"
+      "Dominica Cultural Heritage & Arts Festival",
+      "Dominica National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Dominica Culinary Delights",
+      "Traditional Dominica Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "DOM": {
     "top_places": [
-      "Santo Domingo Historic Quarter",
-      "National Parks of Dominican Republic",
-      "Alpine Valleys & Trails of Dominican Republic"
+      "Punta Cana Bavaro Beach",
+      "Zona Colonial Santo Domingo",
+      "Samaná Bay Humpback Whales",
+      "Jarabacoa Mountain Waterfall"
     ],
     "famous_festivals": [
-      "Dominican Republic Cultural Heritage Festival",
-      "Dominican Republic National Music & Arts Gala"
+      "Dominican Carnival Santo Domingo",
+      "Merengue & Bachata Festival",
+      "Master of the Ocean Cabarete"
     ],
     "attractive_features": [
-      "Traditional Dominican Republic Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Authentic La Bandera Dominican Lunch",
+      "Humpback Whale Watching Samaná",
+      "Kitesurfing Wind Capital Cabarete"
     ],
     "highlight_items": []
   },
   "ECU": {
     "top_places": [
-      "Quito Historic Quarter",
-      "National Parks of Ecuador",
-      "Alpine Valleys & Trails of Ecuador"
+      "Galápagos Islands Wildlife Sanctuary",
+      "Quito Colonial Historic Center",
+      "Cuenca Old Town Cathedral",
+      "Baños de Agua Santa Waterfalls"
     ],
     "famous_festivals": [
-      "Ecuador Cultural Heritage Festival",
-      "Ecuador National Music & Arts Gala"
+      "Inti Raymi Sun Festival Otavalo",
+      "Mama Negra Festival Latacunga",
+      "Fiestas de Quito"
     ],
     "attractive_features": [
-      "Traditional Ecuador Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Swimming with Sea Lions Galápagos",
+      "Middle of the World Equator Line",
+      "Authentic Ceviche de Camarón"
     ],
     "highlight_items": []
   },
   "SLV": {
     "top_places": [
-      "San Salvador Historic Quarter",
-      "National Parks of El Salvador",
-      "Alpine Valleys & Trails of El Salvador"
+      "El Tunco Surf Beach",
+      "Joyas de Cerén Maya Pompeii",
+      "Ruta de las Flores Coffee Towns",
+      "Santa Ana Volcano Crater Lake"
     ],
     "famous_festivals": [
-      "El Salvador Cultural Heritage Festival",
-      "El Salvador National Music & Arts Gala"
+      "Fiestas Agostinas San Salvador",
+      "Bolas de Fuego Fireball Festival Nejapa",
+      "Carnaval de San Miguel"
     ],
     "attractive_features": [
-      "Traditional El Salvador Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central America"
+      "Authentic Handmade Pupusas",
+      "World-Class Surfing Waves",
+      "Scenic Volcanic Lake Coatepeque"
     ],
     "highlight_items": []
   },
   "GRD": {
     "top_places": [
-      "St. George's Historic Quarter",
-      "National Parks of Grenada",
-      "Alpine Valleys & Trails of Grenada"
+      "Grenada Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Grenada",
+      "Scenic Coastal & Mountain Trails of Grenada"
     ],
     "famous_festivals": [
-      "Grenada Cultural Heritage Festival",
-      "Grenada National Music & Arts Gala"
+      "Grenada Cultural Heritage & Arts Festival",
+      "Grenada National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Grenada Culinary Delights",
+      "Traditional Grenada Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "GTM": {
     "top_places": [
-      "Guatemala City Historic Quarter",
-      "National Parks of Guatemala",
-      "Alpine Valleys & Trails of Guatemala"
+      "Tikal Maya Pyramids Rainforest",
+      "Antigua Guatemala Cobblestone City",
+      "Lake Atitlán Volcanic Lake",
+      "Semuc Champey Limestone Pools"
     ],
     "famous_festivals": [
-      "Guatemala Cultural Heritage Festival",
-      "Guatemala National Music & Arts Gala"
+      "Holy Week Semana Santa Antigua",
+      "Giant Kite Festival Sumpango",
+      "Fiesta de Santo Tomás Chichicastenango"
     ],
     "attractive_features": [
-      "Traditional Guatemala Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central America"
+      "Authentic Pepián Stew & Mayan Chocolate",
+      "Volcano Hiking Acatenango Sunrise",
+      "Colorful Indigenous Weaving Markets"
     ],
     "highlight_items": []
   },
   "GUY": {
     "top_places": [
-      "Georgetown Historic Quarter",
-      "National Parks of Guyana",
-      "Alpine Valleys & Trails of Guyana"
+      "Guyana Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Guyana",
+      "Scenic Coastal & Mountain Trails of Guyana"
     ],
     "famous_festivals": [
-      "Guyana Cultural Heritage Festival",
-      "Guyana National Music & Arts Gala"
+      "Guyana Cultural Heritage & Arts Festival",
+      "Guyana National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Guyana Culinary Delights",
+      "Traditional Guyana Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "HTI": {
     "top_places": [
-      "Port-au-Prince Historic Quarter",
-      "National Parks of Haiti",
-      "Alpine Valleys & Trails of Haiti"
+      "Haiti Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Haiti",
+      "Scenic Coastal & Mountain Trails of Haiti"
     ],
     "famous_festivals": [
-      "Haiti Cultural Heritage Festival",
-      "Haiti National Music & Arts Gala"
+      "Haiti Cultural Heritage & Arts Festival",
+      "Haiti National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Haiti Culinary Delights",
+      "Traditional Haiti Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "HND": {
     "top_places": [
-      "Tegucigalpa Historic Quarter",
-      "National Parks of Honduras",
-      "Alpine Valleys & Trails of Honduras"
+      "Honduras Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Honduras",
+      "Scenic Coastal & Mountain Trails of Honduras"
     ],
     "famous_festivals": [
-      "Honduras Cultural Heritage Festival",
-      "Honduras National Music & Arts Gala"
+      "Honduras Cultural Heritage & Arts Festival",
+      "Honduras National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Honduras Culinary Delights",
+      "Traditional Honduras Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central America"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "JAM": {
     "top_places": [
-      "Kingston Historic Quarter",
-      "National Parks of Jamaica",
-      "Alpine Valleys & Trails of Jamaica"
+      "Dunn's River Falls Ocho Rios",
+      "Negril Seven Mile Beach",
+      "Bob Marley Museum Kingston",
+      "Blue Mountains Coffee Peak"
     ],
     "famous_festivals": [
-      "Jamaica Cultural Heritage Festival",
-      "Jamaica National Music & Arts Gala"
+      "Reggae Sumfest Montego Bay",
+      "Jamaica Carnival Kingston",
+      "International Reggae Day"
     ],
     "attractive_features": [
-      "Traditional Jamaica Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Authentic Jerk Chicken & Red Stripe",
+      "Bob Marley Reggae Roots Heritage",
+      "Blue Mountain Coffee Tasting"
     ],
     "highlight_items": []
   },
   "MEX": {
     "top_places": [
-      "Mexico City Historic Quarter",
-      "National Parks of Mexico",
-      "Alpine Valleys & Trails of Mexico"
+      "Chichén Itzá Maya Pyramids",
+      "Zócalo Historic Mexico City",
+      "Cancún & Tulum Caribbean Riviera",
+      "Oaxaca Cultural Center"
     ],
     "famous_festivals": [
-      "Mexico Cultural Heritage Festival",
-      "Mexico National Music & Arts Gala"
+      "Día de los Muertos Day of the Dead",
+      "Guelaguetza Festival Oaxaca",
+      "Cervantino Arts Festival Guanajuato"
     ],
     "attractive_features": [
-      "Traditional Mexico Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of North America"
+      "Authentic Tacos & Mole Cuisine",
+      "Cenote Fresh Sinkhole Swimming",
+      "Mariachi Music Serenades"
     ],
     "highlight_items": []
   },
   "NIC": {
     "top_places": [
-      "Managua Historic Quarter",
-      "National Parks of Nicaragua",
-      "Alpine Valleys & Trails of Nicaragua"
+      "Nicaragua Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Nicaragua",
+      "Scenic Coastal & Mountain Trails of Nicaragua"
     ],
     "famous_festivals": [
-      "Nicaragua Cultural Heritage Festival",
-      "Nicaragua National Music & Arts Gala"
+      "Nicaragua Cultural Heritage & Arts Festival",
+      "Nicaragua National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Nicaragua Culinary Delights",
+      "Traditional Nicaragua Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central America"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "PAN": {
     "top_places": [
-      "Panama City Historic Quarter",
-      "National Parks of Panama",
-      "Alpine Valleys & Trails of Panama"
+      "Panama Canal Miraflores Locks",
+      "Casco Viejo Historic District",
+      "San Blas Kuna Yala Islands",
+      "Bocas del Toro Archipelago"
     ],
     "famous_festivals": [
-      "Panama Cultural Heritage Festival",
-      "Panama National Music & Arts Gala"
+      "Panama Carnival Parades",
+      "Festival de la Mejorana Guararé",
+      "Boquete Jazz & Blues Festival"
     ],
     "attractive_features": [
-      "Traditional Panama Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Central America"
+      "Panama Canal Engineering Marvel",
+      "Authentic Sancocho Chicken Soup",
+      "Pristine Caribbean Island Hopping"
     ],
     "highlight_items": []
   },
   "PRY": {
     "top_places": [
-      "Asunción Historic Quarter",
-      "National Parks of Paraguay",
-      "Alpine Valleys & Trails of Paraguay"
+      "Paraguay Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Paraguay",
+      "Scenic Coastal & Mountain Trails of Paraguay"
     ],
     "famous_festivals": [
-      "Paraguay Cultural Heritage Festival",
-      "Paraguay National Music & Arts Gala"
+      "Paraguay Cultural Heritage & Arts Festival",
+      "Paraguay National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Paraguay Culinary Delights",
+      "Traditional Paraguay Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "PER": {
     "top_places": [
-      "Machu Picchu Citadel",
-      "Sacred Valley Urubamba",
-      "Lake Titicaca Uros",
-      "Cusco Historic Plaza"
+      "Machu Picchu Inca Citadel",
+      "Cusco Historic Colonial Capital",
+      "Sacred Valley Ollantaytambo",
+      "Lake Titicaca Uros Islands"
     ],
     "famous_festivals": [
-      "Inti Raymi Sun Festival",
-      "Fiesta de la Candelaria Puno",
-      "Mistura Culinary Festival"
+      "Inti Raymi Sun Festival Cusco",
+      "Virgen de la Candelaria Puno",
+      "Mistura Culinary Festival Lima"
     ],
     "attractive_features": [
+      "Authentic Ceviche & Pisco Sour",
       "Inca Trail Mountain Trekking",
-      "Authentic Ceviche & Pisco",
-      "Colca Canyon Condor Watching"
+      "Rainbow Mountain Vinicunca Views"
     ],
     "highlight_items": []
   },
   "PRI": {
     "top_places": [
-      "San Juan Historic Quarter",
-      "National Parks of Puerto Rico",
-      "Alpine Valleys & Trails of Puerto Rico"
+      "Puerto Rico Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Puerto Rico",
+      "Scenic Coastal & Mountain Trails of Puerto Rico"
     ],
     "famous_festivals": [
-      "Puerto Rico Cultural Heritage Festival",
-      "Puerto Rico National Music & Arts Gala"
+      "Puerto Rico Cultural Heritage & Arts Festival",
+      "Puerto Rico National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Puerto Rico Culinary Delights",
+      "Traditional Puerto Rico Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "KNA": {
     "top_places": [
-      "Basseterre Historic Quarter",
-      "National Parks of Saint Kitts and Nevis",
-      "Alpine Valleys & Trails of Saint Kitts and Nevis"
+      "Saint Kitts and Nevis Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Saint Kitts and Nevis",
+      "Scenic Coastal & Mountain Trails of Saint Kitts and Nevis"
     ],
     "famous_festivals": [
-      "Saint Kitts and Nevis Cultural Heritage Festival",
-      "Saint Kitts and Nevis National Music & Arts Gala"
+      "Saint Kitts and Nevis Cultural Heritage & Arts Festival",
+      "Saint Kitts and Nevis National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Saint Kitts and Nevis Culinary Delights",
+      "Traditional Saint Kitts and Nevis Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LCA": {
     "top_places": [
-      "Castries Historic Quarter",
-      "National Parks of Saint Lucia",
-      "Alpine Valleys & Trails of Saint Lucia"
+      "Saint Lucia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Saint Lucia",
+      "Scenic Coastal & Mountain Trails of Saint Lucia"
     ],
     "famous_festivals": [
-      "Saint Lucia Cultural Heritage Festival",
-      "Saint Lucia National Music & Arts Gala"
+      "Saint Lucia Cultural Heritage & Arts Festival",
+      "Saint Lucia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Saint Lucia Culinary Delights",
+      "Traditional Saint Lucia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "VCT": {
     "top_places": [
-      "Kingstown Historic Quarter",
-      "National Parks of Saint Vincent and the Grenadines",
-      "Alpine Valleys & Trails of Saint Vincent and the Grenadines"
+      "Saint Vincent and the Grenadines Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Saint Vincent and the Grenadines",
+      "Scenic Coastal & Mountain Trails of Saint Vincent and the Grenadines"
     ],
     "famous_festivals": [
-      "Saint Vincent and the Grenadines Cultural Heritage Festival",
-      "Saint Vincent and the Grenadines National Music & Arts Gala"
+      "Saint Vincent and the Grenadines Cultural Heritage & Arts Festival",
+      "Saint Vincent and the Grenadines National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Saint Vincent and the Grenadines Culinary Delights",
+      "Traditional Saint Vincent and the Grenadines Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SUR": {
     "top_places": [
-      "Paramaribo Historic Quarter",
-      "National Parks of Suriname",
-      "Alpine Valleys & Trails of Suriname"
+      "Suriname Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Suriname",
+      "Scenic Coastal & Mountain Trails of Suriname"
     ],
     "famous_festivals": [
-      "Suriname Cultural Heritage Festival",
-      "Suriname National Music & Arts Gala"
+      "Suriname Cultural Heritage & Arts Festival",
+      "Suriname National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Suriname Culinary Delights",
+      "Traditional Suriname Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "TTO": {
     "top_places": [
-      "Port of Spain Historic Quarter",
-      "National Parks of Trinidad and Tobago",
-      "Alpine Valleys & Trails of Trinidad and Tobago"
+      "Trinidad and Tobago Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Trinidad and Tobago",
+      "Scenic Coastal & Mountain Trails of Trinidad and Tobago"
     ],
     "famous_festivals": [
-      "Trinidad and Tobago Cultural Heritage Festival",
-      "Trinidad and Tobago National Music & Arts Gala"
+      "Trinidad and Tobago Cultural Heritage & Arts Festival",
+      "Trinidad and Tobago National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Trinidad and Tobago Culinary Delights",
+      "Traditional Trinidad and Tobago Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Caribbean"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "USA": {
     "top_places": [
+      "Statue of Liberty & NYC Skyline",
       "Grand Canyon National Park",
-      "Statue of Liberty New York",
-      "Yellowstone National Park",
-      "Yosemite Valley",
-      "Times Square"
+      "Golden Gate Bridge San Francisco",
+      "Yellowstone Geysers"
     ],
     "famous_festivals": [
+      "Coachella Valley Music Festival",
       "Mardi Gras New Orleans",
-      "Coachella Music Festival",
-      "Macy's Thanksgiving Parade"
+      "Super Bowl Championship Gala"
     ],
     "attractive_features": [
-      "Route 66 Cross-Country Trips",
-      "Broadway Theater Shows",
-      "Pacific Coast Highway Drive"
+      "Authentic American BBQ & Burgers",
+      "Epic Highway Route 66 Road Trip",
+      "Hollywood Movie & Theme Parks"
     ],
     "highlight_items": []
   },
   "URY": {
     "top_places": [
-      "Montevideo Historic Quarter",
-      "National Parks of Uruguay",
-      "Alpine Valleys & Trails of Uruguay"
+      "Punta del Este Resort & Brava Beach",
+      "Colonia del Sacramento Historic Quarter",
+      "Montevideo Rambla Waterfront",
+      "Cabo Polonio Dunes"
     ],
     "famous_festivals": [
-      "Uruguay Cultural Heritage Festival",
-      "Uruguay National Music & Arts Gala"
+      "Montevideo Carnival Longest in World",
+      "Candombe Drum Parades",
+      "Fiesta de la Patria Gaucha"
     ],
     "attractive_features": [
-      "Traditional Uruguay Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Authentic Chivito Sandwich & Asado",
+      "Traditional Mate Tea Culture",
+      "Atlantic Coast Beach Relaxation"
     ],
     "highlight_items": []
   },
   "VEN": {
     "top_places": [
-      "Caracas Historic Quarter",
-      "National Parks of Venezuela",
-      "Alpine Valleys & Trails of Venezuela"
+      "Angel Falls Highest Waterfall",
+      "Los Roques Archipelago Coral Reef",
+      "Canaima National Park Tepuis",
+      "Mérida Cable Car Andes"
     ],
     "famous_festivals": [
-      "Venezuela Cultural Heritage Festival",
-      "Venezuela National Music & Arts Gala"
+      "Dancing Devils of Yare UNESCO",
+      "El Callao Carnival",
+      "Feria del Sol Mérida"
     ],
     "attractive_features": [
-      "Traditional Venezuela Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of South America"
+      "Authentic Arepas & Hallacas",
+      "World's Highest Waterfall Angel Falls",
+      "Pristine Caribbean Island Beaches"
     ],
     "highlight_items": []
   },
   "DZA": {
     "top_places": [
-      "Algiers Historic Quarter",
-      "National Parks of Algeria",
-      "Alpine Valleys & Trails of Algeria"
+      "Casbah of Algiers",
+      "Timgad Roman Ruins",
+      "Tassili n'Ajjer Rock Art Park",
+      "Ghardaïa M'zab Valley"
     ],
     "famous_festivals": [
-      "Algeria Cultural Heritage Festival",
-      "Algeria National Music & Arts Gala"
+      "Djanet Sebeiba Saharan Festival",
+      "Timgad International Music Festival",
+      "Date Harvest Festival Biskra"
     ],
     "attractive_features": [
-      "Traditional Algeria Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Africa"
+      "Authentic Couscous & Tajine",
+      "Sahara Desert Sand Dune Safaris",
+      "Historic Ottoman Architecture"
     ],
     "highlight_items": []
   },
   "AGO": {
     "top_places": [
-      "Luanda Historic Quarter",
-      "National Parks of Angola",
-      "Alpine Valleys & Trails of Angola"
+      "Kalandula Waterfalls Malanje",
+      "Miradouro da Lua Luanda",
+      "Kissama National Park Safari",
+      "Serra da Leba Pass"
     ],
     "famous_festivals": [
-      "Angola Cultural Heritage Festival",
-      "Angola National Music & Arts Gala"
+      "Luanda Carnival Parades",
+      "Sumbe Music Festival",
+      "Fenacult National Culture Gala"
     ],
     "attractive_features": [
-      "Traditional Angola Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Authentic Muamba de Galinha Cuisine",
+      "Semba & Kizomba Dance Culture",
+      "Atlantic Coastal Beaches"
     ],
     "highlight_items": []
   },
   "BEN": {
     "top_places": [
-      "Porto-Novo Historic Quarter",
-      "National Parks of Benin",
-      "Alpine Valleys & Trails of Benin"
+      "Ouidah Historical Museum & Python Temple",
+      "Pendjari National Park Safari",
+      "Ganvié Stilt Village Lake Nokoué",
+      "Abomey Royal Palaces"
     ],
     "famous_festivals": [
-      "Benin Cultural Heritage Festival",
-      "Benin National Music & Arts Gala"
+      "Voodoo Day Festival Ouidah",
+      "Gelede Festival UNESCO",
+      "Festival International du Conte Benin"
     ],
     "attractive_features": [
-      "Traditional Benin Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Authentic Igname Pilée Cuisine",
+      "UNESCO Royal Palaces of Abomey",
+      "Ganvié Venice of Africa Stilt Village"
     ],
     "highlight_items": []
   },
   "BWA": {
     "top_places": [
-      "Gaborone Historic Quarter",
-      "National Parks of Botswana",
-      "Alpine Valleys & Trails of Botswana"
+      "Okavango Delta Mokoro Safari",
+      "Chobe National Park Elephant Safari",
+      "Makgadikgadi Salt Pans",
+      "Moremi Game Reserve"
     ],
     "famous_festivals": [
-      "Botswana Cultural Heritage Festival",
-      "Botswana National Music & Arts Gala"
+      "Maitisong Arts Festival Gaborone",
+      "Dithubaruba Cultural Festival",
+      "Kuru Dance Festival Ghanzi"
     ],
     "attractive_features": [
-      "Traditional Botswana Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Africa"
+      "Authentic Seswaa Stewed Beef",
+      "Mokoro Canoe Safaris Okavango",
+      "World's Largest Elephant Population"
     ],
     "highlight_items": []
   },
   "BFA": {
     "top_places": [
-      "Ouagadougou Historic Quarter",
-      "National Parks of Burkina Faso",
-      "Alpine Valleys & Trails of Burkina Faso"
+      "Sindou Peaks Rock Formations",
+      "Grand Mosque of Bobo-Dioulasso",
+      "Cascades de Karfiguéla",
+      "Laongo Sculpture Park"
     ],
     "famous_festivals": [
-      "Burkina Faso Cultural Heritage Festival",
-      "Burkina Faso National Music & Arts Gala"
+      "FESPACPA African Film Festival Ouagadougou",
+      "SIAO International Handicraft Fair",
+      "SNC National Culture Week"
     ],
     "attractive_features": [
-      "Traditional Burkina Faso Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Authentic Riz Gras & Poulet Bicyclette",
+      "Bronze Casting & Handicraft Art",
+      "Bobo-Dioulasso Music & Drums"
     ],
     "highlight_items": []
   },
   "BDI": {
     "top_places": [
-      "Gitega Historic Quarter",
-      "National Parks of Burundi",
-      "Alpine Valleys & Trails of Burundi"
+      "Lake Tanganyika Beaches Bujumbura",
+      "Rusizi National Park Hippos",
+      "Kigwena Forest Reserve",
+      "Source of the Nile Monument Rutana"
     ],
     "famous_festivals": [
-      "Burundi Cultural Heritage Festival",
-      "Burundi National Music & Arts Gala"
+      "National Drum Festival Gitega",
+      "Burundi Independence Day Parades",
+      "Cultural Drumming Gala"
     ],
     "attractive_features": [
-      "Traditional Burundi Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Royal Sacred Drummers Performance",
+      "Lake Tanganyika Fresh Fish Cuisine",
+      "Scenic Mountainous Tea Plantations"
     ],
     "highlight_items": []
   },
   "CMR": {
     "top_places": [
-      "Yaoundé Historic Quarter",
-      "National Parks of Cameroon",
-      "Alpine Valleys & Trails of Cameroon"
+      "Mount Cameroon Active Volcano",
+      "Kribi Lobe Waterfalls & Beach",
+      "Waza National Park Safari",
+      "Foumban Royal Palace"
     ],
     "famous_festivals": [
-      "Cameroon Cultural Heritage Festival",
-      "Cameroon National Music & Arts Gala"
+      "Ngondo Water Festival Douala",
+      "Nguon Festival Foumban",
+      "Mount Cameroon Race of Hope"
     ],
     "attractive_features": [
-      "Traditional Cameroon Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Authentic Ndolé & Plantain Cuisine",
+      "Lobe Waterfall Falling Directly into Sea",
+      "Diverse Ethnographic Palaces & Art"
     ],
     "highlight_items": []
   },
   "CPV": {
     "top_places": [
-      "Praia Historic Quarter",
-      "National Parks of Cape Verde",
-      "Alpine Valleys & Trails of Cape Verde"
+      "Pico do Fogo Active Volcano",
+      "Santa Maria Beach Sal Island",
+      "Mindelo Harbor Sao Vicente",
+      "Tarrafal Beach Santiago"
     ],
     "famous_festivals": [
-      "Cape Verde Cultural Heritage Festival",
-      "Cape Verde National Music & Arts Gala"
+      "Mindelo Carnival Parades",
+      "Baia das Gatas Music Festival",
+      "Gamba Festival Sal"
     ],
     "attractive_features": [
-      "Traditional Cape Verde Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Authentic Cachupa Stew & Grogue Rum",
+      "Morna Music Legacy of Cesária Évora",
+      "Volcano Hiking & Windsurfing"
     ],
     "highlight_items": []
   },
   "CAF": {
     "top_places": [
-      "Bangui Historic Quarter",
-      "National Parks of Central African Republic",
-      "Alpine Valleys & Trails of Central African Republic"
+      "Manovo-Gounda St Floris Park",
+      "Dzanga-Sangha Elephant Reserve",
+      "Boali Waterfalls Bangui",
+      "Ubangi River Waterfront"
     ],
     "famous_festivals": [
-      "Central African Republic Cultural Heritage Festival",
-      "Central African Republic National Music & Arts Gala"
+      "National Day Celebrations Bangui",
+      "Central African Music Gala",
+      "Bambari Cultural Festival"
     ],
     "attractive_features": [
-      "Traditional Central African Republic Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Authentic Kanda Dumplings",
+      "Dzanga-Sangha Forest Elephant Watching",
+      "Indigenous Pygmy Musical Traditions"
     ],
     "highlight_items": []
   },
   "TCD": {
     "top_places": [
-      "N'Djamena Historic Quarter",
-      "National Parks of Chad",
-      "Alpine Valleys & Trails of Chad"
+      "Ennedi Plateau Rock Arches",
+      "Lake Chad Ecosystem",
+      "Zakouma National Park Safari",
+      "Tibesti Volcanic Mountains"
     ],
     "famous_festivals": [
-      "Chad Cultural Heritage Festival",
-      "Chad National Music & Arts Gala"
+      "Gerewol Festival Nomadic Pageant",
+      "N'Djamena International Culture Gala",
+      "Chad National Day"
     ],
     "attractive_features": [
-      "Traditional Chad Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Authentic Daraba Stew & Millet",
+      "Zakouma Elephant Conservation Safari",
+      "Saharan Ennedi Labyrinth Rock Formations"
     ],
     "highlight_items": []
   },
   "COM": {
     "top_places": [
-      "Moroni Historic Quarter",
-      "National Parks of Comoros",
-      "Alpine Valleys & Trails of Comoros"
+      "Karthala Active Volcano Crater",
+      "Chindini Beach Grande Comore",
+      "Mohéli Marine Park Sea Turtles",
+      "Iconi Historic Village"
     ],
     "famous_festivals": [
-      "Comoros Cultural Heritage Festival",
-      "Comoros National Music & Arts Gala"
+      "Grand Mariage Traditional Celebration",
+      "Comoros Independence Day",
+      "Cultural Music Gala Moroni"
     ],
     "attractive_features": [
-      "Traditional Comoros Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Authentic Langouste Vanilla Lobster",
+      "Nesting Green Sea Turtles Mohéli",
+      "Ylang-Ylang Perfume Plantations"
     ],
     "highlight_items": []
   },
   "COG": {
     "top_places": [
-      "Brazzaville Historic Quarter",
-      "National Parks of Republic of the Congo",
-      "Alpine Valleys & Trails of Republic of the Congo"
+      "Odzala-Kokoua National Park Gorillas",
+      "Loufoulakari Falls Brazzaville",
+      "Gorge of Diosso Pointe-Noire",
+      "Congo River Waterfront"
     ],
     "famous_festivals": [
-      "Republic of the Congo Cultural Heritage Festival",
-      "Republic of the Congo National Music & Arts Gala"
+      "FESPAM Pan-African Music Gala",
+      "Brazzaville Carnival",
+      "Independence Day Parades"
     ],
     "attractive_features": [
-      "Traditional Republic of the Congo Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Sapeur High-Fashion Subculture",
+      "Western Lowland Gorilla Tracking",
+      "Authentic Saka-Saka Cassava Leaves"
     ],
     "highlight_items": []
   },
   "COD": {
     "top_places": [
-      "Kinshasa Historic Quarter",
-      "National Parks of DR Congo",
-      "Alpine Valleys & Trails of DR Congo"
+      "Virunga National Park Mountain Gorillas",
+      "Mount Nyiragongo Lava Lake",
+      "Garamba National Park Safari",
+      "Zongo Falls Kinshasa"
     ],
     "famous_festivals": [
-      "DR Congo Cultural Heritage Festival",
-      "DR Congo National Music & Arts Gala"
+      "Kinshasa International Jazz Festival",
+      "Rumba Congo Music Festival",
+      "Festival Amani Goma"
     ],
     "attractive_features": [
-      "Traditional DR Congo Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "UNESCO Congolese Rumba Music",
+      "Mountain Gorilla Safaris Virunga",
+      "Authentic Moambé Chicken Stew"
     ],
     "highlight_items": []
   },
   "CIV": {
     "top_places": [
-      "Yamoussoukro Historic Quarter",
-      "National Parks of Ivory Coast",
-      "Alpine Valleys & Trails of Ivory Coast"
+      "Basilica of Our Lady of Peace Yamoussoukro",
+      "Taï National Park Chimps",
+      "Grand-Bassam Historic Beach Town",
+      "St. Paul's Cathedral Abidjan"
     ],
     "famous_festivals": [
-      "Ivory Coast Cultural Heritage Festival",
-      "Ivory Coast National Music & Arts Gala"
+      "Abissa Festival Grand-Bassam",
+      "Fêtes des Masques Man",
+      "MASA Performing Arts Gala Abidjan"
     ],
     "attractive_features": [
-      "Traditional Ivory Coast Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Authentic Attiéké & Garba Fish",
+      "World's Top Cocoa Plantation Tours",
+      "Traditional Mask Dances of Man"
     ],
     "highlight_items": []
   },
   "DJI": {
     "top_places": [
-      "Djibouti Capital Landmarks",
-      "National Parks of Djibouti",
-      "Alpine Valleys & Trails of Djibouti"
+      "Lake Assal Salt Lake crater",
+      "Lake Abbe Chimney Formations",
+      "Day Forest National Park",
+      "Moucha Island Coral Reef"
     ],
     "famous_festivals": [
-      "Djibouti Cultural Heritage Festival",
-      "Djibouti National Music & Arts Gala"
+      "Djibouti Independence Day Parades",
+      "Fest'Horn Regional Music Gala",
+      "International Whale Shark Week"
     ],
     "attractive_features": [
-      "Traditional Djibouti Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Swimming with Whale Sharks",
+      "Lowest Point in Africa Lake Assal",
+      "Authentic Skoudehkaris Stew"
     ],
     "highlight_items": []
   },
@@ -2577,887 +2771,915 @@
   },
   "GNQ": {
     "top_places": [
-      "Malabo Historic Quarter",
-      "National Parks of Equatorial Guinea",
-      "Alpine Valleys & Trails of Equatorial Guinea"
+      "Equatorial Guinea Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Equatorial Guinea",
+      "Scenic Coastal & Mountain Trails of Equatorial Guinea"
     ],
     "famous_festivals": [
-      "Equatorial Guinea Cultural Heritage Festival",
-      "Equatorial Guinea National Music & Arts Gala"
+      "Equatorial Guinea Cultural Heritage & Arts Festival",
+      "Equatorial Guinea National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Equatorial Guinea Culinary Delights",
+      "Traditional Equatorial Guinea Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ERI": {
     "top_places": [
-      "Asmara Historic Quarter",
-      "National Parks of Eritrea",
-      "Alpine Valleys & Trails of Eritrea"
+      "Eritrea Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Eritrea",
+      "Scenic Coastal & Mountain Trails of Eritrea"
     ],
     "famous_festivals": [
-      "Eritrea Cultural Heritage Festival",
-      "Eritrea National Music & Arts Gala"
+      "Eritrea Cultural Heritage & Arts Festival",
+      "Eritrea National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Eritrea Culinary Delights",
+      "Traditional Eritrea Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SWZ": {
     "top_places": [
-      "Mbabane Historic Quarter",
-      "National Parks of Eswatini",
-      "Alpine Valleys & Trails of Eswatini"
+      "Eswatini Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Eswatini",
+      "Scenic Coastal & Mountain Trails of Eswatini"
     ],
     "famous_festivals": [
-      "Eswatini Cultural Heritage Festival",
-      "Eswatini National Music & Arts Gala"
+      "Eswatini Cultural Heritage & Arts Festival",
+      "Eswatini National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Eswatini Culinary Delights",
+      "Traditional Eswatini Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ETH": {
     "top_places": [
-      "Addis Ababa Historic Quarter",
-      "National Parks of Ethiopia",
-      "Alpine Valleys & Trails of Ethiopia"
+      "Lalibela Rock-Hewn Churches",
+      "Simien Mountains National Park Baboons",
+      "Gondar Fasil Ghebby Royal Enclosure",
+      "Danakil Depression Lava Lake"
     ],
     "famous_festivals": [
-      "Ethiopia Cultural Heritage Festival",
-      "Ethiopia National Music & Arts Gala"
+      "Timkat Epiphany Festival",
+      "Meskel Finding of the Cross",
+      "Enkutatash Ethiopian New Year"
     ],
     "attractive_features": [
-      "Traditional Ethiopia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Authentic Ethiopian Coffee Ceremony",
+      "Injera Flatbread & Doro Wat Curry",
+      "High-Altitude Simien Peak Treks"
     ],
     "highlight_items": []
   },
   "GAB": {
     "top_places": [
-      "Libreville Historic Quarter",
-      "National Parks of Gabon",
-      "Alpine Valleys & Trails of Gabon"
+      "Gabon Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Gabon",
+      "Scenic Coastal & Mountain Trails of Gabon"
     ],
     "famous_festivals": [
-      "Gabon Cultural Heritage Festival",
-      "Gabon National Music & Arts Gala"
+      "Gabon Cultural Heritage & Arts Festival",
+      "Gabon National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Gabon Culinary Delights",
+      "Traditional Gabon Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "GMB": {
     "top_places": [
-      "Banjul Historic Quarter",
-      "National Parks of Gambia",
-      "Alpine Valleys & Trails of Gambia"
+      "Gambia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Gambia",
+      "Scenic Coastal & Mountain Trails of Gambia"
     ],
     "famous_festivals": [
-      "Gambia Cultural Heritage Festival",
-      "Gambia National Music & Arts Gala"
+      "Gambia Cultural Heritage & Arts Festival",
+      "Gambia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Gambia Culinary Delights",
+      "Traditional Gambia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "GHA": {
     "top_places": [
-      "Accra Historic Quarter",
-      "National Parks of Ghana",
-      "Alpine Valleys & Trails of Ghana"
+      "Cape Coast Castle Historic Fortress",
+      "Kakum National Park Canopy Walk",
+      "Labadi Beach Accra",
+      "Elmina Castle & Fishing Port"
     ],
     "famous_festivals": [
-      "Ghana Cultural Heritage Festival",
-      "Ghana National Music & Arts Gala"
+      "Chale Wote Street Art Festival Accra",
+      "Panafest African Culture Festival",
+      "Aboakyer Deer Hunting Festival"
     ],
     "attractive_features": [
-      "Traditional Ghana Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Authentic Jollof Rice & Kelewele",
+      "Handwoven Kente Cloth Weaving",
+      "Warm West African Hospitality"
     ],
     "highlight_items": []
   },
   "GIN": {
     "top_places": [
-      "Conakry Historic Quarter",
-      "National Parks of Guinea",
-      "Alpine Valleys & Trails of Guinea"
+      "Guinea Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Guinea",
+      "Scenic Coastal & Mountain Trails of Guinea"
     ],
     "famous_festivals": [
-      "Guinea Cultural Heritage Festival",
-      "Guinea National Music & Arts Gala"
+      "Guinea Cultural Heritage & Arts Festival",
+      "Guinea National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Guinea Culinary Delights",
+      "Traditional Guinea Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "GNB": {
     "top_places": [
-      "Bissau Historic Quarter",
-      "National Parks of Guinea-Bissau",
-      "Alpine Valleys & Trails of Guinea-Bissau"
+      "Guinea-Bissau Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Guinea-Bissau",
+      "Scenic Coastal & Mountain Trails of Guinea-Bissau"
     ],
     "famous_festivals": [
-      "Guinea-Bissau Cultural Heritage Festival",
-      "Guinea-Bissau National Music & Arts Gala"
+      "Guinea-Bissau Cultural Heritage & Arts Festival",
+      "Guinea-Bissau National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Guinea-Bissau Culinary Delights",
+      "Traditional Guinea-Bissau Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "KEN": {
     "top_places": [
-      "Nairobi Historic Quarter",
-      "National Parks of Kenya",
-      "Alpine Valleys & Trails of Kenya"
+      "Maasai Mara National Reserve",
+      "Amboseli National Park & Kilimanjaro",
+      "Diani Beach Indian Ocean",
+      "Lake Nakuru Flamingo Reserve"
     ],
     "famous_festivals": [
-      "Kenya Cultural Heritage Festival",
-      "Kenya National Music & Arts Gala"
+      "Great Wildebeest Migration Safaris",
+      "Lamu Cultural Festival",
+      "Safari Rally Kenya"
     ],
     "attractive_features": [
-      "Traditional Kenya Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Witnessing Great Wildebeest Migration",
+      "Authentic Nyama Choma Barbecue",
+      "Maasai Warrior Tribal Encounters"
     ],
     "highlight_items": []
   },
   "LSO": {
     "top_places": [
-      "Maseru Historic Quarter",
-      "National Parks of Lesotho",
-      "Alpine Valleys & Trails of Lesotho"
+      "Lesotho Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Lesotho",
+      "Scenic Coastal & Mountain Trails of Lesotho"
     ],
     "famous_festivals": [
-      "Lesotho Cultural Heritage Festival",
-      "Lesotho National Music & Arts Gala"
+      "Lesotho Cultural Heritage & Arts Festival",
+      "Lesotho National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Lesotho Culinary Delights",
+      "Traditional Lesotho Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LBR": {
     "top_places": [
-      "Monrovia Historic Quarter",
-      "National Parks of Liberia",
-      "Alpine Valleys & Trails of Liberia"
+      "Liberia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Liberia",
+      "Scenic Coastal & Mountain Trails of Liberia"
     ],
     "famous_festivals": [
-      "Liberia Cultural Heritage Festival",
-      "Liberia National Music & Arts Gala"
+      "Liberia Cultural Heritage & Arts Festival",
+      "Liberia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Liberia Culinary Delights",
+      "Traditional Liberia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "LBY": {
     "top_places": [
-      "Tripoli Historic Quarter",
-      "National Parks of Libya",
-      "Alpine Valleys & Trails of Libya"
+      "Libya Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Libya",
+      "Scenic Coastal & Mountain Trails of Libya"
     ],
     "famous_festivals": [
-      "Libya Cultural Heritage Festival",
-      "Libya National Music & Arts Gala"
+      "Libya Cultural Heritage & Arts Festival",
+      "Libya National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Libya Culinary Delights",
+      "Traditional Libya Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MDG": {
     "top_places": [
-      "Antananarivo Historic Quarter",
-      "National Parks of Madagascar",
-      "Alpine Valleys & Trails of Madagascar"
+      "Madagascar Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Madagascar",
+      "Scenic Coastal & Mountain Trails of Madagascar"
     ],
     "famous_festivals": [
-      "Madagascar Cultural Heritage Festival",
-      "Madagascar National Music & Arts Gala"
+      "Madagascar Cultural Heritage & Arts Festival",
+      "Madagascar National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Madagascar Culinary Delights",
+      "Traditional Madagascar Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MWI": {
     "top_places": [
-      "Lilongwe Historic Quarter",
-      "National Parks of Malawi",
-      "Alpine Valleys & Trails of Malawi"
+      "Malawi Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Malawi",
+      "Scenic Coastal & Mountain Trails of Malawi"
     ],
     "famous_festivals": [
-      "Malawi Cultural Heritage Festival",
-      "Malawi National Music & Arts Gala"
+      "Malawi Cultural Heritage & Arts Festival",
+      "Malawi National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Malawi Culinary Delights",
+      "Traditional Malawi Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MLI": {
     "top_places": [
-      "Bamako Historic Quarter",
-      "National Parks of Mali",
-      "Alpine Valleys & Trails of Mali"
+      "Mali Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Mali",
+      "Scenic Coastal & Mountain Trails of Mali"
     ],
     "famous_festivals": [
-      "Mali Cultural Heritage Festival",
-      "Mali National Music & Arts Gala"
+      "Mali Cultural Heritage & Arts Festival",
+      "Mali National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Mali Culinary Delights",
+      "Traditional Mali Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MRT": {
     "top_places": [
-      "Nouakchott Historic Quarter",
-      "National Parks of Mauritania",
-      "Alpine Valleys & Trails of Mauritania"
+      "Mauritania Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Mauritania",
+      "Scenic Coastal & Mountain Trails of Mauritania"
     ],
     "famous_festivals": [
-      "Mauritania Cultural Heritage Festival",
-      "Mauritania National Music & Arts Gala"
+      "Mauritania Cultural Heritage & Arts Festival",
+      "Mauritania National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Mauritania Culinary Delights",
+      "Traditional Mauritania Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MUS": {
     "top_places": [
-      "Port Louis Historic Quarter",
-      "National Parks of Mauritius",
-      "Alpine Valleys & Trails of Mauritius"
+      "Mauritius Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Mauritius",
+      "Scenic Coastal & Mountain Trails of Mauritius"
     ],
     "famous_festivals": [
-      "Mauritius Cultural Heritage Festival",
-      "Mauritius National Music & Arts Gala"
+      "Mauritius Cultural Heritage & Arts Festival",
+      "Mauritius National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Mauritius Culinary Delights",
+      "Traditional Mauritius Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MAR": {
     "top_places": [
-      "Rabat Historic Quarter",
-      "National Parks of Morocco",
-      "Alpine Valleys & Trails of Morocco"
+      "Jemaa el-Fnaa Marrakech Medina",
+      "Chefchaouen Blue Pearl Town",
+      "Fes el Bali Historic Quarter",
+      "Sahara Desert Merzouga Dunes"
     ],
     "famous_festivals": [
-      "Morocco Cultural Heritage Festival",
-      "Morocco National Music & Arts Gala"
+      "Fes Festival of World Sacred Music",
+      "Rose Festival El Kelaa M'Gouna",
+      "Gnaoua World Music Festival"
     ],
     "attractive_features": [
-      "Traditional Morocco Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Africa"
+      "Authentic Mint Tea & Tagine",
+      "Traditional Hammam Steam Baths",
+      "Camels Trekking Desert Dunes"
     ],
     "highlight_items": []
   },
   "MOZ": {
     "top_places": [
-      "Maputo Historic Quarter",
-      "National Parks of Mozambique",
-      "Alpine Valleys & Trails of Mozambique"
+      "Mozambique Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Mozambique",
+      "Scenic Coastal & Mountain Trails of Mozambique"
     ],
     "famous_festivals": [
-      "Mozambique Cultural Heritage Festival",
-      "Mozambique National Music & Arts Gala"
+      "Mozambique Cultural Heritage & Arts Festival",
+      "Mozambique National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Mozambique Culinary Delights",
+      "Traditional Mozambique Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "NAM": {
     "top_places": [
-      "Windhoek Historic Quarter",
-      "National Parks of Namibia",
-      "Alpine Valleys & Trails of Namibia"
+      "Namibia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Namibia",
+      "Scenic Coastal & Mountain Trails of Namibia"
     ],
     "famous_festivals": [
-      "Namibia Cultural Heritage Festival",
-      "Namibia National Music & Arts Gala"
+      "Namibia Cultural Heritage & Arts Festival",
+      "Namibia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Namibia Culinary Delights",
+      "Traditional Namibia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "NER": {
     "top_places": [
-      "Niamey Historic Quarter",
-      "National Parks of Niger",
-      "Alpine Valleys & Trails of Niger"
+      "Niger Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Niger",
+      "Scenic Coastal & Mountain Trails of Niger"
     ],
     "famous_festivals": [
-      "Niger Cultural Heritage Festival",
-      "Niger National Music & Arts Gala"
+      "Niger Cultural Heritage & Arts Festival",
+      "Niger National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Niger Culinary Delights",
+      "Traditional Niger Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "NGA": {
     "top_places": [
-      "Abuja Historic Quarter",
-      "National Parks of Nigeria",
-      "Alpine Valleys & Trails of Nigeria"
+      "Nigeria Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Nigeria",
+      "Scenic Coastal & Mountain Trails of Nigeria"
     ],
     "famous_festivals": [
-      "Nigeria Cultural Heritage Festival",
-      "Nigeria National Music & Arts Gala"
+      "Nigeria Cultural Heritage & Arts Festival",
+      "Nigeria National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Nigeria Culinary Delights",
+      "Traditional Nigeria Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "RWA": {
     "top_places": [
-      "Kigali Historic Quarter",
-      "National Parks of Rwanda",
-      "Alpine Valleys & Trails of Rwanda"
+      "Volcanoes National Park Gorillas",
+      "Kigali Genocide Memorial",
+      "Nyungwe Forest Canopy Walk",
+      "Lake Kivu Beaches Gisenyi"
     ],
     "famous_festivals": [
-      "Rwanda Cultural Heritage Festival",
-      "Rwanda National Music & Arts Gala"
+      "Kwita Izina Gorilla Naming Ceremony",
+      "Kigali Up Music Festival",
+      "Ubumuntu Arts Festival"
     ],
     "attractive_features": [
-      "Traditional Rwanda Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Mountain Gorilla Trekking Safaris",
+      "World's Cleanest Capital City Kigali",
+      "Authentic Brochettes & Banana Beer"
     ],
     "highlight_items": []
   },
   "STP": {
     "top_places": [
-      "São Tomé Historic Quarter",
-      "National Parks of São Tomé and Príncipe",
-      "Alpine Valleys & Trails of São Tomé and Príncipe"
+      "São Tomé and Príncipe Historic Center & Landmarks",
+      "National Parks & Natural Reserves of São Tomé and Príncipe",
+      "Scenic Coastal & Mountain Trails of São Tomé and Príncipe"
     ],
     "famous_festivals": [
-      "São Tomé and Príncipe Cultural Heritage Festival",
-      "São Tomé and Príncipe National Music & Arts Gala"
+      "São Tomé and Príncipe Cultural Heritage & Arts Festival",
+      "São Tomé and Príncipe National Music Gala"
     ],
     "attractive_features": [
-      "Traditional São Tomé and Príncipe Culinary Delights",
+      "Traditional São Tomé and Príncipe Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Middle Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SEN": {
     "top_places": [
-      "Dakar Historic Quarter",
-      "National Parks of Senegal",
-      "Alpine Valleys & Trails of Senegal"
+      "Gorée Island Slave House Museum",
+      "Lake Retba Pink Lake",
+      "Monument to African Renaissance Dakar",
+      "Djoudj National Bird Sanctuary"
     ],
     "famous_festivals": [
-      "Senegal Cultural Heritage Festival",
-      "Senegal National Music & Arts Gala"
+      "Dak'Art African Contemporary Art Biennale",
+      "Saint-Louis International Jazz Festival",
+      "Abéné Festival"
     ],
     "attractive_features": [
-      "Traditional Senegal Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Authentic Thiéboudienne Fish Rice",
+      "Teranga Hospitality Culture",
+      "Surfing Dakar Ocean Breaks"
     ],
     "highlight_items": []
   },
   "SYC": {
     "top_places": [
-      "Victoria Historic Quarter",
-      "National Parks of Seychelles",
-      "Alpine Valleys & Trails of Seychelles"
+      "Seychelles Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Seychelles",
+      "Scenic Coastal & Mountain Trails of Seychelles"
     ],
     "famous_festivals": [
-      "Seychelles Cultural Heritage Festival",
-      "Seychelles National Music & Arts Gala"
+      "Seychelles Cultural Heritage & Arts Festival",
+      "Seychelles National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Seychelles Culinary Delights",
+      "Traditional Seychelles Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SLE": {
     "top_places": [
-      "Freetown Historic Quarter",
-      "National Parks of Sierra Leone",
-      "Alpine Valleys & Trails of Sierra Leone"
+      "Sierra Leone Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Sierra Leone",
+      "Scenic Coastal & Mountain Trails of Sierra Leone"
     ],
     "famous_festivals": [
-      "Sierra Leone Cultural Heritage Festival",
-      "Sierra Leone National Music & Arts Gala"
+      "Sierra Leone Cultural Heritage & Arts Festival",
+      "Sierra Leone National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Sierra Leone Culinary Delights",
+      "Traditional Sierra Leone Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SOM": {
     "top_places": [
-      "Mogadishu Historic Quarter",
-      "National Parks of Somalia",
-      "Alpine Valleys & Trails of Somalia"
+      "Somalia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Somalia",
+      "Scenic Coastal & Mountain Trails of Somalia"
     ],
     "famous_festivals": [
-      "Somalia Cultural Heritage Festival",
-      "Somalia National Music & Arts Gala"
+      "Somalia Cultural Heritage & Arts Festival",
+      "Somalia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Somalia Culinary Delights",
+      "Traditional Somalia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "ZAF": {
     "top_places": [
-      "Pretoria Historic Quarter",
-      "National Parks of South Africa",
-      "Alpine Valleys & Trails of South Africa"
+      "Table Mountain Cape Town",
+      "Kruger National Park Safari",
+      "Robben Island Museum",
+      "Cape Winelands Stellenbosch"
     ],
     "famous_festivals": [
-      "South Africa Cultural Heritage Festival",
-      "South Africa National Music & Arts Gala"
+      "Cape Town International Jazz Festival",
+      "Knysna Oyster Festival",
+      "National Arts Festival Makhanda"
     ],
     "attractive_features": [
-      "Traditional South Africa Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Africa"
+      "Big Five Wildlife Safaris",
+      "Braai Barbecue & Biltong Culture",
+      "Cape Peninsula Coastal Drive"
     ],
     "highlight_items": []
   },
   "SSD": {
     "top_places": [
-      "Juba Historic Quarter",
-      "National Parks of South Sudan",
-      "Alpine Valleys & Trails of South Sudan"
+      "South Sudan Historic Center & Landmarks",
+      "National Parks & Natural Reserves of South Sudan",
+      "Scenic Coastal & Mountain Trails of South Sudan"
     ],
     "famous_festivals": [
-      "South Sudan Cultural Heritage Festival",
-      "South Sudan National Music & Arts Gala"
+      "South Sudan Cultural Heritage & Arts Festival",
+      "South Sudan National Music Gala"
     ],
     "attractive_features": [
-      "Traditional South Sudan Culinary Delights",
+      "Traditional South Sudan Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SDN": {
     "top_places": [
-      "Khartoum Historic Quarter",
-      "National Parks of Sudan",
-      "Alpine Valleys & Trails of Sudan"
+      "Sudan Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Sudan",
+      "Scenic Coastal & Mountain Trails of Sudan"
     ],
     "famous_festivals": [
-      "Sudan Cultural Heritage Festival",
-      "Sudan National Music & Arts Gala"
+      "Sudan Cultural Heritage & Arts Festival",
+      "Sudan National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Sudan Culinary Delights",
+      "Traditional Sudan Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "TZA": {
     "top_places": [
-      "Dodoma Historic Quarter",
-      "National Parks of Tanzania",
-      "Alpine Valleys & Trails of Tanzania"
+      "Serengeti National Park Safari",
+      "Mount Kilimanjaro Summit",
+      "Zanzibar Stone Town & Nungwi",
+      "Ngorongoro Crater Conservation"
     ],
     "famous_festivals": [
-      "Tanzania Cultural Heritage Festival",
-      "Tanzania National Music & Arts Gala"
+      "Zanzibar International Film Festival",
+      "Kilimanajaro Marathon",
+      "Sauti za Busara Music Festival"
     ],
     "attractive_features": [
-      "Traditional Tanzania Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Great Wildebeest Migration Serengeti",
+      "Climbing Mount Kilimanjaro Peak",
+      "Spices & Coral Reefs Zanzibar"
     ],
     "highlight_items": []
   },
   "TGO": {
     "top_places": [
-      "Lomé Historic Quarter",
-      "National Parks of Togo",
-      "Alpine Valleys & Trails of Togo"
+      "Togo Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Togo",
+      "Scenic Coastal & Mountain Trails of Togo"
     ],
     "famous_festivals": [
-      "Togo Cultural Heritage Festival",
-      "Togo National Music & Arts Gala"
+      "Togo Cultural Heritage & Arts Festival",
+      "Togo National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Togo Culinary Delights",
+      "Traditional Togo Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Western Africa"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "TUN": {
     "top_places": [
-      "Tunis Historic Quarter",
-      "National Parks of Tunisia",
-      "Alpine Valleys & Trails of Tunisia"
+      "Carthage Ancient Roman Ruins",
+      "Sidi Bou Said Blue & White Village",
+      "El Jem Roman Amphitheater",
+      "Sahara Desert Tozeur Oasis"
     ],
     "famous_festivals": [
-      "Tunisia Cultural Heritage Festival",
-      "Tunisia National Music & Arts Gala"
+      "Carthage International Music Festival",
+      "Sahara Festival Douz",
+      "Medina Festival Tunis"
     ],
     "attractive_features": [
-      "Traditional Tunisia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Northern Africa"
+      "Authentic Harissa & Brik Pastry",
+      "Star Wars Film Sets Tozeur",
+      "Mediterranean Coastal Resorts"
     ],
     "highlight_items": []
   },
   "UGA": {
     "top_places": [
-      "Kampala Historic Quarter",
-      "National Parks of Uganda",
-      "Alpine Valleys & Trails of Uganda"
+      "Bwindi Impenetrable Forest Gorillas",
+      "Murchison Falls National Park",
+      "Queen Elizabeth Safari Park",
+      "Source of the Nile Jinja"
     ],
     "famous_festivals": [
-      "Uganda Cultural Heritage Festival",
-      "Uganda National Music & Arts Gala"
+      "Nyege Nyege International Music Festival",
+      "Bayimba International Festival",
+      "Uganda Martyrs Day"
     ],
     "attractive_features": [
-      "Traditional Uganda Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Mountain Gorilla Trekking Bwindi",
+      "White-Water Rafting Source of Nile",
+      "Authentic Rolex Chapati Omelette"
     ],
     "highlight_items": []
   },
   "ZMB": {
     "top_places": [
-      "Lusaka Historic Quarter",
-      "National Parks of Zambia",
-      "Alpine Valleys & Trails of Zambia"
+      "Victoria Falls Mosi-oa-Tunya",
+      "South Luangwa National Park Safari",
+      "Lower Zambezi River Canoeing",
+      "Kafue National Park"
     ],
     "famous_festivals": [
-      "Zambia Cultural Heritage Festival",
-      "Zambia National Music & Arts Gala"
+      "Kuomboka Festival Barotse",
+      "Nc'wala Ceremony Chipata",
+      "Livingstone Cultural Arts Gala"
     ],
     "attractive_features": [
-      "Traditional Zambia Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Eastern Africa"
+      "Devil's Pool Swimming at Victoria Falls",
+      "Walking Safaris South Luangwa",
+      "Authentic Nshima Maize Porridge"
     ],
     "highlight_items": []
   },
   "ZWE": {
     "top_places": [
-      "Harare Historic Quarter",
-      "National Parks of Zimbabwe",
-      "Alpine Valleys & Trails of Zimbabwe"
+      "Victoria Falls Spray & Bridge",
+      "Great Zimbabwe Ancient Ruins",
+      "Mana Pools National Park Safari",
+      "Hwange National Park Wildlife"
     ],
     "famous_festivals": [
-      "Zimbabwe Cultural Heritage Festival",
-      "Zimbabwe National Music & Arts Gala"
+      "Harare International Festival of Arts HIFA",
+      "Victoria Falls Carnival",
+      "Zimbabwe Cultural Week"
     ],
     "attractive_features": [
-      "Traditional Zimbabwe Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Southern Africa"
+      "Authentic Sadza & Stewed Beef",
+      "Walking Safaris with Elephants Mana Pools",
+      "Ancient Stone Ruins of Great Zimbabwe"
     ],
     "highlight_items": []
   },
   "AUS": {
     "top_places": [
-      "Sydney Opera House",
-      "Great Barrier Reef Queensland",
-      "Uluru Monolith Outback",
+      "Sydney Opera House & Harbor",
+      "Great Barrier Reef Cairns",
+      "Uluru Red Center Out-Back",
       "Bondi Beach Sydney"
     ],
     "famous_festivals": [
-      "Sydney Harbour New Year Fireworks",
-      "Vivid Sydney Light Festival",
-      "Moomba Festival Melbourne"
+      "Sydney New Year Harbor Fireworks",
+      "Vivid Sydney Light Gala",
+      "Melbourne International Comedy Festival"
     ],
     "attractive_features": [
-      "Kangaroos & Koalas Wildlife Safaris",
-      "World-Class Surfing Coastline",
-      "Red Center Outback Expeditions"
+      "Coastal Surfing & Snorkeling",
+      "Native Kangaroo & Koala Encounters",
+      "Barossa Valley Wine Tasting"
     ],
     "highlight_items": []
   },
   "FJI": {
     "top_places": [
-      "Suva Historic Quarter",
-      "National Parks of Fiji",
-      "Alpine Valleys & Trails of Fiji"
+      "Cloud 9 Floating Platform Mamanucas",
+      "Denarau Island Resort Port",
+      "Yasawa Islands Lagoon",
+      "Sigatoka Sand Dunes Park"
     ],
     "famous_festivals": [
-      "Fiji Cultural Heritage Festival",
-      "Fiji National Music & Arts Gala"
+      "Bula Festival Nadi",
+      "Hibiscus Festival Suva",
+      "Fiji International Jazz Gala"
     ],
     "attractive_features": [
-      "Traditional Fiji Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Melanesia"
+      "Authentic Kokoda Fish Salad & Kava Ceremony",
+      "Bula Friendly Island Hospitality",
+      "World-Class Soft Coral Scuba Diving"
     ],
     "highlight_items": []
   },
   "KIR": {
     "top_places": [
-      "South Tarawa Historic Quarter",
-      "National Parks of Kiribati",
-      "Alpine Valleys & Trails of Kiribati"
+      "Kiribati Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Kiribati",
+      "Scenic Coastal & Mountain Trails of Kiribati"
     ],
     "famous_festivals": [
-      "Kiribati Cultural Heritage Festival",
-      "Kiribati National Music & Arts Gala"
+      "Kiribati Cultural Heritage & Arts Festival",
+      "Kiribati National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Kiribati Culinary Delights",
+      "Traditional Kiribati Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Micronesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "MHL": {
     "top_places": [
-      "Majuro Historic Quarter",
-      "National Parks of Marshall Islands",
-      "Scenic Coastal Bays of Marshall Islands"
+      "Marshall Islands Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Marshall Islands",
+      "Scenic Coastal & Mountain Trails of Marshall Islands"
     ],
     "famous_festivals": [
-      "Marshall Islands Cultural Heritage Festival",
-      "Marshall Islands National Music & Arts Gala"
+      "Marshall Islands Cultural Heritage & Arts Festival",
+      "Marshall Islands National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Marshall Islands Culinary Delights",
+      "Traditional Marshall Islands Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Micronesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "FSM": {
     "top_places": [
-      "Palikir Historic Quarter",
-      "National Parks of Micronesia",
-      "Alpine Valleys & Trails of Micronesia"
+      "Micronesia Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Micronesia",
+      "Scenic Coastal & Mountain Trails of Micronesia"
     ],
     "famous_festivals": [
-      "Micronesia Cultural Heritage Festival",
-      "Micronesia National Music & Arts Gala"
+      "Micronesia Cultural Heritage & Arts Festival",
+      "Micronesia National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Micronesia Culinary Delights",
+      "Traditional Micronesia Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Micronesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "NRU": {
     "top_places": [
-      "Yaren Historic Quarter",
-      "National Parks of Nauru",
-      "Alpine Valleys & Trails of Nauru"
+      "Nauru Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Nauru",
+      "Scenic Coastal & Mountain Trails of Nauru"
     ],
     "famous_festivals": [
-      "Nauru Cultural Heritage Festival",
-      "Nauru National Music & Arts Gala"
+      "Nauru Cultural Heritage & Arts Festival",
+      "Nauru National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Nauru Culinary Delights",
+      "Traditional Nauru Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Micronesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "NZL": {
     "top_places": [
-      "Wellington Historic Quarter",
-      "National Parks of New Zealand",
-      "Alpine Valleys & Trails of New Zealand"
+      "Milford Sound Fiordland",
+      "Hobbiton Movie Set Matamata",
+      "Rotorua Geothermal Reserve",
+      "Queenstown Adventure Hub"
     ],
     "famous_festivals": [
-      "New Zealand Cultural Heritage Festival",
-      "New Zealand National Music & Arts Gala"
+      "Pasifika Festival Auckland",
+      "Queenstown Winter Festival",
+      "World of WearableArt Wellington"
     ],
     "attractive_features": [
-      "Traditional New Zealand Culinary Delights",
-      "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Australia and New Zealand"
+      "Bungee Jumping & Jet Boating",
+      "Māori Cultural Haka Performance",
+      "Marlborough Sauvignon Blanc"
     ],
     "highlight_items": []
   },
   "PLW": {
     "top_places": [
-      "Ngerulmud Historic Quarter",
-      "National Parks of Palau",
-      "Alpine Valleys & Trails of Palau"
+      "Palau Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Palau",
+      "Scenic Coastal & Mountain Trails of Palau"
     ],
     "famous_festivals": [
-      "Palau Cultural Heritage Festival",
-      "Palau National Music & Arts Gala"
+      "Palau Cultural Heritage & Arts Festival",
+      "Palau National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Palau Culinary Delights",
+      "Traditional Palau Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Micronesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "PNG": {
     "top_places": [
-      "Port Moresby Historic Quarter",
-      "National Parks of Papua New Guinea",
-      "Alpine Valleys & Trails of Papua New Guinea"
+      "Papua New Guinea Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Papua New Guinea",
+      "Scenic Coastal & Mountain Trails of Papua New Guinea"
     ],
     "famous_festivals": [
-      "Papua New Guinea Cultural Heritage Festival",
-      "Papua New Guinea National Music & Arts Gala"
+      "Papua New Guinea Cultural Heritage & Arts Festival",
+      "Papua New Guinea National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Papua New Guinea Culinary Delights",
+      "Traditional Papua New Guinea Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Melanesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "WSM": {
     "top_places": [
-      "Apia Historic Quarter",
-      "National Parks of Samoa",
-      "Alpine Valleys & Trails of Samoa"
+      "Samoa Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Samoa",
+      "Scenic Coastal & Mountain Trails of Samoa"
     ],
     "famous_festivals": [
-      "Samoa Cultural Heritage Festival",
-      "Samoa National Music & Arts Gala"
+      "Samoa Cultural Heritage & Arts Festival",
+      "Samoa National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Samoa Culinary Delights",
+      "Traditional Samoa Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Polynesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "SLB": {
     "top_places": [
-      "Honiara Historic Quarter",
-      "National Parks of Solomon Islands",
-      "Scenic Coastal Bays of Solomon Islands"
+      "Solomon Islands Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Solomon Islands",
+      "Scenic Coastal & Mountain Trails of Solomon Islands"
     ],
     "famous_festivals": [
-      "Solomon Islands Cultural Heritage Festival",
-      "Solomon Islands National Music & Arts Gala"
+      "Solomon Islands Cultural Heritage & Arts Festival",
+      "Solomon Islands National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Solomon Islands Culinary Delights",
+      "Traditional Solomon Islands Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Melanesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "TON": {
     "top_places": [
-      "Nuku'alofa Historic Quarter",
-      "National Parks of Tonga",
-      "Alpine Valleys & Trails of Tonga"
+      "Tonga Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Tonga",
+      "Scenic Coastal & Mountain Trails of Tonga"
     ],
     "famous_festivals": [
-      "Tonga Cultural Heritage Festival",
-      "Tonga National Music & Arts Gala"
+      "Tonga Cultural Heritage & Arts Festival",
+      "Tonga National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Tonga Culinary Delights",
+      "Traditional Tonga Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Polynesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "TUV": {
     "top_places": [
-      "Funafuti Historic Quarter",
-      "National Parks of Tuvalu",
-      "Alpine Valleys & Trails of Tuvalu"
+      "Tuvalu Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Tuvalu",
+      "Scenic Coastal & Mountain Trails of Tuvalu"
     ],
     "famous_festivals": [
-      "Tuvalu Cultural Heritage Festival",
-      "Tuvalu National Music & Arts Gala"
+      "Tuvalu Cultural Heritage & Arts Festival",
+      "Tuvalu National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Tuvalu Culinary Delights",
+      "Traditional Tuvalu Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Polynesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   },
   "VUT": {
     "top_places": [
-      "Port Vila Historic Quarter",
-      "National Parks of Vanuatu",
-      "Alpine Valleys & Trails of Vanuatu"
+      "Vanuatu Historic Center & Landmarks",
+      "National Parks & Natural Reserves of Vanuatu",
+      "Scenic Coastal & Mountain Trails of Vanuatu"
     ],
     "famous_festivals": [
-      "Vanuatu Cultural Heritage Festival",
-      "Vanuatu National Music & Arts Gala"
+      "Vanuatu Cultural Heritage & Arts Festival",
+      "Vanuatu National Music Gala"
     ],
     "attractive_features": [
-      "Traditional Vanuatu Culinary Delights",
+      "Traditional Vanuatu Culinary Specialties",
       "Guided Nature & Wildlife Expeditions",
-      "Historic Monuments of Melanesia"
+      "Historic Heritage & Monuments"
     ],
     "highlight_items": []
   }

@@ -289,13 +289,25 @@ fun PlannerScreen(
         )
     }
 
-    // Trip Workspace Modal (PDFs, Images, Notes)
+    // Trip Workspace Modal (Expenses, Docs, Itinerary, Packing)
     if (uiState.activeWorkspaceTrip != null) {
         val context = LocalContext.current
         TripWorkspaceModal(
             trip = uiState.activeWorkspaceTrip!!,
             attachments = uiState.workspaceAttachments,
+            expenses = uiState.workspaceExpenses,
+            packingItems = uiState.workspacePackingItems,
+            totalSpentHome = uiState.totalSpentHome,
+            activeTab = uiState.activeWorkspaceTab,
             currencyCode = uiState.userCurrencyCode,
+            tripDestinationCurrencyCode = uiState.tripDestinationCurrencyCode,
+            onSelectTab = viewModel::selectWorkspaceTab,
+            onAddExpense = viewModel::addExpense,
+            onDeleteExpense = viewModel::deleteExpense,
+            onCalculateLivePreview = viewModel::calculateLiveConversion,
+            onTogglePackingItem = viewModel::togglePackingItem,
+            onAddPackingItem = viewModel::addPackingItem,
+            onDeletePackingItem = viewModel::deletePackingItem,
             onAddFileAttachment = { uri, type, customTitle -> viewModel.addFileAttachment(context, uri, type, customTitle) },
             onAddNoteAttachment = { title, text -> viewModel.addNoteAttachment(title, text) },
             onUpdateNoteAttachment = { id, title, text -> viewModel.updateNoteAttachment(id, title, text) },

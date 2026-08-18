@@ -5,14 +5,22 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.nomadcompass.data.local.entity.ExpenseCategory
 import com.example.nomadcompass.domain.model.AttachmentType
 import com.example.nomadcompass.domain.model.Country
+import com.example.nomadcompass.domain.model.Expense
+import com.example.nomadcompass.domain.model.PackingItem
 import com.example.nomadcompass.domain.model.Trip
 import com.example.nomadcompass.domain.model.TripAttachment
+import com.example.nomadcompass.domain.repository.ExpenseRepository
+import com.example.nomadcompass.domain.repository.PackingRepository
 import com.example.nomadcompass.domain.repository.TripRepository
+import com.example.nomadcompass.domain.usecase.CalculateExpenseUseCase
 import com.example.nomadcompass.domain.usecase.GetAllCountriesUseCase
+import com.example.nomadcompass.domain.usecase.GetProfileUseCase
 import com.example.nomadcompass.util.FileStorageHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,15 +28,25 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-import com.example.nomadcompass.domain.usecase.GetProfileUseCase
+enum class WorkspaceTab(val label: String) {
+    EXPENSES("Expenses"),
+    DOCS("Docs"),
+    ITINERARY("Itinerary"),
+    PACKING("Packing")
+}
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
+data class WorkspaceDetails(
+    val attachments: List<TripAttachment>,
+    val expenses: List<Expense>,
+    val totalSpent: Double,
+    val packingItems: List<PackingItem>
+)
 
 data class PlannerUiState(
     val trips: List<Trip> = emptyList(),
@@ -41,14 +59,22 @@ data class PlannerUiState(
     val notes: String = "Co-working space access & high-speed Wi-Fi",
     val isSaving: Boolean = false,
     val activeWorkspaceTrip: Trip? = null,
+    val activeWorkspaceTab: WorkspaceTab = WorkspaceTab.EXPENSES,
     val workspaceAttachments: List<TripAttachment> = emptyList(),
+    val workspaceExpenses: List<Expense> = emptyList(),
+    val workspacePackingItems: List<PackingItem> = emptyList(),
+    val totalSpentHome: Double = 0.0,
     val userCurrencyCode: String = "USD",
+    val tripDestinationCurrencyCode: String = "JPY",
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PlannerViewModel @Inject constructor(
     private val tripRepository: TripRepository,
+    private val expenseRepository: ExpenseRepository,
+    private val packingRepository: PackingRepository,
+    private val calculateExpenseUseCase: CalculateExpenseUseCase,
     private val getAllCountriesUseCase: GetAllCountriesUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     savedStateHandle: SavedStateHandle,
@@ -81,19 +107,64 @@ class PlannerViewModel @Inject constructor(
         }
     }
 
+    private val _expensesFlow = _activeTripId.flatMapLatest { tripId ->
+        if (tripId != null) {
+            expenseRepository.getExpensesForTrip(tripId)
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
+    private val _totalSpentHomeFlow = _activeTripId.flatMapLatest { tripId ->
+        if (tripId != null) {
+            expenseRepository.getTotalSpentHome(tripId)
+        } else {
+            flowOf(0.0)
+        }
+    }
+
+    private val _packingItemsFlow = _activeTripId.flatMapLatest { tripId ->
+        if (tripId != null) {
+            viewModelScope.launch {
+                packingRepository.seedDefaultsIfEmpty(tripId)
+            }
+            packingRepository.getPackingItemsForTrip(tripId)
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
+    private val _workspaceDetailsFlow = combine(
+        _attachmentsFlow,
+        _expensesFlow,
+        _totalSpentHomeFlow,
+        _packingItemsFlow
+    ) { attachments, expenses, totalSpent, packingItems ->
+        WorkspaceDetails(attachments, expenses, totalSpent, packingItems)
+    }
+
     val uiState: StateFlow<PlannerUiState> = combine(
         _uiState,
         tripRepository.getAllTrips(),
         _sortedCountriesFlow,
-        _attachmentsFlow,
+        _workspaceDetailsFlow,
         getProfileUseCase()
-    ) { state, trips, sortedCountries, attachments, profile ->
+    ) { state, trips, sortedCountries, workspaceDetails, profile ->
+        val (attachments, expenses, totalSpent, packingItems) = workspaceDetails
         val currency = profile?.baseCurrencyCode?.ifBlank { "USD" } ?: "USD"
+        val activeTrip = state.activeWorkspaceTrip
+        val destCountry = sortedCountries.find { it.cca3.equals(activeTrip?.destinationCca3, ignoreCase = true) }
+        val destCurrency = destCountry?.currencyCode?.ifBlank { currency } ?: currency
+
         state.copy(
             trips = trips,
             availableCountries = sortedCountries,
             workspaceAttachments = attachments,
-            userCurrencyCode = currency
+            workspaceExpenses = expenses,
+            workspacePackingItems = packingItems,
+            totalSpentHome = totalSpent,
+            userCurrencyCode = currency,
+            tripDestinationCurrencyCode = destCurrency
         )
     }.stateIn(
         scope = viewModelScope,
@@ -103,7 +174,10 @@ class PlannerViewModel @Inject constructor(
 
     fun openTripWorkspace(trip: Trip) {
         _activeTripId.value = trip.id
-        _uiState.value = _uiState.value.copy(activeWorkspaceTrip = trip)
+        _uiState.value = _uiState.value.copy(
+            activeWorkspaceTrip = trip,
+            activeWorkspaceTab = WorkspaceTab.EXPENSES
+        )
     }
 
     fun closeTripWorkspace() {
@@ -111,6 +185,84 @@ class PlannerViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(activeWorkspaceTrip = null)
     }
 
+    fun selectWorkspaceTab(tab: WorkspaceTab) {
+        _uiState.value = _uiState.value.copy(activeWorkspaceTab = tab)
+    }
+
+    // Packing Actions
+    fun togglePackingItem(item: PackingItem) {
+        viewModelScope.launch {
+            packingRepository.togglePackingItem(item)
+        }
+    }
+
+    fun addPackingItem(name: String) {
+        val currentTrip = uiState.value.activeWorkspaceTrip ?: return
+        viewModelScope.launch {
+            packingRepository.addPackingItem(currentTrip.id, name)
+        }
+    }
+
+    fun deletePackingItem(id: Long) {
+        viewModelScope.launch {
+            packingRepository.deletePackingItem(id)
+        }
+    }
+
+    // Expense Actions
+    fun addExpense(
+        title: String,
+        amountLocal: Double,
+        currencyCode: String,
+        category: ExpenseCategory,
+        notes: String
+    ) {
+        val currentTrip = uiState.value.activeWorkspaceTrip ?: return
+        viewModelScope.launch {
+            val conversionResult = calculateExpenseUseCase.calculateHomeAmount(
+                amountLocal = amountLocal,
+                currencyCode = currencyCode,
+                homeCurrencyCode = uiState.value.userCurrencyCode
+            )
+
+            val expense = Expense(
+                tripId = currentTrip.id,
+                title = title.ifBlank { "Expense" },
+                amountLocal = amountLocal,
+                currencyCode = currencyCode.uppercase().trim(),
+                amountHome = conversionResult.amountHome,
+                isUnconverted = conversionResult.isUnconverted,
+                category = category,
+                date = System.currentTimeMillis(),
+                notes = notes
+            )
+
+            expenseRepository.addExpense(expense)
+        }
+    }
+
+    fun deleteExpense(id: Long) {
+        viewModelScope.launch {
+            expenseRepository.deleteExpense(id)
+        }
+    }
+
+    fun calculateLiveConversion(
+        amountLocal: Double,
+        currencyCode: String,
+        callback: (Double, Boolean) -> Unit
+    ) {
+        viewModelScope.launch {
+            val result = calculateExpenseUseCase.calculateHomeAmount(
+                amountLocal = amountLocal,
+                currencyCode = currencyCode,
+                homeCurrencyCode = uiState.value.userCurrencyCode
+            )
+            callback(result.amountHome, result.isUnconverted)
+        }
+    }
+
+    // Workspace Attachments Actions
     fun addFileAttachment(context: Context, uri: Uri, type: AttachmentType, customTitle: String) {
         val currentTrip = uiState.value.activeWorkspaceTrip ?: return
         viewModelScope.launch {
@@ -240,4 +392,3 @@ class PlannerViewModel @Inject constructor(
         }
     }
 }
-

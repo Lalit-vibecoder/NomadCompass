@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.example.nomadcompass.data.local.NomadDatabase
 import com.example.nomadcompass.data.local.dao.CacheDao
 import com.example.nomadcompass.data.local.dao.CountryDao
+import com.example.nomadcompass.data.local.dao.ExpenseDao
+import com.example.nomadcompass.data.local.dao.PackingItemDao
 import com.example.nomadcompass.data.local.dao.TripAttachmentDao
 import com.example.nomadcompass.data.local.dao.TripDao
 import com.example.nomadcompass.data.local.dao.UserProfileDao
@@ -17,14 +19,18 @@ import com.example.nomadcompass.data.remote.api.TravelAdvisoryApi
 import com.example.nomadcompass.data.repository.AdvisoryRepositoryImpl
 import com.example.nomadcompass.data.repository.CountryRepositoryImpl
 import com.example.nomadcompass.data.repository.CurrencyRepositoryImpl
+import com.example.nomadcompass.data.repository.ExpenseRepositoryImpl
 import com.example.nomadcompass.data.repository.HolidayRepositoryImpl
+import com.example.nomadcompass.data.repository.PackingRepositoryImpl
 import com.example.nomadcompass.data.repository.ProfileRepositoryImpl
 import com.example.nomadcompass.data.repository.TripRepositoryImpl
 import com.example.nomadcompass.data.repository.WeatherRepositoryImpl
 import com.example.nomadcompass.domain.repository.AdvisoryRepository
 import com.example.nomadcompass.domain.repository.CountryRepository
 import com.example.nomadcompass.domain.repository.CurrencyRepository
+import com.example.nomadcompass.domain.repository.ExpenseRepository
 import com.example.nomadcompass.domain.repository.HolidayRepository
+import com.example.nomadcompass.domain.repository.PackingRepository
 import com.example.nomadcompass.domain.repository.ProfileRepository
 import com.example.nomadcompass.domain.repository.TripRepository
 import com.example.nomadcompass.domain.repository.WeatherRepository
@@ -86,6 +92,12 @@ object AppModule {
 
     @Provides
     fun provideTripAttachmentDao(db: NomadDatabase): TripAttachmentDao = db.tripAttachmentDao()
+
+    @Provides
+    fun provideExpenseDao(db: NomadDatabase): ExpenseDao = db.expenseDao()
+
+    @Provides
+    fun providePackingItemDao(db: NomadDatabase): PackingItemDao = db.packingItemDao()
 
     @Provides
     @Singleton
@@ -179,4 +191,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindTripRepository(impl: TripRepositoryImpl): TripRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindExpenseRepository(impl: ExpenseRepositoryImpl): ExpenseRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPackingRepository(impl: PackingRepositoryImpl): PackingRepository
 }

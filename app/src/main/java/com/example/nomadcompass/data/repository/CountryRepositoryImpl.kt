@@ -170,13 +170,14 @@ private fun RestCountryDto.toEntity(): CountryEntity? {
 
 private fun CountryEntity.toDomain(highlightsMap: Map<String, CountryHighlight>): Country {
     val code = cca3.uppercase()
+    val name = commonName.ifBlank { code }
     val highlight = highlightsMap[code] ?: CountryHighlight(
-        topPlaces = listOf("$code Historic Center", "$code National Parks"),
-        famousFestivals = listOf("$code Cultural Festival"),
-        attractiveFeatures = listOf("Traditional Cuisine", "Scenic Nature"),
+        topPlaces = listOf("$name Historic Center", "National Parks of $name", "$name Scenic Coastline"),
+        famousFestivals = listOf("$name Cultural Festival", "$name National Music Gala"),
+        attractiveFeatures = listOf("Traditional $name Cuisine", "Nature & Wildlife Trails", "Historic Monuments"),
         mediaItems = listOf(
-            HighlightMediaItem("$code Historic Center", "TOP PLACE", "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80"),
-            HighlightMediaItem("$code Cultural Festival", "FESTIVAL", "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80")
+            HighlightMediaItem("$name Historic Center", "TOP PLACE", "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80"),
+            HighlightMediaItem("$name Cultural Festival", "FESTIVAL", "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80")
         )
     )
     val snippet = highlight.getRandomHighlightString()

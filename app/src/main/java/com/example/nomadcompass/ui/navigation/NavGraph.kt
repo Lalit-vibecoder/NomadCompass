@@ -11,6 +11,8 @@ import com.example.nomadcompass.ui.screens.country.CountryProfileScreen
 import com.example.nomadcompass.ui.screens.country.CountryProfileViewModel
 import com.example.nomadcompass.ui.screens.explore.ExploreScreen
 import com.example.nomadcompass.ui.screens.explore.ExploreViewModel
+import com.example.nomadcompass.ui.screens.lock.AppLockScreen
+import com.example.nomadcompass.ui.screens.lock.AppLockViewModel
 import com.example.nomadcompass.ui.screens.profile.ProfileSetupScreen
 import com.example.nomadcompass.ui.screens.profile.ProfileSetupViewModel
 import com.example.nomadcompass.ui.screens.splash.SplashScreen
@@ -29,6 +31,7 @@ import androidx.compose.animation.scaleOut
 
 object Destinations {
     const val SPLASH = "splash"
+    const val APP_LOCK = "app_lock"
     const val PROFILE_SETUP = "profile_setup"
     const val EXPLORE = "explore"
     const val PLANNER = "planner"
@@ -66,10 +69,27 @@ fun NomadCompassNavGraph() {
             val viewModel: SplashViewModel = hiltViewModel()
             SplashScreen(
                 viewModel = viewModel,
-                onNavigateNext = { hasProfile ->
-                    val destination = if (hasProfile) Destinations.EXPLORE else Destinations.PROFILE_SETUP
+                onNavigateNext = { hasProfile, isSecurityLocked ->
+                    val destination = when {
+                        !hasProfile -> Destinations.PROFILE_SETUP
+                        isSecurityLocked -> Destinations.APP_LOCK
+                        else -> Destinations.EXPLORE
+                    }
                     navController.navigate(destination) {
                         popUpTo(Destinations.SPLASH) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // App Lock Security Screen
+        composable(Destinations.APP_LOCK) {
+            val viewModel: AppLockViewModel = hiltViewModel()
+            AppLockScreen(
+                viewModel = viewModel,
+                onUnlocked = {
+                    navController.navigate(Destinations.EXPLORE) {
+                        popUpTo(Destinations.APP_LOCK) { inclusive = true }
                     }
                 }
             )

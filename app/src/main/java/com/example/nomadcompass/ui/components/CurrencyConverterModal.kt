@@ -49,6 +49,7 @@ import com.example.nomadcompass.ui.theme.PrimaryContainer
 import com.example.nomadcompass.ui.theme.SafetyGreen
 import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
+import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 import java.util.Locale
 
 @Composable
@@ -182,8 +183,8 @@ fun CurrencyConverterModal(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(CircleShape)
-                        .background(Background.copy(alpha = 0.5f))
-                        .border(1.dp, Color.White.copy(alpha = 0.05f), CircleShape)
+                        .background(SurfaceContainerLow)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                         .padding(vertical = 10.dp, horizontal = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -219,11 +220,12 @@ fun CurrencyConverterModal(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Primary,
-                            unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                            focusedContainerColor = Background.copy(alpha = 0.4f),
-                            unfocusedContainerColor = Background.copy(alpha = 0.4f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            focusedContainerColor = SurfaceContainerLow,
+                            unfocusedContainerColor = SurfaceContainerLow,
                             focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
                         ),
                         shape = RoundedCornerShape(16.dp),
                         trailingIcon = {
@@ -251,16 +253,17 @@ fun CurrencyConverterModal(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(CircleShape)
-                                .background(SecondaryContainer.copy(alpha = 0.6f))
+                                .background(SecondaryContainer.copy(alpha = 0.5f))
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                                 .clickable { onInputAmountChanged(preset) }
                                 .padding(vertical = 6.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "+$preset",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = OnSurface,
-                                fontSize = 12.sp
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Primary,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -274,7 +277,7 @@ fun CurrencyConverterModal(
                         .size(44.dp)
                         .clip(CircleShape)
                         .background(PrimaryContainer)
-                        .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape)
+                        .border(1.dp, Primary.copy(alpha = 0.4f), CircleShape)
                         .clickable { onToggleSwap() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -293,8 +296,8 @@ fun CurrencyConverterModal(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Background.copy(alpha = 0.6f))
-                        .border(1.dp, Color.White.copy(alpha = 0.05f), RoundedCornerShape(16.dp))
+                        .background(SurfaceContainerLow)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ) {
                     Text(

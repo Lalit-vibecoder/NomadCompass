@@ -28,15 +28,18 @@ val OnSurfaceDark = Color(0xFFF8FAFC)
 val OnSurfaceVariantDark = Color(0xFF94A3B8)
 val OnBackgroundDark = Color(0xFFF8FAFC)
 
+val OutlineDark = Color(0xFF334155)
+val OutlineVariantDark = Color(0xFF222C3D)
+
 
 // ☀️ Light Theme: Sun-Drenched Nomad Coast (Crisp Sky Mist + Warm Terracotta & Ocean Blue)
 val BackgroundLight = Color(0xFFF4F6F9)
 val SurfaceLight = Color(0xFFFFFFFF)
 val SurfaceContainerLowestLight = Color(0xFFFFFFFF)
-val SurfaceContainerLowLight = Color(0xFFF0F4F8)
-val SurfaceContainerLight = Color(0xFFE2E8F0)
-val SurfaceContainerHighLight = Color(0xFFCBD5E1)
-val SurfaceContainerHighestLight = Color(0xFF94A3B8)
+val SurfaceContainerLowLight = Color(0xFFF8FAFC)
+val SurfaceContainerLight = Color(0xFFFFFFFF)
+val SurfaceContainerHighLight = Color(0xFFF1F5F9)
+val SurfaceContainerHighestLight = Color(0xFFE2E8F0)
 val SurfaceBrightLight = Color(0xFFFFFFFF)
 
 val PrimaryLight = Color(0xFFD94E1F)
@@ -53,6 +56,9 @@ val OnSurfaceLight = Color(0xFF0F172A)
 val OnSurfaceVariantLight = Color(0xFF475569)
 val OnBackgroundLight = Color(0xFF0F172A)
 
+val OutlineLight = Color(0xFF94A3B8)
+val OutlineVariantLight = Color(0xFFCBD5E1)
+
 
 // ── Common Semantic & Accent Colors ──
 val Error = Color(0xFFEF4444)
@@ -60,8 +66,6 @@ val OnError = Color(0xFFFFFFFF)
 val ErrorContainer = Color(0xFFFEE2E2)
 val OnErrorContainer = Color(0xFF991B1B)
 
-val Outline = Color(0xFF64748B)
-val OutlineVariant = Color(0xFFCBD5E1)
 val InverseSurface = Color(0xFF0F172A)
 val InverseOnSurface = Color(0xFFF8FAFC)
 val SurfaceTint = Color(0xFFFF6B35)
@@ -70,5 +74,3 @@ val SafetyGreen = Color(0xFF10B981)
 val SafetyYellow = Color(0xFFF59E0B)
 val SafetyRed = Color(0xFFEF4444)
 val AccentAmber = Color(0xFFF59E0B)
-
-

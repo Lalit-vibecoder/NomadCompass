@@ -1,5 +1,7 @@
 package com.example.nomadcompass.ui.screens.profile
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nomadcompass.domain.model.Country
@@ -8,10 +10,12 @@ import com.example.nomadcompass.domain.usecase.GetAllCountriesUseCase
 import com.example.nomadcompass.domain.usecase.GetProfileUseCase
 import com.example.nomadcompass.domain.usecase.SaveProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 data class ProfileSetupUiState(
@@ -19,6 +23,11 @@ data class ProfileSetupUiState(
     val homeCountryCca3: String = "USA",
     val baseCurrencyCode: String = "USD",
     val tempUnit: String = "C",
+    val photoUri: String? = null,
+    val isSecurityEnabled: Boolean = false,
+    val isBiometricEnabled: Boolean = false,
+    val accessCode: String = "",
+    val themeMode: String = "DARK", // "DARK" or "LIGHT"
     val availableCountries: List<Country> = emptyList(),
     val isSaving: Boolean = false,
     val isSaved: Boolean = false,
@@ -53,11 +62,17 @@ class ProfileSetupViewModel @Inject constructor(
         viewModelScope.launch {
             getProfileUseCase().collect { saved ->
                 if (saved != null) {
+                    val hasSecurity = saved.isBiometricEnabled || saved.accessCode.isNotBlank()
                     _uiState.value = _uiState.value.copy(
                         fullName = saved.userName,
                         homeCountryCca3 = saved.homeCountryCca3,
                         baseCurrencyCode = saved.baseCurrencyCode,
-                        tempUnit = saved.tempUnit
+                        tempUnit = saved.tempUnit,
+                        photoUri = saved.photoUri,
+                        isSecurityEnabled = hasSecurity,
+                        isBiometricEnabled = saved.isBiometricEnabled,
+                        accessCode = saved.accessCode,
+                        themeMode = saved.themeMode.ifBlank { "DARK" }
                     )
                 }
             }
@@ -80,10 +95,53 @@ class ProfileSetupViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(tempUnit = unit)
     }
 
+    fun onThemeModeChanged(mode: String) {
+        _uiState.value = _uiState.value.copy(themeMode = mode)
+    }
+
+    fun onSecurityEnabledChanged(enabled: Boolean) {
+        _uiState.value = _uiState.value.copy(
+            isSecurityEnabled = enabled,
+            isBiometricEnabled = if (enabled) _uiState.value.isBiometricEnabled else false,
+            accessCode = if (enabled) _uiState.value.accessCode else ""
+        )
+    }
+
+    fun onBiometricEnabledChanged(enabled: Boolean) {
+        _uiState.value = _uiState.value.copy(isBiometricEnabled = enabled)
+    }
+
+    fun onAccessCodeChanged(code: String) {
+        val filtered = code.filter { it.isDigit() }.take(4)
+        _uiState.value = _uiState.value.copy(accessCode = filtered)
+    }
+
+    fun onPhotoSelected(context: Context, uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val destinationFile = File(context.filesDir, "profile_avatar.jpg")
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    destinationFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                _uiState.value = _uiState.value.copy(photoUri = destinationFile.absolutePath)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.value = _uiState.value.copy(photoUri = uri.toString())
+            }
+        }
+    }
+
     fun saveProfile() {
         val name = uiState.value.fullName.trim()
         if (name.isEmpty()) {
             _uiState.value = _uiState.value.copy(errorMessage = "Full name is required")
+            return
+        }
+
+        if (uiState.value.isSecurityEnabled && uiState.value.accessCode.isNotBlank() && uiState.value.accessCode.length < 4) {
+            _uiState.value = _uiState.value.copy(errorMessage = "Access PIN must be 4 digits")
             return
         }
 
@@ -93,7 +151,11 @@ class ProfileSetupViewModel @Inject constructor(
                 userName = name,
                 homeCountryCca3 = uiState.value.homeCountryCca3,
                 baseCurrencyCode = uiState.value.baseCurrencyCode,
-                tempUnit = uiState.value.tempUnit
+                tempUnit = uiState.value.tempUnit,
+                photoUri = uiState.value.photoUri,
+                isBiometricEnabled = if (uiState.value.isSecurityEnabled) uiState.value.isBiometricEnabled else false,
+                accessCode = if (uiState.value.isSecurityEnabled) uiState.value.accessCode else "",
+                themeMode = uiState.value.themeMode
             )
             saveProfileUseCase(profile)
             _uiState.value = _uiState.value.copy(isSaving = false, isSaved = true)
@@ -104,4 +166,3 @@ class ProfileSetupViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isSaved = false)
     }
 }
-

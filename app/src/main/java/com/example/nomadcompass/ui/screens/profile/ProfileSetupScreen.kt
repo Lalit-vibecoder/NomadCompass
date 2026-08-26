@@ -1,5 +1,14 @@
 package com.example.nomadcompass.ui.screens.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,19 +27,29 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,21 +62,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
+import com.example.nomadcompass.ui.components.ClayPill
 import com.example.nomadcompass.ui.components.bounceClick
-import com.example.nomadcompass.ui.components.bounceOnState
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.Error
+import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
+import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
+import com.example.nomadcompass.ui.theme.PrimaryContainer
 import com.example.nomadcompass.ui.theme.Secondary
+import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
-import com.example.nomadcompass.ui.theme.SurfaceContainerHighest
+import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
+import com.example.nomadcompass.ui.theme.SurfaceContainerLow
+import com.example.nomadcompass.ui.theme.SurfaceContainerLowest
+import java.io.File
 
 @Composable
 fun ProfileSetupScreen(
@@ -65,6 +97,8 @@ fun ProfileSetupScreen(
     onContinue: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val themeController = LocalThemeController.current
 
     LaunchedEffect(uiState.isSaved) {
         if (uiState.isSaved) {
@@ -73,8 +107,16 @@ fun ProfileSetupScreen(
         }
     }
 
-    val currencies = listOf("USD", "EUR", "GBP", "JPY", "AUD", "CAD", "SGD", "BRL", "INR")
+    // Photo picker launcher
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            viewModel.onPhotoSelected(context, uri)
+        }
+    }
 
+    val currencies = listOf("USD", "EUR", "GBP", "JPY", "AUD", "CAD", "SGD", "BRL", "INR")
     var countryDropdownExpanded by remember { mutableStateOf(false) }
     var currencyDropdownExpanded by remember { mutableStateOf(false) }
 
@@ -83,42 +125,105 @@ fun ProfileSetupScreen(
             .fillMaxSize()
             .background(Background)
             .statusBarsPadding()
-            .padding(horizontal = 24.dp, vertical = 24.dp),
-        contentAlignment = Alignment.Center
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             // Header Title
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Setup Profile",
+                    text = "Nomad Profile",
                     style = MaterialTheme.typography.headlineLarge,
-                    color = OnSurface
+                    color = OnSurface,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Customize your passport, appearance, and security",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = OnSurfaceVariant
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            // Avatar Photo Upload Section
+            val photoFile = if (!uiState.photoUri.isNullOrBlank()) File(uiState.photoUri!!) else null
 
-            // Form Card (Claymorphism)
+            Box(
+                modifier = Modifier
+                    .size(108.dp)
+                    .bounceClick(scaleDown = 0.94f) {
+                        photoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(SecondaryContainer)
+                        .border(2.5.dp, Primary, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (photoFile != null && photoFile.exists()) {
+                        AsyncImage(
+                            model = photoFile,
+                            contentDescription = "Profile Avatar",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Add Avatar",
+                            tint = Secondary,
+                            modifier = Modifier.size(52.dp)
+                        )
+                    }
+                }
+
+                // Camera Badge Button
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .align(Alignment.BottomEnd)
+                        .clip(CircleShape)
+                        .background(Primary)
+                        .border(2.dp, Background, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = "Upload Photo",
+                        tint = Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+
+            // Main Form Card
             ClayCard(
                 modifier = Modifier.fillMaxWidth(),
-                cornerRadius = 32.dp,
+                cornerRadius = 28.dp,
                 backgroundColor = SurfaceContainer
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(28.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(18.dp)
                 ) {
                     // Full Name Field
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -136,8 +241,8 @@ fun ProfileSetupScreen(
                                 Icon(
                                     imageVector = Icons.Default.Person,
                                     contentDescription = null,
-                                    tint = OnSurfaceVariant,
-                                    modifier = Modifier.size(24.dp)
+                                    tint = Primary,
+                                    modifier = Modifier.size(22.dp)
                                 )
                             },
                             singleLine = true,
@@ -145,46 +250,38 @@ fun ProfileSetupScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(CircleShape)
-                                .background(Background),
+                                .background(SurfaceContainerLow),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Primary.copy(alpha = 0.3f),
-                                unfocusedBorderColor = Color.White.copy(alpha = 0.05f),
+                                focusedBorderColor = Primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                                 focusedTextColor = OnSurface,
                                 unfocusedTextColor = OnSurface,
+                                cursorColor = Primary,
                             )
                         )
-                        if (uiState.errorMessage != null) {
-                            Text(
-                                text = uiState.errorMessage!!,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
                     }
 
-                    // Home Country Dropdown
+                    // Home Country Selection
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
-                            text = "HOME COUNTRY",
+                            text = "HOME COUNTRY / PASSPORT",
                             style = MaterialTheme.typography.labelSmall,
                             color = OnSurfaceVariant,
                             letterSpacing = 1.sp
                         )
-                        Box {
-                            val selectedCountry = uiState.availableCountries.find { it.cca3 == uiState.homeCountryCca3 }
-                            val displayLabel = if (selectedCountry != null) {
-                                "${selectedCountry.flagEmoji}  ${selectedCountry.commonName}"
-                            } else "Select origin"
+                        val selectedCountry = uiState.availableCountries.firstOrNull { it.cca3 == uiState.homeCountryCca3 }
+                        val countryDisplayText = selectedCountry?.let { "${it.flagEmoji} ${it.commonName}" } ?: uiState.homeCountryCca3
 
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp)
                                     .clip(CircleShape)
-                                    .background(Background)
-                                    .border(1.dp, Color.White.copy(alpha = 0.05f), CircleShape)
-                                    .clickable { countryDropdownExpanded = true }
-                                    .padding(horizontal = 20.dp),
+                                    .background(SurfaceContainerLow)
+                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                                    .bounceClick { countryDropdownExpanded = true }
+                                    .padding(horizontal = 16.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
@@ -192,30 +289,32 @@ fun ProfileSetupScreen(
                                     Icon(
                                         imageVector = Icons.Default.Public,
                                         contentDescription = null,
-                                        tint = OnSurfaceVariant,
-                                        modifier = Modifier.size(24.dp)
+                                        tint = Secondary,
+                                        modifier = Modifier.size(22.dp)
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Text(
-                                        text = displayLabel,
+                                        text = countryDisplayText,
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = OnSurface
+                                        color = OnSurface,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
                                 Icon(
                                     imageVector = Icons.Default.ExpandMore,
                                     contentDescription = null,
-                                    tint = OnSurfaceVariant,
-                                    modifier = Modifier.size(24.dp)
+                                    tint = OnSurfaceVariant
                                 )
                             }
+
                             DropdownMenu(
                                 expanded = countryDropdownExpanded,
-                                onDismissRequest = { countryDropdownExpanded = false }
+                                onDismissRequest = { countryDropdownExpanded = false },
+                                modifier = Modifier.background(SurfaceContainerHigh)
                             ) {
                                 uiState.availableCountries.forEach { country ->
                                     DropdownMenuItem(
-                                        text = { Text("${country.flagEmoji}  ${country.commonName}") },
+                                        text = { Text("${country.flagEmoji} ${country.commonName}", color = OnSurface) },
                                         onClick = {
                                             viewModel.onHomeCountryChanged(country.cca3)
                                             countryDropdownExpanded = false
@@ -226,190 +325,290 @@ fun ProfileSetupScreen(
                         }
                     }
 
-                    // 2-Column Row for Currency & Temp Unit
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        // Base Currency
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                text = "BASE CURRENCY",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = OnSurfaceVariant,
-                                letterSpacing = 1.sp
-                            )
-                            Box {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(56.dp)
-                                        .clip(CircleShape)
-                                        .background(Background)
-                                        .border(1.dp, Color.White.copy(alpha = 0.05f), CircleShape)
-                                        .clickable { currencyDropdownExpanded = true }
-                                        .padding(horizontal = 16.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            imageVector = Icons.Default.Payments,
-                                            contentDescription = null,
-                                            tint = OnSurfaceVariant,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(12.dp))
-                                        Text(
-                                            text = uiState.baseCurrencyCode,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = OnSurface
-                                        )
-                                    }
-                                    Icon(
-                                        imageVector = Icons.Default.ExpandMore,
-                                        contentDescription = null,
-                                        tint = OnSurfaceVariant,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                                DropdownMenu(
-                                    expanded = currencyDropdownExpanded,
-                                    onDismissRequest = { currencyDropdownExpanded = false }
-                                ) {
-                                    currencies.forEach { curr ->
-                                        DropdownMenuItem(
-                                            text = { Text(curr) },
-                                            onClick = {
-                                                viewModel.onBaseCurrencyChanged(curr)
-                                                currencyDropdownExpanded = false
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        // Temp Unit Toggle (°C / °F)
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                text = "TEMP. UNIT",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = OnSurfaceVariant,
-                                letterSpacing = 1.sp
-                            )
+                    // Base Currency Selection
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = "BASE EXPENSE CURRENCY",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = OnSurfaceVariant,
+                            letterSpacing = 1.sp
+                        )
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp)
                                     .clip(CircleShape)
-                                    .background(Background)
-                                    .padding(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                    .background(SurfaceContainerLow)
+                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                                    .bounceClick { currencyDropdownExpanded = true }
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                val isC = uiState.tempUnit == "C"
-                                val cBgColor by androidx.compose.animation.animateColorAsState(
-                                    targetValue = if (isC) Color(0xFFCCC6BC) else Color.Transparent,
-                                    animationSpec = androidx.compose.animation.core.tween(200),
-                                    label = "c_bg"
-                                )
-                                val cTextColor by androidx.compose.animation.animateColorAsState(
-                                    targetValue = if (isC) Color(0xFF353025) else OnSurfaceVariant,
-                                    animationSpec = androidx.compose.animation.core.tween(200),
-                                    label = "c_text"
-                                )
-                                val fBgColor by androidx.compose.animation.animateColorAsState(
-                                    targetValue = if (!isC) Color(0xFFCCC6BC) else Color.Transparent,
-                                    animationSpec = androidx.compose.animation.core.tween(200),
-                                    label = "f_bg"
-                                )
-                                val fTextColor by androidx.compose.animation.animateColorAsState(
-                                    targetValue = if (!isC) Color(0xFF353025) else OnSurfaceVariant,
-                                    animationSpec = androidx.compose.animation.core.tween(200),
-                                    label = "f_text"
-                                )
-
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(48.dp)
-                                        .clip(CircleShape)
-                                        .background(cBgColor)
-                                        .bounceClick(scaleDown = 0.93f) { viewModel.onTempUnitChanged("C") }
-                                        .bounceOnState(state = isC, maxScale = 1.06f),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Payments,
+                                        contentDescription = null,
+                                        tint = Primary,
+                                        modifier = Modifier.size(22.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
                                     Text(
-                                        text = "°C",
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            fontWeight = if (isC) FontWeight.Bold else FontWeight.Medium
-                                        ),
-                                        color = cTextColor
+                                        text = uiState.baseCurrencyCode,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = OnSurface,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(48.dp)
-                                        .clip(CircleShape)
-                                        .background(fBgColor)
-                                        .bounceClick(scaleDown = 0.93f) { viewModel.onTempUnitChanged("F") }
-                                        .bounceOnState(state = !isC, maxScale = 1.06f),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "°F",
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            fontWeight = if (!isC) FontWeight.Bold else FontWeight.Medium
-                                        ),
-                                        color = fTextColor
+                                Icon(
+                                    imageVector = Icons.Default.ExpandMore,
+                                    contentDescription = null,
+                                    tint = OnSurfaceVariant
+                                )
+                            }
+
+                            DropdownMenu(
+                                expanded = currencyDropdownExpanded,
+                                onDismissRequest = { currencyDropdownExpanded = false },
+                                modifier = Modifier.background(SurfaceContainerHigh)
+                            ) {
+                                currencies.forEach { curr ->
+                                    DropdownMenuItem(
+                                        text = { Text(curr, color = OnSurface) },
+                                        onClick = {
+                                            viewModel.onBaseCurrencyChanged(curr)
+                                            currencyDropdownExpanded = false
+                                        }
                                     )
                                 }
                             }
                         }
                     }
 
-                    // Explanation Text
-                    Text(
-                        text = "These settings help us personalize your travel insights, weather warnings, and budget forecasts.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = OnSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
+                    // Temperature Unit Preference
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = "TEMPERATURE SCALE",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = OnSurfaceVariant,
+                            letterSpacing = 1.sp
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            ClayPill(
+                                text = "Celsius (°C)",
+                                isActive = uiState.tempUnit == "C",
+                                onClick = { viewModel.onTempUnitChanged("C") },
+                                modifier = Modifier.weight(1f)
+                            )
+                            ClayPill(
+                                text = "Fahrenheit (°F)",
+                                isActive = uiState.tempUnit == "F",
+                                onClick = { viewModel.onTempUnitChanged("F") },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+
+                    // Theme Preference (Dark vs Light Mode)
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = "THEME PREFERENCE",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = OnSurfaceVariant,
+                            letterSpacing = 1.sp
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            ClayPill(
+                                text = "🌙 Dark Mode",
+                                isActive = uiState.themeMode == "DARK",
+                                onClick = {
+                                    viewModel.onThemeModeChanged("DARK")
+                                    themeController.updateTheme(true)
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                            ClayPill(
+                                text = "☀️ Light Mode",
+                                isActive = uiState.themeMode == "LIGHT",
+                                onClick = {
+                                    viewModel.onThemeModeChanged("LIGHT")
+                                    themeController.updateTheme(false)
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            // Security Settings Card
+            ClayCard(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 28.dp,
+                backgroundColor = SurfaceContainer
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Security,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Secure App Launch",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = OnSurface,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "Require authentication to open app",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = OnSurfaceVariant
+                                )
+                            }
+                        }
+                        Switch(
+                            checked = uiState.isSecurityEnabled,
+                            onCheckedChange = viewModel::onSecurityEnabledChanged,
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color.White,
+                                checkedTrackColor = Primary,
+                                uncheckedTrackColor = SurfaceContainerHigh
+                            )
+                        )
+                    }
 
-            // CTA Button
+                    // Security Options (Biometrics + PIN)
+                    AnimatedVisibility(
+                        visible = uiState.isSecurityEnabled,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(14.dp),
+                            modifier = Modifier.padding(top = 8.dp)
+                        ) {
+                            // Biometric Toggle
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(SurfaceContainerLow)
+                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Fingerprint,
+                                        contentDescription = null,
+                                        tint = Secondary,
+                                        modifier = Modifier.size(22.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = "Biometric (Fingerprint / Face)",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = OnSurface
+                                    )
+                                }
+                                Switch(
+                                    checked = uiState.isBiometricEnabled,
+                                    onCheckedChange = viewModel::onBiometricEnabledChanged,
+                                    colors = SwitchDefaults.colors(
+                                        checkedThumbColor = Color.White,
+                                        checkedTrackColor = Secondary,
+                                        uncheckedTrackColor = SurfaceContainerHigh
+                                    )
+                                )
+                            }
+
+                            // 4-Digit Access PIN
+                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text(
+                                    text = "4-DIGIT ACCESS PIN",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = OnSurfaceVariant,
+                                    letterSpacing = 1.sp
+                                )
+                                OutlinedTextField(
+                                    value = uiState.accessCode,
+                                    onValueChange = viewModel::onAccessCodeChanged,
+                                    placeholder = { Text("4-digit PIN (e.g. 1234)", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Default.Lock,
+                                            contentDescription = null,
+                                            tint = Primary,
+                                            modifier = Modifier.size(22.dp)
+                                        )
+                                    },
+                                    singleLine = true,
+                                    visualTransformation = PasswordVisualTransformation(),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(CircleShape)
+                                        .background(SurfaceContainerLow),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = Primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                        focusedTextColor = OnSurface,
+                                        unfocusedTextColor = OnSurface,
+                                        cursorColor = Primary,
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Error Message
+            if (uiState.errorMessage != null) {
+                Text(
+                    text = uiState.errorMessage ?: "",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Error,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            // Submit Button
             ClayButton(
                 onClick = viewModel::saveProfile,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isSaving
+                enabled = !uiState.isSaving,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = if (uiState.isSaving) "Saving..." else "Save & Continue",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = OnPrimary
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Icon(
-                        imageVector = Icons.Default.ArrowForward,
-                        contentDescription = null,
-                        tint = OnPrimary
-                    )
-                }
+                Text(
+                    text = if (uiState.isSaving) "SAVING..." else "SAVE PROFILE & CONTINUE",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = OnPrimaryContainer,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

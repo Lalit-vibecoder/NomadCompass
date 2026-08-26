@@ -39,6 +39,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.layout.ContentScale
+import java.io.File
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -60,6 +62,8 @@ import com.example.nomadcompass.domain.model.Trip
 import androidx.compose.ui.platform.LocalContext
 import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
+import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
+import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.TripWorkspaceModal
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.OnPrimary
@@ -92,7 +96,7 @@ fun PlannerScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(SurfaceContainerHigh)
-                    .border(1.dp, Color.White.copy(alpha = 0.05f))
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     .statusBarsPadding()
                     .padding(horizontal = 24.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -115,49 +119,42 @@ fun PlannerScreen(
                 }
 
                 // Profile Avatar on Right
+                val photoUri = uiState.userProfile?.photoUri
+                val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
+
                 Box(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
                         .background(SecondaryContainer)
-                        .border(1.dp, Secondary.copy(alpha = 0.3f), CircleShape)
+                        .border(1.5.dp, if (photoFile != null && photoFile.exists()) Primary else Secondary.copy(alpha = 0.3f), CircleShape)
                         .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Profile",
-                        tint = Secondary,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    if (photoFile != null && photoFile.exists()) {
+                        AsyncImage(
+                            model = photoFile,
+                            contentDescription = "Profile",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile",
+                            tint = Secondary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
         },
         bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(SurfaceContainerHigh)
-                    .border(1.dp, Color.White.copy(alpha = 0.05f))
-                    .padding(horizontal = 24.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BottomNavItem(
-                    icon = Icons.Default.Explore,
-                    label = "Explore",
-                    isSelected = false,
-                    onClick = onExploreClick
-                )
-
-                BottomNavItem(
-                    icon = Icons.Default.EventNote,
-                    label = "Planner",
-                    isSelected = true,
-                    onClick = { }
-                )
-            }
+            NomadBottomNavigationBar(
+                currentTab = NomadNavTab.PLANNER,
+                onExploreClick = onExploreClick,
+                onPlannerClick = { }
+            )
         },
         floatingActionButton = {
             Box(
@@ -531,7 +528,7 @@ private fun AddTripDialog(
                                 .height(52.dp)
                                 .clip(CircleShape)
                                 .background(SurfaceContainerLow)
-                                .border(1.dp, OnSurface.copy(alpha = 0.1f), CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                                 .clickable { countryDropdownExpanded = true }
                                 .padding(horizontal = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
@@ -640,12 +637,13 @@ private fun AddTripDialog(
                                 .fillMaxWidth()
                                 .height(52.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Primary.copy(alpha = 0.5f),
-                                unfocusedBorderColor = OnSurface.copy(alpha = 0.1f),
+                                focusedBorderColor = Primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                                 focusedContainerColor = SurfaceContainerLow,
                                 unfocusedContainerColor = SurfaceContainerLow,
                                 focusedTextColor = OnSurface,
                                 unfocusedTextColor = OnSurface,
+                                cursorColor = Primary,
                             )
                         )
                     }
@@ -663,12 +661,13 @@ private fun AddTripDialog(
                                 .fillMaxWidth()
                                 .height(52.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Primary.copy(alpha = 0.5f),
-                                unfocusedBorderColor = OnSurface.copy(alpha = 0.1f),
+                                focusedBorderColor = Primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                                 focusedContainerColor = SurfaceContainerLow,
                                 unfocusedContainerColor = SurfaceContainerLow,
                                 focusedTextColor = OnSurface,
                                 unfocusedTextColor = OnSurface,
+                                cursorColor = Primary,
                             )
                         )
                     }
@@ -700,12 +699,13 @@ private fun AddTripDialog(
                             .fillMaxWidth()
                             .height(52.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Primary.copy(alpha = 0.5f),
-                            unfocusedBorderColor = OnSurface.copy(alpha = 0.1f),
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                             focusedContainerColor = SurfaceContainerLow,
                             unfocusedContainerColor = SurfaceContainerLow,
                             focusedTextColor = OnSurface,
                             unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
                         )
                     )
                 }
@@ -723,12 +723,13 @@ private fun AddTripDialog(
                             .fillMaxWidth()
                             .height(52.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Primary.copy(alpha = 0.5f),
-                            unfocusedBorderColor = OnSurface.copy(alpha = 0.1f),
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                             focusedContainerColor = SurfaceContainerLow,
                             unfocusedContainerColor = SurfaceContainerLow,
                             focusedTextColor = OnSurface,
                             unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
                         )
                     )
                 }

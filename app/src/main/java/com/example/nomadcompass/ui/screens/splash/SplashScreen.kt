@@ -50,13 +50,13 @@ import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 @Composable
 fun SplashScreen(
     viewModel: SplashViewModel,
-    onNavigateNext: (hasProfile: Boolean) -> Unit,
+    onNavigateNext: (hasProfile: Boolean, isSecurityLocked: Boolean) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(uiState.isComplete) {
         if (uiState.isComplete) {
-            onNavigateNext(uiState.hasProfile)
+            onNavigateNext(uiState.hasProfile, uiState.isSecurityLocked)
         }
     }
 

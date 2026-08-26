@@ -15,6 +15,7 @@ import com.example.nomadcompass.domain.model.TripAttachment
 import com.example.nomadcompass.domain.repository.ExpenseRepository
 import com.example.nomadcompass.domain.repository.PackingRepository
 import com.example.nomadcompass.domain.repository.TripRepository
+import com.example.nomadcompass.domain.model.UserProfile
 import com.example.nomadcompass.domain.usecase.CalculateExpenseUseCase
 import com.example.nomadcompass.domain.usecase.GetAllCountriesUseCase
 import com.example.nomadcompass.domain.usecase.GetProfileUseCase
@@ -66,6 +67,7 @@ data class PlannerUiState(
     val totalSpentHome: Double = 0.0,
     val userCurrencyCode: String = "USD",
     val tripDestinationCurrencyCode: String = "JPY",
+    val userProfile: UserProfile? = null,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -164,7 +166,8 @@ class PlannerViewModel @Inject constructor(
             workspacePackingItems = packingItems,
             totalSpentHome = totalSpent,
             userCurrencyCode = currency,
-            tripDestinationCurrencyCode = destCurrency
+            tripDestinationCurrencyCode = destCurrency,
+            userProfile = profile
         )
     }.stateIn(
         scope = viewModelScope,

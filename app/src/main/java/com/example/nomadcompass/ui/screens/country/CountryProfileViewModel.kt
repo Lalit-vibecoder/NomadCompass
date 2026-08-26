@@ -17,9 +17,12 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
+import com.example.nomadcompass.domain.model.UserProfile
+
 data class CountryProfileUiState(
     val isLoading: Boolean = true,
     val detail: CountryDetailResult? = null,
+    val userProfile: UserProfile? = null,
     val baseCurrencyCode: String = "USD",
     val tempUnit: String = "C",
     val targetCurrencyCode: String = "USD",
@@ -66,6 +69,7 @@ class CountryProfileViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 detail = result,
+                userProfile = profile,
                 baseCurrencyCode = baseCurrency,
                 tempUnit = userTempUnit,
                 targetCurrencyCode = targetCurrency,

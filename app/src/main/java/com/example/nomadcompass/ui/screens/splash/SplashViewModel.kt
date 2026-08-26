@@ -12,11 +12,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import kotlinx.coroutines.flow.firstOrNull
+
 data class SplashUiState(
     val progress: Int = 0,
     val statusMessage: String = "Initializing...",
     val isComplete: Boolean = false,
     val hasProfile: Boolean = false,
+    val isSecurityLocked: Boolean = false,
 )
 
 @HiltViewModel
@@ -44,7 +47,9 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             // Seed DB asynchronously
             countryRepository.seedIfNeeded()
-            val hasProfile = profileRepository.hasProfile()
+            val savedProfile = profileRepository.getProfile().firstOrNull()
+            val hasProfile = savedProfile != null
+            val isSecurityLocked = savedProfile != null && (savedProfile.isBiometricEnabled || savedProfile.accessCode.isNotBlank())
 
             // Smooth progress loading matching splash animation
             for (p in 1..100) {
@@ -59,7 +64,8 @@ class SplashViewModel @Inject constructor(
             delay(100)
             _uiState.value = _uiState.value.copy(
                 isComplete = true,
-                hasProfile = hasProfile
+                hasProfile = hasProfile,
+                isSecurityLocked = isSecurityLocked
             )
         }
     }

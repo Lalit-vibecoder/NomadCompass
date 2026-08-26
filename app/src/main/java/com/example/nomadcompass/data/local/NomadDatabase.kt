@@ -33,7 +33,7 @@ import com.example.nomadcompass.data.local.entity.WeatherCacheEntity
         ExpenseEntity::class,
         PackingItemEntity::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = false,
 )
 abstract class NomadDatabase : RoomDatabase() {

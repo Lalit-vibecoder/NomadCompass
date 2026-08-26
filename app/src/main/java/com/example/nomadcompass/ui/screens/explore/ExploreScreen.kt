@@ -38,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import java.io.File
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +60,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.example.nomadcompass.domain.model.Country
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
+import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
+import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.bounceClick
 import com.example.nomadcompass.ui.components.bounceOnState
 import com.example.nomadcompass.ui.theme.Background
@@ -103,7 +106,7 @@ fun ExploreScreen(
                     onValueChange = viewModel::onSearchQueryChanged,
                     placeholder = { Text("Search destinations...", color = OnSurfaceVariant) },
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(24.dp))
+                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Primary, modifier = Modifier.size(22.dp))
                     },
                     singleLine = true,
                     modifier = Modifier
@@ -111,10 +114,11 @@ fun ExploreScreen(
                         .clip(CircleShape)
                         .background(SurfaceContainerLow),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         focusedTextColor = OnSurface,
                         unfocusedTextColor = OnSurface,
+                        cursorColor = Primary,
                     )
                 )
 
@@ -135,7 +139,7 @@ fun ExploreScreen(
                         .size(44.dp)
                         .clip(CircleShape)
                         .background(SurfaceContainerLow)
-                        .border(1.dp, OnSurface.copy(alpha = 0.1f), CircleShape)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                         .bounceClick { themeController.toggleTheme() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -150,45 +154,37 @@ fun ExploreScreen(
                 }
 
                 // Profile Avatar Section on Right
+                val photoUri = uiState.userProfile?.photoUri
+                val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
+
                 Box(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
                         .background(SecondaryContainer)
-                        .border(1.dp, Secondary.copy(alpha = 0.3f), CircleShape)
+                        .border(1.5.dp, if (photoFile != null && photoFile.exists()) Primary else Secondary.copy(alpha = 0.3f), CircleShape)
                         .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(24.dp))
+                    if (photoFile != null && photoFile.exists()) {
+                        AsyncImage(
+                            model = photoFile,
+                            contentDescription = "Profile",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(24.dp))
+                    }
                 }
             }
         },
         bottomBar = {
-            // Bottom Navigation Bar (Explore & Planner)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(SurfaceContainerHigh)
-                    .border(1.dp, Color.White.copy(alpha = 0.05f))
-                    .padding(horizontal = 24.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BottomNavItem(
-                    icon = Icons.Default.Explore,
-                    label = "Explore",
-                    isSelected = true,
-                    onClick = { }
-                )
-
-                BottomNavItem(
-                    icon = Icons.Default.EventNote,
-                    label = "Planner",
-                    isSelected = false,
-                    onClick = onPlannerClick
-                )
-            }
+            NomadBottomNavigationBar(
+                currentTab = NomadNavTab.EXPLORE,
+                onExploreClick = { },
+                onPlannerClick = onPlannerClick
+            )
         },
         containerColor = Background
     ) { paddingValues ->

@@ -3,14 +3,15 @@ package com.example.nomadcompass.ui.screens.explore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nomadcompass.domain.model.Country
+import com.example.nomadcompass.domain.model.UserProfile
 import com.example.nomadcompass.domain.repository.CountryRepository
 import com.example.nomadcompass.domain.usecase.GetAllCountriesUseCase
+import com.example.nomadcompass.domain.usecase.GetProfileUseCase
 import com.example.nomadcompass.domain.usecase.SearchCountriesUseCase
 import com.example.nomadcompass.domain.usecase.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +20,14 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class ExploreUiState(
     val searchQuery: String = "",
     val selectedPill: String = "All",
     val countries: List<Country> = emptyList(),
+    val userProfile: UserProfile? = null,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,6 +36,7 @@ class ExploreViewModel @Inject constructor(
     private val getAllCountriesUseCase: GetAllCountriesUseCase,
     private val searchCountriesUseCase: SearchCountriesUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
     private val countryRepository: CountryRepository,
 ) : ViewModel() {
 
@@ -45,6 +49,7 @@ class ExploreViewModel @Inject constructor(
     val uiState: StateFlow<ExploreUiState> = combine(
         _searchQuery,
         _selectedPill,
+        getProfileUseCase(),
         _searchQuery.flatMapLatest { query ->
             if (query.isBlank()) {
                 getAllCountriesUseCase()
@@ -52,7 +57,7 @@ class ExploreViewModel @Inject constructor(
                 searchCountriesUseCase(query)
             }
         }
-    ) { query, pill, countryList ->
+    ) { query, pill, profile, countryList ->
         withContext(Dispatchers.Default) {
             val filtered = when (pill) {
                 "My Favs" -> countryList.filter { it.isFavorite }
@@ -67,7 +72,8 @@ class ExploreViewModel @Inject constructor(
             ExploreUiState(
                 searchQuery = query,
                 selectedPill = pill,
-                countries = filtered
+                countries = filtered,
+                userProfile = profile
             )
         }
     }.stateIn(

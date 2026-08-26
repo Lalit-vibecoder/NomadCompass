@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.CircularProgressIndicator
+import java.io.File
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -59,6 +60,8 @@ import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
 import com.example.nomadcompass.ui.components.CurrencyConverterModal
+import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
+import com.example.nomadcompass.ui.components.NomadNavTab
 import java.util.Locale
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.OnPrimary
@@ -107,7 +110,7 @@ fun CountryProfileScreen(
                         .height(44.dp)
                         .clip(CircleShape)
                         .background(SurfaceContainerLow)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), CircleShape)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                         .bounceClick(scaleDown = 0.97f, onClick = onExploreClick)
                         .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.CenterStart
@@ -120,52 +123,37 @@ fun CountryProfileScreen(
                 }
 
                 // Profile Avatar on Right
+                val photoUri = uiState.userProfile?.photoUri
+                val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
+
                 Box(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
                         .background(SecondaryContainer)
-                        .border(1.dp, Secondary.copy(alpha = 0.4f), CircleShape)
+                        .border(1.5.dp, if (photoFile != null && photoFile.exists()) Primary else Secondary.copy(alpha = 0.4f), CircleShape)
                         .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(22.dp))
+                    if (photoFile != null && photoFile.exists()) {
+                        AsyncImage(
+                            model = photoFile,
+                            contentDescription = "Profile",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(22.dp))
+                    }
                 }
             }
         },
         bottomBar = {
-            // Bottom Navigation Bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(SurfaceContainerHigh)
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-                    .padding(horizontal = 24.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .bounceClick(scaleDown = 0.92f, onClick = onExploreClick)
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Primary, modifier = Modifier.size(24.dp))
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(text = "Explore", style = MaterialTheme.typography.labelSmall, color = Primary, fontWeight = FontWeight.Bold, fontSize = 11.sp)
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .bounceClick(scaleDown = 0.92f, onClick = onPlannerClick)
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Icon(imageVector = Icons.Default.EventNote, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(24.dp))
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(text = "Planner", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, fontSize = 11.sp)
-                }
-            }
+            NomadBottomNavigationBar(
+                currentTab = NomadNavTab.EXPLORE,
+                onExploreClick = onExploreClick,
+                onPlannerClick = onPlannerClick
+            )
         },
         floatingActionButton = {
             // Floating Action Button - Clay Pill Style with bounce feedback & ambient glow shadow

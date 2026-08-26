@@ -50,8 +50,8 @@ private val DarkColorScheme = darkColorScheme(
     onError = OnError,
     errorContainer = ErrorContainer,
     onErrorContainer = OnErrorContainer,
-    outline = Outline,
-    outlineVariant = OutlineVariant,
+    outline = OutlineDark,
+    outlineVariant = OutlineVariantDark,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -78,8 +78,8 @@ private val LightColorScheme = lightColorScheme(
     onError = OnError,
     errorContainer = ErrorContainer,
     onErrorContainer = OnErrorContainer,
-    outline = Outline,
-    outlineVariant = OutlineVariant,
+    outline = OutlineLight,
+    outlineVariant = OutlineVariantLight,
 )
 
 // Dynamic Compose Theme Helper Properties
@@ -102,6 +102,8 @@ val Secondary @Composable get() = MaterialTheme.colorScheme.secondary
 val OnSecondary @Composable get() = MaterialTheme.colorScheme.onSecondary
 val SecondaryContainer @Composable get() = MaterialTheme.colorScheme.secondaryContainer
 val OnSecondaryContainer @Composable get() = MaterialTheme.colorScheme.onSecondaryContainer
+val Outline @Composable get() = MaterialTheme.colorScheme.outline
+val OutlineVariant @Composable get() = MaterialTheme.colorScheme.outlineVariant
 val Accent @Composable get() = AccentAmber
 
 

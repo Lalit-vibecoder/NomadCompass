@@ -834,9 +834,19 @@ private fun AddPackingItemDialog(
                 OutlinedTextField(
                     value = itemName,
                     onValueChange = { itemName = it },
-                    placeholder = { Text("e.g. Swimsuit, Drone, Passports") },
+                    placeholder = { Text("e.g. Swimsuit, Drone, Passports", color = OnSurfaceVariant.copy(alpha = 0.6f)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary,
+                    )
                 )
             }
         },
@@ -1354,16 +1364,21 @@ private fun AddFileTitleDialog(
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
             }
         },
         confirmButton = {
             ClayButton(onClick = { onSave(title) }) {
-                Text("Save to Workspace", color = OnPrimary)
+                Text("Save to Workspace", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
@@ -1406,9 +1421,14 @@ private fun AddNoteDialog(
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
 
@@ -1421,16 +1441,21 @@ private fun AddNoteDialog(
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
             }
         },
         confirmButton = {
             ClayButton(onClick = { onSave(title, content) }) {
-                Text("Save Note", color = OnPrimary)
+                Text("Save Note", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
@@ -1475,9 +1500,14 @@ private fun EditNoteDialog(
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
 
@@ -1490,16 +1520,21 @@ private fun EditNoteDialog(
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
             }
         },
         confirmButton = {
             ClayButton(onClick = { onSave(title, content) }) {
-                Text("Update Note", color = OnPrimary)
+                Text("Update Note", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {

@@ -18,14 +18,19 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
+enum class SecurityOption {
+    NONE,
+    PIN,
+    BIOMETRIC
+}
+
 data class ProfileSetupUiState(
     val fullName: String = "",
     val homeCountryCca3: String = "USA",
     val baseCurrencyCode: String = "USD",
     val tempUnit: String = "C",
     val photoUri: String? = null,
-    val isSecurityEnabled: Boolean = false,
-    val isBiometricEnabled: Boolean = false,
+    val securityOption: SecurityOption = SecurityOption.NONE,
     val accessCode: String = "",
     val themeMode: String = "DARK", // "DARK" or "LIGHT"
     val availableCountries: List<Country> = emptyList(),
@@ -62,15 +67,18 @@ class ProfileSetupViewModel @Inject constructor(
         viewModelScope.launch {
             getProfileUseCase().collect { saved ->
                 if (saved != null) {
-                    val hasSecurity = saved.isBiometricEnabled || saved.accessCode.isNotBlank()
+                    val secOpt = when {
+                        saved.isBiometricEnabled -> SecurityOption.BIOMETRIC
+                        saved.accessCode.isNotBlank() -> SecurityOption.PIN
+                        else -> SecurityOption.NONE
+                    }
                     _uiState.value = _uiState.value.copy(
                         fullName = saved.userName,
                         homeCountryCca3 = saved.homeCountryCca3,
                         baseCurrencyCode = saved.baseCurrencyCode,
                         tempUnit = saved.tempUnit,
                         photoUri = saved.photoUri,
-                        isSecurityEnabled = hasSecurity,
-                        isBiometricEnabled = saved.isBiometricEnabled,
+                        securityOption = secOpt,
                         accessCode = saved.accessCode,
                         themeMode = saved.themeMode.ifBlank { "DARK" }
                     )
@@ -99,21 +107,17 @@ class ProfileSetupViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(themeMode = mode)
     }
 
-    fun onSecurityEnabledChanged(enabled: Boolean) {
+    fun onSecurityOptionChanged(option: SecurityOption) {
         _uiState.value = _uiState.value.copy(
-            isSecurityEnabled = enabled,
-            isBiometricEnabled = if (enabled) _uiState.value.isBiometricEnabled else false,
-            accessCode = if (enabled) _uiState.value.accessCode else ""
+            securityOption = option,
+            errorMessage = null,
+            accessCode = if (option == SecurityOption.PIN) _uiState.value.accessCode else ""
         )
-    }
-
-    fun onBiometricEnabledChanged(enabled: Boolean) {
-        _uiState.value = _uiState.value.copy(isBiometricEnabled = enabled)
     }
 
     fun onAccessCodeChanged(code: String) {
         val filtered = code.filter { it.isDigit() }.take(4)
-        _uiState.value = _uiState.value.copy(accessCode = filtered)
+        _uiState.value = _uiState.value.copy(accessCode = filtered, errorMessage = null)
     }
 
     fun onPhotoSelected(context: Context, uri: Uri) {
@@ -140,8 +144,9 @@ class ProfileSetupViewModel @Inject constructor(
             return
         }
 
-        if (uiState.value.isSecurityEnabled && uiState.value.accessCode.isNotBlank() && uiState.value.accessCode.length < 4) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Access PIN must be 4 digits")
+        val secOpt = uiState.value.securityOption
+        if (secOpt == SecurityOption.PIN && uiState.value.accessCode.length < 4) {
+            _uiState.value = _uiState.value.copy(errorMessage = "Please enter a 4-digit PIN")
             return
         }
 
@@ -153,8 +158,8 @@ class ProfileSetupViewModel @Inject constructor(
                 baseCurrencyCode = uiState.value.baseCurrencyCode,
                 tempUnit = uiState.value.tempUnit,
                 photoUri = uiState.value.photoUri,
-                isBiometricEnabled = if (uiState.value.isSecurityEnabled) uiState.value.isBiometricEnabled else false,
-                accessCode = if (uiState.value.isSecurityEnabled) uiState.value.accessCode else "",
+                isBiometricEnabled = (secOpt == SecurityOption.BIOMETRIC),
+                accessCode = if (secOpt == SecurityOption.PIN) uiState.value.accessCode else "",
                 themeMode = uiState.value.themeMode
             )
             saveProfileUseCase(profile)

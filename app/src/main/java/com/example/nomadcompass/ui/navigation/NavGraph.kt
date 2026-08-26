@@ -50,15 +50,13 @@ fun NomadCompassNavGraph() {
         navController = navController,
         startDestination = Destinations.SPLASH,
         enterTransition = {
-            fadeIn(animationSpec = tween(200, easing = FastOutSlowInEasing)) +
-            scaleIn(initialScale = 0.96f, animationSpec = tween(200, easing = FastOutSlowInEasing))
+            fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
         },
         exitTransition = {
-            fadeOut(animationSpec = tween(150, easing = FastOutLinearInEasing))
+            fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
         },
         popEnterTransition = {
-            fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing)) +
-            scaleIn(initialScale = 0.96f, animationSpec = tween(180, easing = FastOutSlowInEasing))
+            fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
         },
         popExitTransition = {
             fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))

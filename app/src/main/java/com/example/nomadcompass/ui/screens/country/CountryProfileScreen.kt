@@ -59,9 +59,11 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
+import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.components.CurrencyConverterModal
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
+import com.example.nomadcompass.ui.theme.LocalThemeController
 import java.util.Locale
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.OnPrimary
@@ -94,11 +96,12 @@ fun CountryProfileScreen(
 
     Scaffold(
         topBar = {
-            // Header Top Navigation with System Status Bar Padding & Subtle Frosted Glass Look
+            // Header Top Navigation with System Status Bar Padding & Subtle Glass Look
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Background.copy(alpha = 0.85f))
+                    .background(SurfaceContainerHigh)
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     .statusBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -107,7 +110,7 @@ fun CountryProfileScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .height(48.dp)
                         .clip(CircleShape)
                         .background(SurfaceContainerLow)
                         .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
@@ -116,7 +119,7 @@ fun CountryProfileScreen(
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Primary, modifier = Modifier.size(20.dp))
+                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Primary, modifier = Modifier.size(22.dp))
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Search destinations...", style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
                     }
@@ -156,13 +159,20 @@ fun CountryProfileScreen(
             )
         },
         floatingActionButton = {
-            // Floating Action Button - Clay Pill Style with bounce feedback & ambient glow shadow
+            val isDark = LocalThemeController.current.isDarkMode
+            // Floating Action Button - 360-degree Pop-Out Clay Pill with + badge
             Box(
                 modifier = Modifier
+                    .clayShadow(
+                        cornerRadius = 9999.dp,
+                        ambientShadowColor = if (isDark) Color.Black.copy(alpha = 0.65f) else Primary.copy(alpha = 0.45f),
+                        spotShadowColor = if (isDark) Color.Black.copy(alpha = 0.85f) else Color(0x400F172A),
+                        blurRadius = 14.dp
+                    )
                     .clip(CircleShape)
                     .background(PrimaryContainer)
-                    .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                    .bounceClick(scaleDown = 0.93f) {
+                    .border(1.5.dp, if (isDark) Color.White.copy(alpha = 0.35f) else Primary.copy(alpha = 0.50f), CircleShape)
+                    .bounceClick(scaleDown = 0.94f) {
                         val currentCca3 = uiState.detail?.country?.cca3
                         if (currentCca3 != null) {
                             onAddTripClick(currentCca3)
@@ -170,12 +180,37 @@ fun CountryProfileScreen(
                             onPlannerClick()
                         }
                     }
-                    .padding(horizontal = 24.dp, vertical = 14.dp)
+                    .padding(horizontal = 22.dp, vertical = 12.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "ADD TRIP", style = MaterialTheme.typography.labelLarge, color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
+                    Box(
+                        modifier = Modifier
+                            .size(26.dp)
+                            .clayShadow(
+                                cornerRadius = 9999.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = 0.30f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.40f),
+                                blurRadius = 6.dp
+                            )
+                            .clip(CircleShape)
+                            .background(Primary.copy(alpha = if (isDark) 0.35f else 0.20f))
+                            .border(1.dp, Primary.copy(alpha = 0.4f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "PLAN TRIP",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         },

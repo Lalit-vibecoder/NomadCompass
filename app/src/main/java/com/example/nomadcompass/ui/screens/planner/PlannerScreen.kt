@@ -62,9 +62,11 @@ import com.example.nomadcompass.domain.model.Trip
 import androidx.compose.ui.platform.LocalContext
 import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
+import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.TripWorkspaceModal
+import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -98,7 +100,7 @@ fun PlannerScreen(
                     .background(SurfaceContainerHigh)
                     .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     .statusBarsPadding()
-                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -157,21 +159,49 @@ fun PlannerScreen(
             )
         },
         floatingActionButton = {
+            val isDark = LocalThemeController.current.isDarkMode
+            // Floating Action Button - 360-degree Pop-Out Clay Pill with + badge
             Box(
                 modifier = Modifier
+                    .clayShadow(
+                        cornerRadius = 9999.dp,
+                        ambientShadowColor = if (isDark) Color.Black.copy(alpha = 0.65f) else Primary.copy(alpha = 0.45f),
+                        spotShadowColor = if (isDark) Color.Black.copy(alpha = 0.85f) else Color(0x400F172A),
+                        blurRadius = 14.dp
+                    )
                     .clip(CircleShape)
                     .background(PrimaryContainer)
-                    .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                    .bounceClick(scaleDown = 0.93f) { viewModel.openAddDialog() }
-                    .padding(horizontal = 24.dp, vertical = 14.dp)
+                    .border(1.5.dp, if (isDark) Color.White.copy(alpha = 0.35f) else Primary.copy(alpha = 0.50f), CircleShape)
+                    .bounceClick(scaleDown = 0.94f) { viewModel.openAddDialog() }
+                    .padding(horizontal = 22.dp, vertical = 12.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = OnPrimary)
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(26.dp)
+                            .clayShadow(
+                                cornerRadius = 9999.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = 0.30f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.40f),
+                                blurRadius = 6.dp
+                            )
+                            .clip(CircleShape)
+                            .background(Primary.copy(alpha = if (isDark) 0.35f else 0.20f))
+                            .border(1.dp, Primary.copy(alpha = 0.4f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "PLAN NEW TRIP",
                         style = MaterialTheme.typography.labelLarge,
-                        color = OnPrimary,
+                        color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -239,6 +269,7 @@ fun PlannerScreen(
                                 color = OnSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(24.dp))
+                            val isDarkEmpty = LocalThemeController.current.isDarkMode
                             ClayButton(
                                 onClick = { viewModel.openAddDialog() },
                                 modifier = Modifier.fillMaxWidth()
@@ -247,9 +278,23 @@ fun PlannerScreen(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = OnPrimary)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Plan First Trip", color = OnPrimary, style = MaterialTheme.typography.labelLarge)
+                                    Box(
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .clayShadow(
+                                                cornerRadius = 9999.dp,
+                                                ambientShadowColor = Color.Black.copy(alpha = 0.25f),
+                                                spotShadowColor = Color.Black.copy(alpha = 0.35f),
+                                                blurRadius = 4.dp
+                                            )
+                                            .clip(CircleShape)
+                                            .background(Primary.copy(alpha = if (isDarkEmpty) 0.35f else 0.20f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer, modifier = Modifier.size(16.dp))
+                                    }
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text("Plan First Trip", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -737,7 +782,7 @@ private fun AddTripDialog(
         },
         confirmButton = {
             ClayButton(onClick = onSave) {
-                Text(text = "Save Trip", color = OnPrimary, modifier = Modifier.padding(horizontal = 16.dp))
+                Text(text = "Save Trip", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
             }
         },
         dismissButton = {

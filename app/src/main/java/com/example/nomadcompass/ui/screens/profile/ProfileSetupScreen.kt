@@ -460,6 +460,8 @@ fun ProfileSetupScreen(
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    val isSecOn = uiState.securityOption != SecurityOption.NONE
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -481,15 +483,21 @@ fun ProfileSetupScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "Require authentication to open app",
+                                    text = "Protect app with PIN or Biometrics",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = OnSurfaceVariant
                                 )
                             }
                         }
                         Switch(
-                            checked = uiState.isSecurityEnabled,
-                            onCheckedChange = viewModel::onSecurityEnabledChanged,
+                            checked = isSecOn,
+                            onCheckedChange = { checked ->
+                                if (checked) {
+                                    viewModel.onSecurityOptionChanged(SecurityOption.PIN)
+                                } else {
+                                    viewModel.onSecurityOptionChanged(SecurityOption.NONE)
+                                }
+                            },
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color.White,
                                 checkedTrackColor = Primary,
@@ -498,9 +506,9 @@ fun ProfileSetupScreen(
                         )
                     }
 
-                    // Security Options (Biometrics + PIN)
+                    // Security Method Selection (PIN vs Biometrics)
                     AnimatedVisibility(
-                        visible = uiState.isSecurityEnabled,
+                        visible = isSecOn,
                         enter = expandVertically() + fadeIn(),
                         exit = shrinkVertically() + fadeOut()
                     ) {
@@ -508,77 +516,94 @@ fun ProfileSetupScreen(
                             verticalArrangement = Arrangement.spacedBy(14.dp),
                             modifier = Modifier.padding(top = 8.dp)
                         ) {
-                            // Biometric Toggle
+                            Text(
+                                text = "AUTHENTICATION METHOD",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = OnSurfaceVariant,
+                                letterSpacing = 1.sp
+                            )
+
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(SurfaceContainerLow)
-                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                ClayPill(
+                                    text = "🔐 PIN Code",
+                                    isActive = uiState.securityOption == SecurityOption.PIN,
+                                    onClick = { viewModel.onSecurityOptionChanged(SecurityOption.PIN) },
+                                    modifier = Modifier.weight(1f)
+                                )
+                                ClayPill(
+                                    text = "👆 Biometric",
+                                    isActive = uiState.securityOption == SecurityOption.BIOMETRIC,
+                                    onClick = { viewModel.onSecurityOptionChanged(SecurityOption.BIOMETRIC) },
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+
+                            // PIN Input Field
+                            if (uiState.securityOption == SecurityOption.PIN) {
+                                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Text(
+                                        text = "SET 4-DIGIT ACCESS PIN",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = OnSurfaceVariant,
+                                        letterSpacing = 1.sp
+                                    )
+                                    OutlinedTextField(
+                                        value = uiState.accessCode,
+                                        onValueChange = viewModel::onAccessCodeChanged,
+                                        placeholder = { Text("4-digit PIN (e.g. 1234)", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Default.Lock,
+                                                contentDescription = null,
+                                                tint = Primary,
+                                                modifier = Modifier.size(22.dp)
+                                            )
+                                        },
+                                        singleLine = true,
+                                        visualTransformation = PasswordVisualTransformation(),
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(CircleShape)
+                                            .background(SurfaceContainerLow),
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = Primary,
+                                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                            focusedTextColor = OnSurface,
+                                            unfocusedTextColor = OnSurface,
+                                            cursorColor = Primary,
+                                            focusedContainerColor = SurfaceContainerLow,
+                                            unfocusedContainerColor = SurfaceContainerLow,
+                                        )
+                                    )
+                                }
+                            } else if (uiState.securityOption == SecurityOption.BIOMETRIC) {
+                                // Biometric Mode Info Banner
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .background(SurfaceContainerLow)
+                                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+                                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     Icon(
                                         imageVector = Icons.Default.Fingerprint,
                                         contentDescription = null,
                                         tint = Secondary,
-                                        modifier = Modifier.size(22.dp)
+                                        modifier = Modifier.size(28.dp)
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Text(
-                                        text = "Biometric (Fingerprint / Face)",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = OnSurface
+                                        text = "Biometrics (Fingerprint / Face ID) will be prompted when launching the app.",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = OnSurfaceVariant
                                     )
                                 }
-                                Switch(
-                                    checked = uiState.isBiometricEnabled,
-                                    onCheckedChange = viewModel::onBiometricEnabledChanged,
-                                    colors = SwitchDefaults.colors(
-                                        checkedThumbColor = Color.White,
-                                        checkedTrackColor = Secondary,
-                                        uncheckedTrackColor = SurfaceContainerHigh
-                                    )
-                                )
-                            }
-
-                            // 4-Digit Access PIN
-                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Text(
-                                    text = "4-DIGIT ACCESS PIN",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = OnSurfaceVariant,
-                                    letterSpacing = 1.sp
-                                )
-                                OutlinedTextField(
-                                    value = uiState.accessCode,
-                                    onValueChange = viewModel::onAccessCodeChanged,
-                                    placeholder = { Text("4-digit PIN (e.g. 1234)", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Default.Lock,
-                                            contentDescription = null,
-                                            tint = Primary,
-                                            modifier = Modifier.size(22.dp)
-                                        )
-                                    },
-                                    singleLine = true,
-                                    visualTransformation = PasswordVisualTransformation(),
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(CircleShape)
-                                        .background(SurfaceContainerLow),
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = Primary,
-                                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                                        focusedTextColor = OnSurface,
-                                        unfocusedTextColor = OnSurface,
-                                        cursorColor = Primary,
-                                    )
-                                )
                             }
                         }
                     }

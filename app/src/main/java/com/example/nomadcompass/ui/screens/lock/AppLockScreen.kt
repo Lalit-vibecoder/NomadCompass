@@ -1,7 +1,12 @@
 package com.example.nomadcompass.ui.screens.lock
 
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,7 +22,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.Fingerprint
@@ -43,12 +50,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import coil3.compose.AsyncImage
+import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.Error
 import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
+import com.example.nomadcompass.ui.theme.OutlineVariant
 import com.example.nomadcompass.ui.theme.Primary
 import com.example.nomadcompass.ui.theme.PrimaryContainer
 import com.example.nomadcompass.ui.theme.Secondary
@@ -56,7 +66,6 @@ import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
-import com.example.nomadcompass.ui.theme.OutlineVariant
 import com.example.nomadcompass.util.BiometricHelper
 import java.io.File
 import kotlin.math.roundToInt
@@ -75,6 +84,8 @@ fun AppLockScreen(
             onUnlocked()
         }
     }
+
+    val isBioMode = uiState.profile?.isBiometricEnabled == true
 
     // Auto-prompt biometric on screen launch if enabled
     LaunchedEffect(uiState.profile) {
@@ -122,9 +133,15 @@ fun AppLockScreen(
             Box(
                 modifier = Modifier
                     .size(90.dp)
+                    .clayShadow(
+                        cornerRadius = 9999.dp,
+                        ambientShadowColor = Primary.copy(alpha = 0.35f),
+                        spotShadowColor = Primary.copy(alpha = 0.45f),
+                        blurRadius = 12.dp
+                    )
                     .clip(CircleShape)
                     .background(SecondaryContainer)
-                    .border(2.dp, Primary.copy(alpha = 0.5f), CircleShape),
+                    .border(2.dp, Primary, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 if (photoFile != null && photoFile.exists()) {
@@ -136,10 +153,10 @@ fun AppLockScreen(
                     )
                 } else {
                     Icon(
-                        imageVector = Icons.Default.Lock,
+                        imageVector = if (isBioMode) Icons.Default.Fingerprint else Icons.Default.Lock,
                         contentDescription = null,
                         tint = Primary,
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(44.dp)
                     )
                 }
             }
@@ -156,141 +173,226 @@ fun AppLockScreen(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            Text(
-                text = "Enter your 4-digit security PIN",
-                style = MaterialTheme.typography.bodyMedium,
-                color = OnSurfaceVariant
-            )
+            if (isBioMode) {
+                // ── BIOMETRIC ONLY MODE ──
+                Text(
+                    text = "Touch the fingerprint sensor or use Face ID to unlock",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = OnSurfaceVariant,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
 
-            Spacer(modifier = Modifier.height(28.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
-            // 4-Dot PIN Indicator with Shake Effect
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.offset { IntOffset(shakeOffset.value.roundToInt(), 0) }
-            ) {
-                for (i in 0 until 4) {
-                    val isFilled = i < uiState.pinInput.length
-                    val dotColor by animateColorAsState(
-                        targetValue = if (isFilled) Primary else SurfaceContainerHigh,
-                        animationSpec = tween(150),
-                        label = "pin_dot_$i"
-                    )
+                // Pulsing glowing fingerprint button
+                val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+                val pulseScale by infiniteTransition.animateColor(
+                    initialValue = Secondary.copy(alpha = 0.3f),
+                    targetValue = Secondary.copy(alpha = 0.05f),
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(1200, easing = FastOutSlowInEasing),
+                        repeatMode = RepeatMode.Reverse
+                    ),
+                    label = "pulse_color"
+                )
 
-                    val dotBorder by animateColorAsState(
-                        targetValue = if (isFilled) Primary else OutlineVariant,
-                        animationSpec = tween(150),
-                        label = "pin_border_$i"
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .clip(CircleShape)
-                            .background(dotColor)
-                            .border(1.5.dp, dotBorder, CircleShape)
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clayShadow(
+                            cornerRadius = 9999.dp,
+                            ambientShadowColor = Secondary.copy(alpha = 0.4f),
+                            spotShadowColor = Secondary.copy(alpha = 0.5f),
+                            blurRadius = 16.dp
+                        )
+                        .clip(CircleShape)
+                        .background(pulseScale)
+                        .border(2.dp, Secondary, CircleShape)
+                        .bounceClick {
+                            if (activity != null) {
+                                BiometricHelper.showBiometricPrompt(
+                                    activity = activity,
+                                    onSuccess = { viewModel.onBiometricSuccess() },
+                                    onError = { viewModel.onBiometricError(it) }
+                                )
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Fingerprint,
+                        contentDescription = "Authenticate",
+                        tint = Secondary,
+                        modifier = Modifier.size(56.dp)
                     )
                 }
-            }
 
-            // Error Message
-            if (uiState.errorMessage != null) {
-                Spacer(modifier = Modifier.height(14.dp))
-                Text(
-                    text = uiState.errorMessage ?: "",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Error,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Spacer(modifier = Modifier.height(32.dp))
+
+                ClayButton(
+                    onClick = {
+                        if (activity != null) {
+                            BiometricHelper.showBiometricPrompt(
+                                activity = activity,
+                                onSuccess = { viewModel.onBiometricSuccess() },
+                                onError = { viewModel.onBiometricError(it) }
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(0.8f)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(imageVector = Icons.Default.Fingerprint, contentDescription = null, tint = OnPrimaryContainer)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Authenticate with Biometrics",
+                            color = OnPrimaryContainer,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                if (uiState.errorMessage != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = uiState.errorMessage ?: "",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Error,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
             } else {
-                Spacer(modifier = Modifier.height(26.dp))
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Numeric Keypad (1-9, Biometric/Empty, 0, Backspace)
-            Column(
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val rows = listOf(
-                    listOf("1", "2", "3"),
-                    listOf("4", "5", "6"),
-                    listOf("7", "8", "9"),
-                    listOf("BIO", "0", "DEL")
+                // ── 4-DIGIT PIN ONLY MODE ──
+                Text(
+                    text = "Enter your 4-digit security PIN",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = OnSurfaceVariant
                 )
 
-                for (row in rows) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        for (key in row) {
-                            when (key) {
-                                "BIO" -> {
-                                    val isBioEnabled = uiState.profile?.isBiometricEnabled == true
-                                    if (isBioEnabled && activity != null) {
+                Spacer(modifier = Modifier.height(28.dp))
+
+                // 4-Dot PIN Indicator with Shake Effect
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.offset { IntOffset(shakeOffset.value.roundToInt(), 0) }
+                ) {
+                    for (i in 0 until 4) {
+                        val isFilled = i < uiState.pinInput.length
+                        val dotColor by animateColorAsState(
+                            targetValue = if (isFilled) Primary else SurfaceContainerHigh,
+                            animationSpec = tween(150),
+                            label = "pin_dot_$i"
+                        )
+
+                        val dotBorder by animateColorAsState(
+                            targetValue = if (isFilled) Primary else OutlineVariant,
+                            animationSpec = tween(150),
+                            label = "pin_border_$i"
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clayShadow(
+                                    cornerRadius = 9999.dp,
+                                    ambientShadowColor = if (isFilled) Primary.copy(alpha = 0.4f) else Color.Transparent,
+                                    spotShadowColor = if (isFilled) Primary.copy(alpha = 0.5f) else Color.Transparent,
+                                    blurRadius = 6.dp
+                                )
+                                .clip(CircleShape)
+                                .background(dotColor)
+                                .border(1.5.dp, dotBorder, CircleShape)
+                        )
+                    }
+                }
+
+                // Error Message
+                if (uiState.errorMessage != null) {
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Text(
+                        text = uiState.errorMessage ?: "",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Error,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                } else {
+                    Spacer(modifier = Modifier.height(26.dp))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Numeric Keypad (1-9, Empty, 0, Backspace) - No Biometrics shown here!
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val rows = listOf(
+                        listOf("1", "2", "3"),
+                        listOf("4", "5", "6"),
+                        listOf("7", "8", "9"),
+                        listOf("EMPTY", "0", "DEL")
+                    )
+
+                    for (row in rows) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            for (key in row) {
+                                when (key) {
+                                    "EMPTY" -> {
+                                        Spacer(modifier = Modifier.size(72.dp))
+                                    }
+                                    "DEL" -> {
                                         Box(
                                             modifier = Modifier
                                                 .size(72.dp)
+                                                .clayShadow(
+                                                    cornerRadius = 9999.dp,
+                                                    ambientShadowColor = Color.Black.copy(alpha = 0.25f),
+                                                    spotShadowColor = Color.Black.copy(alpha = 0.35f),
+                                                    blurRadius = 8.dp
+                                                )
                                                 .clip(CircleShape)
-                                                .background(SecondaryContainer.copy(alpha = 0.35f))
-                                                .border(1.dp, Secondary.copy(alpha = 0.5f), CircleShape)
-                                                .bounceClick(scaleDown = 0.90f) {
-                                                    BiometricHelper.showBiometricPrompt(
-                                                        activity = activity,
-                                                        onSuccess = { viewModel.onBiometricSuccess() },
-                                                        onError = { viewModel.onBiometricError(it) }
-                                                    )
-                                                },
+                                                .background(SurfaceContainerLow)
+                                                .border(1.dp, OutlineVariant, CircleShape)
+                                                .bounceClick { viewModel.onDeleteDigit() },
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Icon(
-                                                imageVector = Icons.Default.Fingerprint,
-                                                contentDescription = "Unlock with Biometrics",
-                                                tint = Secondary,
-                                                modifier = Modifier.size(34.dp)
+                                                imageVector = Icons.AutoMirrored.Filled.Backspace,
+                                                contentDescription = "Delete Digit",
+                                                tint = OnSurface,
+                                                modifier = Modifier.size(24.dp)
                                             )
                                         }
-                                    } else {
-                                        Spacer(modifier = Modifier.size(72.dp))
                                     }
-                                }
-                                "DEL" -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(72.dp)
-                                            .clip(CircleShape)
-                                            .background(SurfaceContainerLow)
-                                            .border(1.dp, OutlineVariant, CircleShape)
-                                            .bounceClick(scaleDown = 0.90f) { viewModel.onDeleteDigit() },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.Backspace,
-                                            contentDescription = "Delete Digit",
-                                            tint = OnSurface,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                }
-                                else -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(72.dp)
-                                            .clip(CircleShape)
-                                            .background(SurfaceContainer)
-                                            .border(1.dp, OutlineVariant, CircleShape)
-                                            .bounceClick(scaleDown = 0.92f) { viewModel.onDigitEntered(key) },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = key,
-                                            style = MaterialTheme.typography.headlineMedium,
-                                            color = OnSurface,
-                                            fontWeight = FontWeight.Bold
-                                        )
+                                    else -> {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(72.dp)
+                                                .clayShadow(
+                                                    cornerRadius = 9999.dp,
+                                                    ambientShadowColor = Color.Black.copy(alpha = 0.25f),
+                                                    spotShadowColor = Color.Black.copy(alpha = 0.35f),
+                                                    blurRadius = 8.dp
+                                                )
+                                                .clip(CircleShape)
+                                                .background(SurfaceContainer)
+                                                .border(1.dp, OutlineVariant, CircleShape)
+                                                .bounceClick { viewModel.onDigitEntered(key) },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = key,
+                                                style = MaterialTheme.typography.headlineMedium,
+                                                color = OnSurface,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
                                     }
                                 }
                             }

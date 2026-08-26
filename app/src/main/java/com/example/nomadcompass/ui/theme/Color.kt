@@ -45,7 +45,7 @@ val SurfaceBrightLight = Color(0xFFFFFFFF)
 val PrimaryLight = Color(0xFFD94E1F)
 val OnPrimaryLight = Color(0xFFFFFFFF)
 val PrimaryContainerLight = Color(0xFFFFEDD5)
-val OnPrimaryContainerLight = Color(0xFF7C2D12)
+val OnPrimaryContainerLight = Color(0xFF0F172A)
 
 val SecondaryLight = Color(0xFF0284C7)
 val OnSecondaryLight = Color(0xFFFFFFFF)

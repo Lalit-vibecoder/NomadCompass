@@ -629,9 +629,14 @@ private fun LogExpenseBottomSheet(
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Primary,
-                    unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     focusedContainerColor = SurfaceContainerLow,
-                    unfocusedContainerColor = SurfaceContainerLow
+                    unfocusedContainerColor = SurfaceContainerLow,
+                    focusedTextColor = OnSurface,
+                    unfocusedTextColor = OnSurface,
+                    focusedLabelColor = Primary,
+                    unfocusedLabelColor = OnSurfaceVariant,
+                    cursorColor = Primary,
                 )
             )
 
@@ -652,9 +657,14 @@ private fun LogExpenseBottomSheet(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
 
@@ -808,9 +818,14 @@ private fun LogExpenseBottomSheet(
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Primary,
-                    unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     focusedContainerColor = SurfaceContainerLow,
-                    unfocusedContainerColor = SurfaceContainerLow
+                    unfocusedContainerColor = SurfaceContainerLow,
+                    focusedTextColor = OnSurface,
+                    unfocusedTextColor = OnSurface,
+                    focusedLabelColor = Primary,
+                    unfocusedLabelColor = OnSurfaceVariant,
+                    cursorColor = Primary,
                 )
             )
 
@@ -831,7 +846,7 @@ private fun LogExpenseBottomSheet(
                 Text(
                     text = "Save Expense",
                     style = MaterialTheme.typography.labelLarge,
-                    color = OnPrimary,
+                    color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                     fontWeight = FontWeight.Bold
                 )
             }

@@ -17,16 +17,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.nomadcompass.ui.theme.OnPrimary
+import com.example.nomadcompass.ui.theme.LocalThemeController
+import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
+import com.example.nomadcompass.ui.theme.OutlineVariant
+import com.example.nomadcompass.ui.theme.Primary
 import com.example.nomadcompass.ui.theme.PrimaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 
-import com.example.nomadcompass.ui.theme.LocalThemeController
-
 /**
- * Filter pill for category & filter bars.
- * Adaptive theme colors and tactile bounce feedback.
+ * Filter pill for category & filter bars with 360-degree pop-out shadows.
  */
 @Composable
 fun ClayPill(
@@ -38,8 +38,8 @@ fun ClayPill(
     val isDark = LocalThemeController.current.isDarkMode
     val shape = RoundedCornerShape(9999.dp)
     
-    val inactiveBorder = if (isDark) Color.White.copy(alpha = 0.09f) else Color(0x1A0F172A)
-    val shadowColor = if (isDark) Color.Black.copy(alpha = 0.38f) else Color(0x140F172A)
+    val ambientShadow = if (isDark) Color.Black.copy(alpha = 0.55f) else Color(0x280F172A)
+    val spotShadow = if (isDark) Color.Black.copy(alpha = 0.75f) else Color(0x1E0F172A)
 
     // Smooth animated color transitions
     val animatedBgColor by animateColorAsState(
@@ -48,12 +48,12 @@ fun ClayPill(
         label = "pill_bg_color"
     )
     val animatedTextColor by animateColorAsState(
-        targetValue = if (isActive) com.example.nomadcompass.ui.theme.OnPrimaryContainer else OnSurfaceVariant,
+        targetValue = if (isActive) OnPrimaryContainer else OnSurfaceVariant,
         animationSpec = tween(durationMillis = 200),
         label = "pill_text_color"
     )
     val animatedBorderColor by animateColorAsState(
-        targetValue = if (isActive) com.example.nomadcompass.ui.theme.Primary.copy(alpha = 0.5f) else inactiveBorder,
+        targetValue = if (isActive) Primary.copy(alpha = 0.5f) else OutlineVariant,
         animationSpec = tween(durationMillis = 200),
         label = "pill_border_color"
     )
@@ -61,13 +61,17 @@ fun ClayPill(
     val shadowModifier: Modifier = if (!isActive) {
         Modifier.clayShadow(
             cornerRadius = 9999.dp,
-            shadowColor = shadowColor,
-            blurRadius = 12.dp,
-            offsetX = 0.dp,
-            offsetY = 4.dp,
+            ambientShadowColor = ambientShadow,
+            spotShadowColor = spotShadow,
+            blurRadius = if (isDark) 10.dp else 8.dp,
         )
     } else {
-        Modifier
+        Modifier.clayShadow(
+            cornerRadius = 9999.dp,
+            ambientShadowColor = Primary.copy(alpha = 0.35f),
+            spotShadowColor = Primary.copy(alpha = 0.45f),
+            blurRadius = 10.dp,
+        )
     }
 
     val activeHighlightModifier: Modifier = if (isActive) {

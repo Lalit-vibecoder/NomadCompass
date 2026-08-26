@@ -56,6 +56,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.nomadcompass.domain.model.Country
 import com.example.nomadcompass.ui.components.ClayCard
@@ -95,22 +96,24 @@ fun ExploreScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(SurfaceContainerHigh)
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     .statusBarsPadding()
-                    .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedTextField(
                     value = uiState.searchQuery,
                     onValueChange = viewModel::onSearchQueryChanged,
-                    placeholder = { Text("Search destinations...", color = OnSurfaceVariant) },
+                    placeholder = { Text("Search destinations...", color = OnSurfaceVariant, style = MaterialTheme.typography.bodyMedium) },
                     leadingIcon = {
                         Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Primary, modifier = Modifier.size(22.dp))
                     },
                     singleLine = true,
+                    shape = CircleShape,
                     modifier = Modifier
                         .weight(1f)
+                        .height(48.dp)
                         .clip(CircleShape)
                         .background(SurfaceContainerLow),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -119,6 +122,8 @@ fun ExploreScreen(
                         focusedTextColor = OnSurface,
                         unfocusedTextColor = OnSurface,
                         cursorColor = Primary,
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
                     )
                 )
 
@@ -258,7 +263,7 @@ fun ExploreScreen(
                         com.example.nomadcompass.ui.components.ClayButton(
                             onClick = { viewModel.resetFilters() }
                         ) {
-                            Text("Reset Filters", color = OnPrimary, modifier = Modifier.padding(horizontal = 16.dp))
+                            Text("Reset Filters", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
                         }
                     }
                 }

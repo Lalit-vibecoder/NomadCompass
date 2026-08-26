@@ -94,59 +94,53 @@ fun NomadLoadingAnimation(
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
-        ClayCard(
-            cornerRadius = 32.dp,
-            backgroundColor = SurfaceContainerHigh,
-            modifier = Modifier.scale(scalePulse)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 36.dp, vertical = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            // Outer Ring Container with pulsing scale
+            Box(
+                modifier = Modifier
+                    .size(96.dp)
+                    .scale(scalePulse)
+                    .clip(CircleShape)
+                    .background(SecondaryContainer.copy(alpha = 0.5f))
+                    .border(
+                        width = 2.dp,
+                        color = Secondary.copy(alpha = 0.4f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                // Outer Ring Container
-                Box(
+                // Rotating App Logo
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = "Nomad Compass Logo",
                     modifier = Modifier
                         .size(96.dp)
                         .clip(CircleShape)
-                        .background(SecondaryContainer.copy(alpha = 0.5f))
-                        .border(
-                            width = 2.dp,
-                            color = Secondary.copy(alpha = 0.4f),
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    // Rotating App Logo
-                    Image(
-                        painter = painterResource(id = R.drawable.app_logo),
-                        contentDescription = "Nomad Compass Logo",
-                        modifier = Modifier
-                            .size(96.dp)
-                            .clip(CircleShape)
-                            .rotate(rotationAngle)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = OnSurface,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.alpha(alphaPulse)
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "NOMAD COMPASS",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = OnSurfaceVariant,
-                    letterSpacing = 2.sp
+                        .rotate(rotationAngle)
                 )
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = message,
+                style = MaterialTheme.typography.titleMedium,
+                color = OnSurface,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.alpha(alphaPulse)
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "NOMAD COMPASS",
+                style = MaterialTheme.typography.labelSmall,
+                color = OnSurfaceVariant,
+                letterSpacing = 2.sp
+            )
         }
     }
 }

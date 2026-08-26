@@ -21,6 +21,11 @@ import com.example.nomadcompass.ui.theme.PrimaryContainer
  * - Outer shadow for depth
  * - Inset top highlight for the "puffy" look
  */
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
+
+import com.example.nomadcompass.ui.theme.LocalThemeController
+
 @Composable
 fun ClayButton(
     onClick: () -> Unit,
@@ -29,23 +34,29 @@ fun ClayButton(
     contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 18.dp),
     content: @Composable RowScope.() -> Unit,
 ) {
+    val isDark = LocalThemeController.current.isDarkMode
+    val interactionSource = remember { MutableInteractionSource() }
+    val shadowColor = if (isDark) Color.Black.copy(alpha = 0.4f) else com.example.nomadcompass.ui.theme.Primary.copy(alpha = 0.35f)
+
     Button(
         onClick = onClick,
+        interactionSource = interactionSource,
         modifier = modifier
+            .pressScale(interactionSource, scaleDown = 0.96f)
             .clayShadow(
                 cornerRadius = 9999.dp,
-                shadowColor = Color.Black.copy(alpha = 0.3f),
-                blurRadius = 15.dp,
+                shadowColor = shadowColor,
+                blurRadius = 14.dp,
                 offsetX = 0.dp,
-                offsetY = 8.dp,
+                offsetY = 6.dp,
             ),
         enabled = enabled,
         shape = RoundedCornerShape(9999.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = PrimaryContainer,
-            contentColor = OnPrimary,
+            contentColor = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
             disabledContainerColor = PrimaryContainer.copy(alpha = 0.5f),
-            disabledContentColor = OnPrimary.copy(alpha = 0.5f),
+            disabledContentColor = com.example.nomadcompass.ui.theme.OnPrimaryContainer.copy(alpha = 0.5f),
         ),
         contentPadding = contentPadding,
         content = content,

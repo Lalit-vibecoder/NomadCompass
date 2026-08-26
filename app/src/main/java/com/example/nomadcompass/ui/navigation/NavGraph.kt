@@ -19,6 +19,14 @@ import com.example.nomadcompass.ui.screens.splash.SplashViewModel
 import com.example.nomadcompass.ui.screens.planner.PlannerScreen
 import com.example.nomadcompass.ui.screens.planner.PlannerViewModel
 
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+
 object Destinations {
     const val SPLASH = "splash"
     const val PROFILE_SETUP = "profile_setup"
@@ -37,7 +45,21 @@ fun NomadCompassNavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = Destinations.SPLASH
+        startDestination = Destinations.SPLASH,
+        enterTransition = {
+            fadeIn(animationSpec = tween(200, easing = FastOutSlowInEasing)) +
+            scaleIn(initialScale = 0.96f, animationSpec = tween(200, easing = FastOutSlowInEasing))
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(150, easing = FastOutLinearInEasing))
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing)) +
+            scaleIn(initialScale = 0.96f, animationSpec = tween(180, easing = FastOutSlowInEasing))
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
+        }
     ) {
         // Splash Screen
         composable(Destinations.SPLASH) {

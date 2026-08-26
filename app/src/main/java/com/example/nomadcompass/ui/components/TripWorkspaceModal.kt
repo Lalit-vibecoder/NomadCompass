@@ -374,12 +374,24 @@ private fun WorkspaceTabSelectorRow(
                 WorkspaceTab.PACKING -> Pair(Icons.Default.Luggage, "Packing")
             }
 
+            val animatedBgColor by androidx.compose.animation.animateColorAsState(
+                targetValue = if (isSelected) Primary else Color.Transparent,
+                animationSpec = androidx.compose.animation.core.tween(200),
+                label = "workspace_tab_bg"
+            )
+            val animatedContentColor by androidx.compose.animation.animateColorAsState(
+                targetValue = if (isSelected) OnPrimary else OnSurfaceVariant,
+                animationSpec = androidx.compose.animation.core.tween(200),
+                label = "workspace_tab_content"
+            )
+
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(if (isSelected) Primary else Color.Transparent)
-                    .clickable { onTabSelected(tab) }
+                    .background(animatedBgColor)
+                    .bounceClick(scaleDown = 0.94f) { onTabSelected(tab) }
+                    .bounceOnState(state = isSelected, maxScale = 1.05f)
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -390,14 +402,14 @@ private fun WorkspaceTabSelectorRow(
                     Icon(
                         imageVector = icon,
                         contentDescription = label,
-                        tint = if (isSelected) OnPrimary else OnSurfaceVariant,
+                        tint = animatedContentColor,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelMedium,
-                        color = if (isSelected) OnPrimary else OnSurfaceVariant,
+                        color = animatedContentColor,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                     )
                 }
@@ -721,9 +733,8 @@ private fun PackingTabContent(
                     key = { _, item -> item.id }
                 ) { _, item ->
                     ClayCard(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onTogglePackingItem(item) },
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onTogglePackingItem(item) },
                         cornerRadius = 14.dp,
                         backgroundColor = SurfaceContainerLow
                     ) {
@@ -742,7 +753,9 @@ private fun PackingTabContent(
                                     imageVector = if (item.isPacked) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                     contentDescription = if (item.isPacked) "Packed" else "Not Packed",
                                     tint = if (item.isPacked) Primary else OnSurfaceVariant.copy(alpha = 0.5f),
-                                    modifier = Modifier.size(22.dp)
+                                    modifier = Modifier
+                                        .size(22.dp)
+                                        .bounceOnState(state = item.isPacked, maxScale = 1.35f)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
@@ -755,7 +768,9 @@ private fun PackingTabContent(
 
                             IconButton(
                                 onClick = { onDeletePackingItem(item.id) },
-                                modifier = Modifier.size(28.dp)
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .bounceClick(scaleDown = 0.82f)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
@@ -779,7 +794,7 @@ private fun PackingTabContent(
                 .clip(CircleShape)
                 .background(PrimaryContainer)
                 .border(1.5.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                .clickable(onClick = onAddPackingItemClick),
+                .bounceClick(scaleDown = 0.92f, onClick = onAddPackingItemClick),
             contentAlignment = Alignment.Center
         ) {
             Icon(

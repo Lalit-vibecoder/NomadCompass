@@ -102,6 +102,8 @@ val Secondary @Composable get() = MaterialTheme.colorScheme.secondary
 val OnSecondary @Composable get() = MaterialTheme.colorScheme.onSecondary
 val SecondaryContainer @Composable get() = MaterialTheme.colorScheme.secondaryContainer
 val OnSecondaryContainer @Composable get() = MaterialTheme.colorScheme.onSecondaryContainer
+val Accent @Composable get() = AccentAmber
+
 
 @Composable
 fun NomadCompassTheme(

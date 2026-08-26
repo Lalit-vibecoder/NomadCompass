@@ -14,52 +14,59 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 
+import com.example.nomadcompass.ui.theme.LocalThemeController
+
 /**
- * A composable that applies the Claymorphism tactile look:
- * - Dark matte background
- * - Outer soft shadow for depth
- * - Subtle top-left inset highlight
- * - Thin translucent border
- *
- * Matches the `.clay-card` CSS from the Stitch mockups.
+ * A composable that applies tactile depth:
+ * - Dynamic background color
+ * - Theme-aware outer soft shadow for depth (slate in light mode, deep black in dark mode)
+ * - Subtle top-edge light reflection highlight
+ * - Crisp adaptive border
  */
 @Composable
 fun ClayCard(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 32.dp,
+    cornerRadius: Dp = 24.dp,
     backgroundColor: Color = SurfaceContainer,
+    onClick: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val isDark = LocalThemeController.current.isDarkMode
     val shape = RoundedCornerShape(cornerRadius)
+
+    val shadowColor = if (isDark) Color.Black.copy(alpha = 0.45f) else Color(0x1A0F172A)
+    val borderColor = if (isDark) Color.White.copy(alpha = 0.09f) else Color(0x180F172A)
+    val glowColor = if (isDark) Color.White.copy(alpha = 0.08f) else Color.White.copy(alpha = 0.6f)
+
     Box(
         modifier = modifier
+            .then(
+                if (onClick != null) {
+                    Modifier.bounceClick(scaleDown = 0.98f, onClick = onClick)
+                } else {
+                    Modifier
+                }
+            )
             .clayShadow(
                 cornerRadius = cornerRadius,
-                shadowColor = Color.Black.copy(alpha = 0.3f),
-                blurRadius = 12.dp,
-                offsetX = 4.dp,
-                offsetY = 4.dp,
+                shadowColor = shadowColor,
+                blurRadius = 14.dp,
+                offsetX = 0.dp,
+                offsetY = 6.dp,
             )
             .clip(shape)
             .background(backgroundColor, shape)
-            .border(1.dp, Color.White.copy(alpha = 0.03f), shape)
-            // Inset highlight simulated via a thin top/left inner padding glow
+            .border(1.dp, borderColor, shape)
             .drawBehind {
-                // Top-left inset highlight
+                // Subtle top-edge ambient highlight reflection
                 drawRect(
-                    color = Color.White.copy(alpha = 0.05f),
-                    size = size.copy(height = 2.dp.toPx()),
-                )
-                drawRect(
-                    color = Color.White.copy(alpha = 0.03f),
-                    size = size.copy(width = 2.dp.toPx()),
+                    color = glowColor,
+                    size = size.copy(height = 1.5.dp.toPx()),
                 )
             },
         content = content,
@@ -67,45 +74,23 @@ fun ClayCard(
 }
 
 /**
- * Custom shadow modifier using Canvas Paint blur for soft drop-shadow effect.
- * Uses drawWithCache to prevent object allocations on every draw frame.
+ * Hardware-accelerated GPU shadow modifier running on Android RenderThread.
+ * Eliminates software canvas layer overhead to ensure 60-120fps lag-free screen transitions.
  */
 fun Modifier.clayShadow(
-    cornerRadius: Dp = 32.dp,
+    cornerRadius: Dp = 24.dp,
     shadowColor: Color = Color.Black.copy(alpha = 0.3f),
     blurRadius: Dp = 12.dp,
-    offsetX: Dp = 4.dp,
+    offsetX: Dp = 0.dp,
     offsetY: Dp = 4.dp,
-): Modifier = this.drawWithCache {
-    val cornerPx = cornerRadius.toPx()
-    val blurPx = blurRadius.toPx().coerceAtLeast(1f)
-    val offX = offsetX.toPx()
-    val offY = offsetY.toPx()
-    val argbColor = shadowColor.toArgb()
-
-    val paint = Paint().also {
-        val frameworkPaint = it.asFrameworkPaint()
-        frameworkPaint.color = argbColor
-        frameworkPaint.setShadowLayer(
-            blurPx,
-            offX,
-            offY,
-            argbColor
-        )
-    }
-
-    onDrawBehind {
-        drawIntoCanvas { canvas ->
-            canvas.drawRoundRect(
-                left = 0f,
-                top = 0f,
-                right = size.width,
-                bottom = size.height,
-                radiusX = cornerPx,
-                radiusY = cornerPx,
-                paint = paint,
-            )
-        }
+): Modifier = this.graphicsLayer {
+    val elevationPx = blurRadius.toPx()
+    if (elevationPx > 0f) {
+        this.shadowElevation = elevationPx
+        this.shape = RoundedCornerShape(cornerRadius)
+        this.clip = false
+        this.ambientShadowColor = shadowColor
+        this.spotShadowColor = shadowColor
     }
 }
 

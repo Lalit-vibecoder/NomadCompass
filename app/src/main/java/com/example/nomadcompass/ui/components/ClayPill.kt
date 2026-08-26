@@ -1,14 +1,16 @@
 package com.example.nomadcompass.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,11 +22,11 @@ import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.PrimaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 
+import com.example.nomadcompass.ui.theme.LocalThemeController
+
 /**
- * Filter pill for the category bar.
- *
- * Active state: `.clay-pill-active` — pastel background with inset shadow.
- * Inactive state: `.clay-surface` — dark surface with outer shadow.
+ * Filter pill for category & filter bars.
+ * Adaptive theme colors and tactile bounce feedback.
  */
 @Composable
 fun ClayPill(
@@ -33,55 +35,68 @@ fun ClayPill(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isDark = LocalThemeController.current.isDarkMode
     val shape = RoundedCornerShape(9999.dp)
-    val bgColor = if (isActive) PrimaryContainer else SurfaceContainerHigh
-    val textColor = if (isActive) OnPrimary else OnSurfaceVariant
+    
+    val inactiveBorder = if (isDark) Color.White.copy(alpha = 0.09f) else Color(0x1A0F172A)
+    val shadowColor = if (isDark) Color.Black.copy(alpha = 0.38f) else Color(0x140F172A)
+
+    // Smooth animated color transitions
+    val animatedBgColor by animateColorAsState(
+        targetValue = if (isActive) PrimaryContainer else SurfaceContainerHigh,
+        animationSpec = tween(durationMillis = 200),
+        label = "pill_bg_color"
+    )
+    val animatedTextColor by animateColorAsState(
+        targetValue = if (isActive) com.example.nomadcompass.ui.theme.OnPrimaryContainer else OnSurfaceVariant,
+        animationSpec = tween(durationMillis = 200),
+        label = "pill_text_color"
+    )
+    val animatedBorderColor by animateColorAsState(
+        targetValue = if (isActive) com.example.nomadcompass.ui.theme.Primary.copy(alpha = 0.5f) else inactiveBorder,
+        animationSpec = tween(durationMillis = 200),
+        label = "pill_border_color"
+    )
+
+    val shadowModifier: Modifier = if (!isActive) {
+        Modifier.clayShadow(
+            cornerRadius = 9999.dp,
+            shadowColor = shadowColor,
+            blurRadius = 12.dp,
+            offsetX = 0.dp,
+            offsetY = 4.dp,
+        )
+    } else {
+        Modifier
+    }
+
+    val activeHighlightModifier: Modifier = if (isActive) {
+        Modifier.drawBehind {
+            drawRect(
+                color = Color.Black.copy(alpha = 0.2f),
+                size = size.copy(height = 2.dp.toPx()),
+            )
+        }
+    } else {
+        Modifier
+    }
 
     Box(
         modifier = modifier
-            .then(
-                if (!isActive) {
-                    Modifier.clayShadow(
-                        cornerRadius = 9999.dp,
-                        shadowColor = Color.Black.copy(alpha = 0.4f),
-                        blurRadius = 16.dp,
-                        offsetX = 8.dp,
-                        offsetY = 8.dp,
-                    )
-                } else {
-                    Modifier
-                }
-            )
+            .bounceClick(scaleDown = 0.94f, onClick = onClick)
+            .bounceOnState(state = isActive, maxScale = 1.05f)
+            .then(shadowModifier)
             .clip(shape)
-            .background(bgColor, shape)
-            .then(
-                if (!isActive) {
-                    Modifier.border(1.dp, Color.White.copy(alpha = 0.05f), shape)
-                } else {
-                    Modifier
-                }
-            )
-            .then(
-                if (isActive) {
-                    Modifier.drawBehind {
-                        // Inset shadow for active pill
-                        drawRect(
-                            color = Color.Black.copy(alpha = 0.2f),
-                            size = size.copy(height = 2.dp.toPx()),
-                        )
-                    }
-                } else {
-                    Modifier
-                }
-            )
-            .clickable(onClick = onClick)
+            .background(animatedBgColor, shape)
+            .border(1.dp, animatedBorderColor, shape)
+            .then(activeHighlightModifier)
             .padding(horizontal = 28.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelMedium,
-            color = textColor,
+            color = animatedTextColor,
         )
     }
 }

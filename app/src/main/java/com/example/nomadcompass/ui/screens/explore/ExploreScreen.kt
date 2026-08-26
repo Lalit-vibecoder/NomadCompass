@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +59,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.example.nomadcompass.domain.model.Country
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
+import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.components.bounceOnState
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
@@ -89,7 +92,7 @@ fun ExploreScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(SurfaceContainerHigh)
-                    .border(1.dp, Color.White.copy(alpha = 0.05f))
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
                     .statusBarsPadding()
                     .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -118,6 +121,14 @@ fun ExploreScreen(
                 // Dark / Light Mode Switch Button
                 val themeController = LocalThemeController.current
                 val isDark = themeController.isDarkMode
+                val themeRotation by androidx.compose.animation.core.animateFloatAsState(
+                    targetValue = if (isDark) 360f else 0f,
+                    animationSpec = androidx.compose.animation.core.spring(
+                        dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
+                        stiffness = androidx.compose.animation.core.Spring.StiffnessLow
+                    ),
+                    label = "theme_rotation"
+                )
 
                 Box(
                     modifier = Modifier
@@ -125,14 +136,16 @@ fun ExploreScreen(
                         .clip(CircleShape)
                         .background(SurfaceContainerLow)
                         .border(1.dp, OnSurface.copy(alpha = 0.1f), CircleShape)
-                        .clickable { themeController.toggleTheme() },
+                        .bounceClick { themeController.toggleTheme() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = if (isDark) Icons.Default.WbSunny else Icons.Default.DarkMode,
                         contentDescription = if (isDark) "Switch to Light Mode" else "Switch to Dark Mode",
                         tint = Secondary,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier
+                            .size(22.dp)
+                            .graphicsLayer { rotationZ = themeRotation }
                     )
                 }
 
@@ -143,7 +156,7 @@ fun ExploreScreen(
                         .clip(CircleShape)
                         .background(SecondaryContainer)
                         .border(1.dp, Secondary.copy(alpha = 0.3f), CircleShape)
-                        .clickable(onClick = onProfileClick),
+                        .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(24.dp))
@@ -282,9 +295,8 @@ fun CountryCardItem(
     onFavoriteToggle: () -> Unit,
 ) {
     ClayCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onCardClick),
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onCardClick,
         cornerRadius = 24.dp,
         backgroundColor = SurfaceContainerHigh
     ) {
@@ -305,7 +317,7 @@ fun CountryCardItem(
                     modifier = Modifier.fillMaxSize()
                 )
 
-                // Favorite Heart Button
+                // Favorite Heart Button with tactile bounce & heart pop
                 Box(
                     modifier = Modifier
                         .size(36.dp)
@@ -313,7 +325,8 @@ fun CountryCardItem(
                         .padding(top = 8.dp, end = 8.dp)
                         .clip(CircleShape)
                         .background(Background.copy(alpha = 0.6f))
-                        .clickable(onClick = onFavoriteToggle),
+                        .bounceClick(scaleDown = 0.85f, onClick = onFavoriteToggle)
+                        .bounceOnState(state = country.isFavorite, maxScale = 1.35f),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -394,11 +407,23 @@ private fun BottomNavItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
+    val animatedBgColor by androidx.compose.animation.animateColorAsState(
+        targetValue = if (isSelected) SecondaryContainer else Color.Transparent,
+        animationSpec = androidx.compose.animation.core.tween(200),
+        label = "nav_bg"
+    )
+    val animatedContentColor by androidx.compose.animation.animateColorAsState(
+        targetValue = if (isSelected) Secondary else OnSurfaceVariant,
+        animationSpec = androidx.compose.animation.core.tween(200),
+        label = "nav_color"
+    )
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(if (isSelected) SecondaryContainer else Color.Transparent)
-            .clickable(onClick = onClick)
+            .background(animatedBgColor)
+            .bounceClick(scaleDown = 0.92f, onClick = onClick)
+            .bounceOnState(state = isSelected, maxScale = 1.08f)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -409,14 +434,14 @@ private fun BottomNavItem(
             Icon(
                 imageVector = icon,
                 contentDescription = label,
-                tint = if (isSelected) Secondary else OnSurfaceVariant,
+                tint = animatedContentColor,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = if (isSelected) Secondary else OnSurfaceVariant,
+                color = animatedContentColor,
                 fontSize = 11.sp
             )
         }

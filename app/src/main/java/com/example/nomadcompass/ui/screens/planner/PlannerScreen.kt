@@ -75,6 +75,9 @@ import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 
 import androidx.compose.foundation.layout.statusBarsPadding
 
+import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.components.bounceOnState
+
 @Composable
 fun PlannerScreen(
     viewModel: PlannerViewModel,
@@ -118,7 +121,7 @@ fun PlannerScreen(
                         .clip(CircleShape)
                         .background(SecondaryContainer)
                         .border(1.dp, Secondary.copy(alpha = 0.3f), CircleShape)
-                        .clickable(onClick = onProfileClick),
+                        .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -162,7 +165,7 @@ fun PlannerScreen(
                     .clip(CircleShape)
                     .background(PrimaryContainer)
                     .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                    .clickable { viewModel.openAddDialog() }
+                    .bounceClick(scaleDown = 0.93f) { viewModel.openAddDialog() }
                     .padding(horizontal = 24.dp, vertical = 14.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -326,9 +329,8 @@ private fun TripCardItem(
     onDelete: () -> Unit,
 ) {
     ClayCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
         cornerRadius = 24.dp,
         backgroundColor = SurfaceContainer
     ) {
@@ -387,7 +389,7 @@ private fun TripCardItem(
                         tint = OnSurfaceVariant.copy(alpha = 0.6f),
                         modifier = Modifier
                             .size(20.dp)
-                            .clickable(onClick = onDelete)
+                            .bounceClick(scaleDown = 0.82f, onClick = onDelete)
                     )
                 }
             }
@@ -753,11 +755,23 @@ private fun BottomNavItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
+    val animatedBgColor by androidx.compose.animation.animateColorAsState(
+        targetValue = if (isSelected) SecondaryContainer else Color.Transparent,
+        animationSpec = androidx.compose.animation.core.tween(200),
+        label = "planner_nav_bg"
+    )
+    val animatedContentColor by androidx.compose.animation.animateColorAsState(
+        targetValue = if (isSelected) Secondary else OnSurfaceVariant,
+        animationSpec = androidx.compose.animation.core.tween(200),
+        label = "planner_nav_color"
+    )
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(if (isSelected) SecondaryContainer else Color.Transparent)
-            .clickable(onClick = onClick)
+            .background(animatedBgColor)
+            .bounceClick(scaleDown = 0.92f, onClick = onClick)
+            .bounceOnState(state = isSelected, maxScale = 1.08f)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -768,14 +782,14 @@ private fun BottomNavItem(
             Icon(
                 imageVector = icon,
                 contentDescription = label,
-                tint = if (isSelected) Secondary else OnSurfaceVariant,
+                tint = animatedContentColor,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = if (isSelected) Secondary else OnSurfaceVariant,
+                color = animatedContentColor,
                 fontSize = 11.sp
             )
         }

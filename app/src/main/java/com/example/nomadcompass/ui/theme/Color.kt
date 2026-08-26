@@ -2,68 +2,73 @@ package com.example.nomadcompass.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ── Claymorphism Dark Palette ──
-val SurfaceDark = Color(0xFF131317)
-val SurfaceContainerLowestDark = Color(0xFF0E0E12)
-val SurfaceContainerLowDark = Color(0xFF1B1B1F)
-val SurfaceContainerDark = Color(0xFF1F1F23)
-val SurfaceContainerHighDark = Color(0xFF2A2A2E)
-val SurfaceContainerHighestDark = Color(0xFF353439)
-val SurfaceBrightDark = Color(0xFF39393D)
-val BackgroundDark = Color(0xFF131317)
+// ── UI UX Pro Max Refined Dual-Theme Palette: NomadCompass ──
 
-val PrimaryDark = Color(0xFFFFFFFF)
-val OnPrimaryDark = Color(0xFF33302A)
-val PrimaryContainerDark = Color(0xFFE8E2D8)
-val OnPrimaryContainerDark = Color(0xFF68645C)
+// 🌙 Dark Theme: Deep Cyber Midnight (OLED Slate + Terracotta Glow & Electric Teal)
+val BackgroundDark = Color(0xFF0B0E14)
+val SurfaceDark = Color(0xFF10141E)
+val SurfaceContainerLowestDark = Color(0xFF070A0F)
+val SurfaceContainerLowDark = Color(0xFF141824)
+val SurfaceContainerDark = Color(0xFF1A202C)
+val SurfaceContainerHighDark = Color(0xFF242C3D)
+val SurfaceContainerHighestDark = Color(0xFF2E384D)
+val SurfaceBrightDark = Color(0xFF3B465E)
 
-val SecondaryDark = Color(0xFFCFC5B5)
-val OnSecondaryDark = Color(0xFF353025)
-val SecondaryContainerDark = Color(0xFF4F483C)
-val OnSecondaryContainerDark = Color(0xFFC1B7A8)
+val PrimaryDark = Color(0xFFFF6B35)
+val OnPrimaryDark = Color(0xFFFFFFFF)
+val PrimaryContainerDark = Color(0xFFD94E1F)
+val OnPrimaryContainerDark = Color(0xFFFFF1EC)
 
-val OnSurfaceDark = Color(0xFFE4E1E7)
-val OnSurfaceVariantDark = Color(0xFFCCC6BC)
-val OnBackgroundDark = Color(0xFFE4E1E7)
+val SecondaryDark = Color(0xFF00E5FF)
+val OnSecondaryDark = Color(0xFF002B36)
+val SecondaryContainerDark = Color(0xFF006880)
+val OnSecondaryContainerDark = Color(0xFFE0F7FA)
+
+val OnSurfaceDark = Color(0xFFF8FAFC)
+val OnSurfaceVariantDark = Color(0xFF94A3B8)
+val OnBackgroundDark = Color(0xFFF8FAFC)
 
 
-// ── Claymorphism Light Palette ──
+// ☀️ Light Theme: Sun-Drenched Nomad Coast (Crisp Sky Mist + Warm Terracotta & Ocean Blue)
+val BackgroundLight = Color(0xFFF4F6F9)
 val SurfaceLight = Color(0xFFFFFFFF)
 val SurfaceContainerLowestLight = Color(0xFFFFFFFF)
-val SurfaceContainerLowLight = Color(0xFFF4F0E8)
-val SurfaceContainerLight = Color(0xFFEBE6DC)
-val SurfaceContainerHighLight = Color(0xFFE2DCCA)
-val SurfaceContainerHighestLight = Color(0xFFD5CEBE)
-val SurfaceBrightLight = Color(0xFFFAF7F0)
-val BackgroundLight = Color(0xFFF6F3EC)
+val SurfaceContainerLowLight = Color(0xFFF0F4F8)
+val SurfaceContainerLight = Color(0xFFE2E8F0)
+val SurfaceContainerHighLight = Color(0xFFCBD5E1)
+val SurfaceContainerHighestLight = Color(0xFF94A3B8)
+val SurfaceBrightLight = Color(0xFFFFFFFF)
 
-val PrimaryLight = Color(0xFF26231E)
+val PrimaryLight = Color(0xFFD94E1F)
 val OnPrimaryLight = Color(0xFFFFFFFF)
-val PrimaryContainerLight = Color(0xFF3B362E)
-val OnPrimaryContainerLight = Color(0xFFF0EBE1)
+val PrimaryContainerLight = Color(0xFFFFEDD5)
+val OnPrimaryContainerLight = Color(0xFF7C2D12)
 
-val SecondaryLight = Color(0xFF706452)
+val SecondaryLight = Color(0xFF0284C7)
 val OnSecondaryLight = Color(0xFFFFFFFF)
-val SecondaryContainerLight = Color(0xFFE8E0D2)
-val OnSecondaryContainerLight = Color(0xFF342E24)
+val SecondaryContainerLight = Color(0xFFE0F2FE)
+val OnSecondaryContainerLight = Color(0xFF075985)
 
-val OnSurfaceLight = Color(0xFF1C1B1F)
-val OnSurfaceVariantLight = Color(0xFF59554D)
-val OnBackgroundLight = Color(0xFF1C1B1F)
+val OnSurfaceLight = Color(0xFF0F172A)
+val OnSurfaceVariantLight = Color(0xFF475569)
+val OnBackgroundLight = Color(0xFF0F172A)
 
 
-// ── Common Semantic colours ──
-val Error = Color(0xFFFFB4AB)
-val OnError = Color(0xFF690005)
-val ErrorContainer = Color(0xFF93000A)
-val OnErrorContainer = Color(0xFFFFDAD6)
+// ── Common Semantic & Accent Colors ──
+val Error = Color(0xFFEF4444)
+val OnError = Color(0xFFFFFFFF)
+val ErrorContainer = Color(0xFFFEE2E2)
+val OnErrorContainer = Color(0xFF991B1B)
 
-val Outline = Color(0xFF959087)
-val OutlineVariant = Color(0xFF4A463F)
-val InverseSurface = Color(0xFFE4E1E7)
-val InverseOnSurface = Color(0xFF303034)
-val SurfaceTint = Color(0xFFCCC6BC)
+val Outline = Color(0xFF64748B)
+val OutlineVariant = Color(0xFFCBD5E1)
+val InverseSurface = Color(0xFF0F172A)
+val InverseOnSurface = Color(0xFFF8FAFC)
+val SurfaceTint = Color(0xFFFF6B35)
 
-val SafetyGreen = Color(0xFF4CAF50)
-val SafetyYellow = Color(0xFFFFCA28)
-val SafetyRed = Color(0xFFEF5350)
+val SafetyGreen = Color(0xFF10B981)
+val SafetyYellow = Color(0xFFF59E0B)
+val SafetyRed = Color(0xFFEF4444)
+val AccentAmber = Color(0xFFF59E0B)
+
+

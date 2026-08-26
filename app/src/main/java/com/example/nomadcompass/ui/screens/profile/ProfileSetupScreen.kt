@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
+import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.components.bounceOnState
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -312,13 +314,35 @@ fun ProfileSetupScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 val isC = uiState.tempUnit == "C"
+                                val cBgColor by androidx.compose.animation.animateColorAsState(
+                                    targetValue = if (isC) Color(0xFFCCC6BC) else Color.Transparent,
+                                    animationSpec = androidx.compose.animation.core.tween(200),
+                                    label = "c_bg"
+                                )
+                                val cTextColor by androidx.compose.animation.animateColorAsState(
+                                    targetValue = if (isC) Color(0xFF353025) else OnSurfaceVariant,
+                                    animationSpec = androidx.compose.animation.core.tween(200),
+                                    label = "c_text"
+                                )
+                                val fBgColor by androidx.compose.animation.animateColorAsState(
+                                    targetValue = if (!isC) Color(0xFFCCC6BC) else Color.Transparent,
+                                    animationSpec = androidx.compose.animation.core.tween(200),
+                                    label = "f_bg"
+                                )
+                                val fTextColor by androidx.compose.animation.animateColorAsState(
+                                    targetValue = if (!isC) Color(0xFF353025) else OnSurfaceVariant,
+                                    animationSpec = androidx.compose.animation.core.tween(200),
+                                    label = "f_text"
+                                )
+
                                 Box(
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(48.dp)
                                         .clip(CircleShape)
-                                        .background(if (isC) Color(0xFFCCC6BC) else Color.Transparent)
-                                        .clickable { viewModel.onTempUnitChanged("C") },
+                                        .background(cBgColor)
+                                        .bounceClick(scaleDown = 0.93f) { viewModel.onTempUnitChanged("C") }
+                                        .bounceOnState(state = isC, maxScale = 1.06f),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -326,7 +350,7 @@ fun ProfileSetupScreen(
                                         style = MaterialTheme.typography.labelLarge.copy(
                                             fontWeight = if (isC) FontWeight.Bold else FontWeight.Medium
                                         ),
-                                        color = if (isC) Color(0xFF353025) else OnSurfaceVariant
+                                        color = cTextColor
                                     )
                                 }
                                 Box(
@@ -334,8 +358,9 @@ fun ProfileSetupScreen(
                                         .weight(1f)
                                         .height(48.dp)
                                         .clip(CircleShape)
-                                        .background(if (!isC) Color(0xFFCCC6BC) else Color.Transparent)
-                                        .clickable { viewModel.onTempUnitChanged("F") },
+                                        .background(fBgColor)
+                                        .bounceClick(scaleDown = 0.93f) { viewModel.onTempUnitChanged("F") }
+                                        .bounceOnState(state = !isC, maxScale = 1.06f),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -343,7 +368,7 @@ fun ProfileSetupScreen(
                                         style = MaterialTheme.typography.labelLarge.copy(
                                             fontWeight = if (!isC) FontWeight.Bold else FontWeight.Medium
                                         ),
-                                        color = if (!isC) Color(0xFF353025) else OnSurfaceVariant
+                                        color = fTextColor
                                     )
                                 }
                             }

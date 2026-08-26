@@ -108,6 +108,12 @@ fun SplashScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Progress Bar (Claymorphism segment)
+            val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
+                targetValue = uiState.progress / 100f,
+                animationSpec = androidx.compose.animation.core.tween(durationMillis = 350, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+                label = "splash_progress"
+            )
+
             Box(
                 modifier = Modifier
                     .width(220.dp)
@@ -118,7 +124,7 @@ fun SplashScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .fillMaxWidth(uiState.progress / 100f)
+                        .fillMaxWidth(animatedProgress)
                         .clip(RoundedCornerShape(9999.dp))
                         .background(Color(0xFFCCC6BC))
                 )

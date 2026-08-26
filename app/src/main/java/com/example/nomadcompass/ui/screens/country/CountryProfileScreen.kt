@@ -71,6 +71,12 @@ import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
+import com.example.nomadcompass.ui.theme.SafetyGreen
+import com.example.nomadcompass.ui.theme.SafetyYellow
+import com.example.nomadcompass.ui.theme.SafetyRed
+
+import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.components.bounceOnState
 
 @Composable
 fun CountryProfileScreen(
@@ -85,11 +91,11 @@ fun CountryProfileScreen(
 
     Scaffold(
         topBar = {
-            // Header Top Navigation with System Status Bar Padding
+            // Header Top Navigation with System Status Bar Padding & Subtle Frosted Glass Look
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Background.copy(alpha = 0.8f))
+                    .background(Background.copy(alpha = 0.85f))
                     .statusBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -98,16 +104,16 @@ fun CountryProfileScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(40.dp)
+                        .height(44.dp)
                         .clip(CircleShape)
                         .background(SurfaceContainerLow)
-                        .border(1.dp, Color.White.copy(alpha = 0.05f), CircleShape)
-                        .clickable(onClick = onExploreClick)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), CircleShape)
+                        .bounceClick(scaleDown = 0.97f, onClick = onExploreClick)
                         .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(20.dp))
+                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Primary, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Search destinations...", style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
                     }
@@ -116,14 +122,14 @@ fun CountryProfileScreen(
                 // Profile Avatar on Right
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
                         .background(SecondaryContainer)
-                        .border(1.dp, Secondary.copy(alpha = 0.3f), CircleShape)
-                        .clickable(onClick = onProfileClick),
+                        .border(1.dp, Secondary.copy(alpha = 0.4f), CircleShape)
+                        .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(20.dp))
+                    Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(22.dp))
                 }
             }
         },
@@ -134,14 +140,16 @@ fun CountryProfileScreen(
                     .fillMaxWidth()
                     .height(80.dp)
                     .background(SurfaceContainerHigh)
-                    .border(1.dp, Color.White.copy(alpha = 0.05f))
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
                     .padding(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable(onClick = onExploreClick)
+                    modifier = Modifier
+                        .bounceClick(scaleDown = 0.92f, onClick = onExploreClick)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Primary, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.height(2.dp))
@@ -149,7 +157,9 @@ fun CountryProfileScreen(
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable(onClick = onPlannerClick)
+                    modifier = Modifier
+                        .bounceClick(scaleDown = 0.92f, onClick = onPlannerClick)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Icon(imageVector = Icons.Default.EventNote, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.height(2.dp))
@@ -158,13 +168,13 @@ fun CountryProfileScreen(
             }
         },
         floatingActionButton = {
-            // Floating Action Button - Clay Pill Style
+            // Floating Action Button - Clay Pill Style with bounce feedback & ambient glow shadow
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
                     .background(PrimaryContainer)
                     .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                    .clickable {
+                    .bounceClick(scaleDown = 0.93f) {
                         val currentCca3 = uiState.detail?.country?.cca3
                         if (currentCca3 != null) {
                             onAddTripClick(currentCca3)
@@ -175,9 +185,9 @@ fun CountryProfileScreen(
                     .padding(horizontal = 24.dp, vertical = 14.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = OnPrimary)
+                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "ADD TRIP", style = MaterialTheme.typography.labelLarge, color = OnPrimary, fontWeight = FontWeight.Bold)
+                    Text(text = "ADD TRIP", style = MaterialTheme.typography.labelLarge, color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
                 }
             }
         },
@@ -211,19 +221,19 @@ fun CountryProfileScreen(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Gradient overlay
+                    // Multi-layer Gradient overlay for depth & readability
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
                                 Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, Background),
-                                    startY = 100f
+                                    colors = listOf(Color.Black.copy(alpha = 0.2f), Color.Transparent, Background),
+                                    startY = 0f
                                 )
                             )
                     )
 
-                    // Country title & safety badge
+                    // Country title & dynamic safety badge
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -233,23 +243,40 @@ fun CountryProfileScreen(
                             Text(
                                 text = country.commonName,
                                 style = MaterialTheme.typography.displayLarge,
-                                color = Primary
+                                color = OnSurface
                             )
                             Spacer(modifier = Modifier.width(12.dp))
-                            // Safety Shield Badge
+                            
+                            // Contextual Safety Level Badge
+                            val advisoryScore = detail.advisory?.score ?: 1.0
+                            val (shieldColor, shieldText) = when {
+                                advisoryScore < 2.5 -> SafetyGreen to "SAFE"
+                                advisoryScore < 4.5 -> SafetyYellow to "CAUTION"
+                                else -> SafetyRed to "WARNING"
+                            }
                             Box(
                                 modifier = Modifier
-                                    .size(32.dp)
                                     .clip(CircleShape)
-                                    .background(Primary),
+                                    .background(shieldColor.copy(alpha = 0.2f))
+                                    .border(1.dp, shieldColor, CircleShape)
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.CheckCircle,
-                                    contentDescription = "Safe",
-                                    tint = Background,
-                                    modifier = Modifier.size(20.dp)
-                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = shieldText,
+                                        tint = shieldColor,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = shieldText,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = shieldColor,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(4.dp))
@@ -286,25 +313,36 @@ fun CountryProfileScreen(
                                 Text(
                                     text = "${detail.nci.score}/10",
                                     style = MaterialTheme.typography.headlineMedium,
-                                    color = Primary
+                                    color = Primary,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // 10-Segment Clay Bar
+                            // 10-Segment Aurora Gradient Clay Bar
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 for (i in 1..10) {
                                     val isActive = i <= detail.nci.score
+                                    val targetColor = if (isActive) {
+                                        if (i <= 4) Primary else if (i <= 7) Secondary else com.example.nomadcompass.ui.theme.AccentAmber
+                                    } else {
+                                        SurfaceContainerHigh
+                                    }
+                                    val barColor by androidx.compose.animation.animateColorAsState(
+                                        targetValue = targetColor,
+                                        animationSpec = androidx.compose.animation.core.tween(300),
+                                        label = "nci_bar_$i"
+                                    )
                                     Box(
                                         modifier = Modifier
                                             .weight(1f)
                                             .height(8.dp)
                                             .clip(RoundedCornerShape(9999.dp))
-                                            .background(if (isActive) Primary else Color(0xFF0E0E12))
+                                            .background(barColor)
                                     )
                                 }
                             }
@@ -348,13 +386,11 @@ fun CountryProfileScreen(
                                     Text(
                                         text = headlineTemp,
                                         style = MaterialTheme.typography.headlineLarge,
-                                        color = OnSurface
+                                        color = OnSurface,
+                                        fontWeight = FontWeight.Bold
                                     )
-                                    Text(
-                                        text = subTemp,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = OnSurfaceVariant
-                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(text = subTemp, style = MaterialTheme.typography.bodySmall, color = OnSurfaceVariant)
                                 }
                             }
 
@@ -365,9 +401,8 @@ fun CountryProfileScreen(
                                 String.format(Locale.US, "%.2f", uiState.exchangeRate)
                             }
                             ClayCard(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clickable { viewModel.openConverter() },
+                                modifier = Modifier.weight(1f),
+                                onClick = { viewModel.openConverter() },
                                 cornerRadius = 24.dp,
                                 backgroundColor = SurfaceContainer
                             ) {
@@ -396,7 +431,7 @@ fun CountryProfileScreen(
                                             .fillMaxWidth()
                                             .clip(CircleShape)
                                             .background(SecondaryContainer)
-                                            .clickable { viewModel.openConverter() }
+                                            .bounceClick(scaleDown = 0.94f) { viewModel.openConverter() }
                                             .padding(vertical = 8.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -454,7 +489,7 @@ fun CountryProfileScreen(
                                     nextHoliday.date
                                 }
                             } else {
-                                "None"
+                                "Check Local Listings"
                             }
 
                             ClayCard(
@@ -475,7 +510,8 @@ fun CountryProfileScreen(
                                         text = holidayName,
                                         style = MaterialTheme.typography.titleMedium,
                                         color = OnSurface,
-                                        maxLines = 1
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
                                         text = holidayDateFormatted,

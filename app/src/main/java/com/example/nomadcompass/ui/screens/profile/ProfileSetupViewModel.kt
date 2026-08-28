@@ -33,6 +33,8 @@ data class ProfileSetupUiState(
     val securityOption: SecurityOption = SecurityOption.NONE,
     val accessCode: String = "",
     val themeMode: String = "DARK", // "DARK" or "LIGHT"
+    val bgPhotoUri: String? = null,
+    val bgBlurRadius: Float = 24f,
     val availableCountries: List<Country> = emptyList(),
     val isSaving: Boolean = false,
     val isSaved: Boolean = false,
@@ -80,7 +82,9 @@ class ProfileSetupViewModel @Inject constructor(
                         photoUri = saved.photoUri,
                         securityOption = secOpt,
                         accessCode = saved.accessCode,
-                        themeMode = saved.themeMode.ifBlank { "DARK" }
+                        themeMode = saved.themeMode.ifBlank { "DARK" },
+                        bgPhotoUri = saved.bgPhotoUri,
+                        bgBlurRadius = saved.bgBlurRadius
                     )
                 }
             }
@@ -101,10 +105,6 @@ class ProfileSetupViewModel @Inject constructor(
 
     fun onTempUnitChanged(unit: String) {
         _uiState.value = _uiState.value.copy(tempUnit = unit)
-    }
-
-    fun onThemeModeChanged(mode: String) {
-        _uiState.value = _uiState.value.copy(themeMode = mode)
     }
 
     fun onSecurityOptionChanged(option: SecurityOption) {
@@ -137,6 +137,31 @@ class ProfileSetupViewModel @Inject constructor(
         }
     }
 
+    fun onBgPhotoSelected(context: Context, uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val destinationFile = File(context.filesDir, "app_custom_bg.jpg")
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    destinationFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                _uiState.value = _uiState.value.copy(bgPhotoUri = destinationFile.absolutePath)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.value = _uiState.value.copy(bgPhotoUri = uri.toString())
+            }
+        }
+    }
+
+    fun onResetDefaultBg() {
+        _uiState.value = _uiState.value.copy(bgPhotoUri = null)
+    }
+
+    fun onBgBlurRadiusChanged(radius: Float) {
+        _uiState.value = _uiState.value.copy(bgBlurRadius = radius)
+    }
+
     fun saveProfile() {
         val name = uiState.value.fullName.trim()
         if (name.isEmpty()) {
@@ -160,7 +185,9 @@ class ProfileSetupViewModel @Inject constructor(
                 photoUri = uiState.value.photoUri,
                 isBiometricEnabled = (secOpt == SecurityOption.BIOMETRIC),
                 accessCode = if (secOpt == SecurityOption.PIN) uiState.value.accessCode else "",
-                themeMode = uiState.value.themeMode
+                themeMode = uiState.value.themeMode,
+                bgPhotoUri = uiState.value.bgPhotoUri,
+                bgBlurRadius = uiState.value.bgBlurRadius
             )
             saveProfileUseCase(profile)
             _uiState.value = _uiState.value.copy(isSaving = false, isSaved = true)

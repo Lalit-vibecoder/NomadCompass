@@ -26,16 +26,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.EventNote
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.CircularProgressIndicator
 import java.io.File
@@ -59,14 +59,16 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
+import com.example.nomadcompass.ui.components.GlassPillButton
 import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.components.CurrencyConverterModal
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
-import com.example.nomadcompass.ui.theme.LocalThemeController
 import java.util.Locale
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
+import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
@@ -146,7 +148,7 @@ fun CountryProfileScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(22.dp))
+                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings", tint = OnSurface, modifier = Modifier.size(22.dp))
                     }
                 }
             }
@@ -160,61 +162,43 @@ fun CountryProfileScreen(
         },
         floatingActionButton = {
             val isDark = LocalThemeController.current.isDarkMode
-            // Floating Action Button - 360-degree Pop-Out Clay Pill with + badge
-            Box(
-                modifier = Modifier
-                    .clayShadow(
-                        cornerRadius = 9999.dp,
-                        ambientShadowColor = if (isDark) Color.Black.copy(alpha = 0.65f) else Primary.copy(alpha = 0.45f),
-                        spotShadowColor = if (isDark) Color.Black.copy(alpha = 0.85f) else Color(0x400F172A),
-                        blurRadius = 14.dp
-                    )
-                    .clip(CircleShape)
-                    .background(PrimaryContainer)
-                    .border(1.5.dp, if (isDark) Color.White.copy(alpha = 0.35f) else Primary.copy(alpha = 0.50f), CircleShape)
-                    .bounceClick(scaleDown = 0.94f) {
-                        val currentCca3 = uiState.detail?.country?.cca3
-                        if (currentCca3 != null) {
-                            onAddTripClick(currentCca3)
-                        } else {
-                            onPlannerClick()
-                        }
+            // Floating Action Button - Glass Pill matching bottom navigation bar
+            GlassPillButton(
+                onClick = {
+                    val currentCca3 = uiState.detail?.country?.cca3
+                    if (currentCca3 != null) {
+                        onAddTripClick(currentCca3)
+                    } else {
+                        onPlannerClick()
                     }
-                    .padding(horizontal = 22.dp, vertical = 12.dp)
+                },
+                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(26.dp)
-                            .clayShadow(
-                                cornerRadius = 9999.dp,
-                                ambientShadowColor = Color.Black.copy(alpha = 0.30f),
-                                spotShadowColor = Color.Black.copy(alpha = 0.40f),
-                                blurRadius = 6.dp
-                            )
-                            .clip(CircleShape)
-                            .background(Primary.copy(alpha = if (isDark) 0.35f else 0.20f))
-                            .border(1.dp, Primary.copy(alpha = 0.4f), CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                            tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = "PLAN TRIP",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
-                        fontWeight = FontWeight.Bold
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(Primary.copy(alpha = if (isDark) 0.25f else 0.15f))
+                        .border(1.dp, Primary.copy(alpha = if (isDark) 0.45f else 0.30f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = Primary,
+                        modifier = Modifier.size(16.dp)
                     )
                 }
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "PLAN TRIP",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Primary,
+                    fontWeight = FontWeight.Bold
+                )
             }
         },
-        containerColor = Background
+        containerColor = Color.Transparent
     ) { paddingValues ->
         if (uiState.isLoading || uiState.detail == null) {
             com.example.nomadcompass.ui.components.NomadLoadingAnimation(
@@ -440,7 +424,7 @@ fun CountryProfileScreen(
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(text = "1 ${uiState.baseCurrencyCode}", style = MaterialTheme.typography.titleMedium, color = OnSurface)
-                                        Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(14.dp))
+                                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(14.dp))
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
                                             text = "$formattedRate ${country.currencyCode}",

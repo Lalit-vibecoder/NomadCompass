@@ -2,63 +2,48 @@ package com.example.nomadcompass.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ── UI UX Pro Max Refined Dual-Theme Palette: NomadCompass ──
+// ── Refined Emerald Forest & Sage Glassmorphism Palette ──
 
-// 🌙 Dark Theme: Deep Cyber Midnight (OLED Slate + Terracotta Glow & Electric Teal)
-val BackgroundDark = Color(0xFF0B0E14)
-val SurfaceDark = Color(0xFF10141E)
-val SurfaceContainerLowestDark = Color(0xFF070A0F)
-val SurfaceContainerLowDark = Color(0xFF141824)
-val SurfaceContainerDark = Color(0xFF1A202C)
-val SurfaceContainerHighDark = Color(0xFF242C3D)
-val SurfaceContainerHighestDark = Color(0xFF2E384D)
-val SurfaceBrightDark = Color(0xFF3B465E)
+// 🌙 Dark Theme: Deep Emerald Slate + Sage Jade & Moss Glass
+val BackgroundDark = Color(0xFF0E1E19)
+val SurfaceDark = Color(0xFF142922)
+val SurfaceContainerLowestDark = Color(0xFF091410)
+val SurfaceContainerLowDark = Color(0xFF193229)
+val SurfaceContainerDark = Color(0xFF224237)
+val SurfaceContainerHighDark = Color(0xFF2E5346)
+val SurfaceContainerHighestDark = Color(0xFF3D6B5A)
+val SurfaceBrightDark = Color(0xFF4F8772)
 
-val PrimaryDark = Color(0xFFFF6B35)
-val OnPrimaryDark = Color(0xFFFFFFFF)
-val PrimaryContainerDark = Color(0xFFD94E1F)
-val OnPrimaryContainerDark = Color(0xFFFFF1EC)
+val PrimaryDark = Color(0xFF6EAD91)
+val OnPrimaryDark = Color(0xFF0C2018)
+val PrimaryContainerDark = Color(0xFFFFFFFF)
+val OnPrimaryContainerDark = Color(0xFF10251D)
 
-val SecondaryDark = Color(0xFF00E5FF)
-val OnSecondaryDark = Color(0xFF002B36)
-val SecondaryContainerDark = Color(0xFF006880)
-val OnSecondaryContainerDark = Color(0xFFE0F7FA)
+// ── Tactile Pill & Capsule Button Color Tokens ──
+val PillActiveBackground = Color(0xFFFFFFFF)
+val PillActiveText = Color(0xFF10251D)
+val PillInactiveBackground = Color(0x2EFFFFFF)
+val PillInactiveText = Color(0xFFF2FAF6)
+val PillInactiveBorder = Color(0x3DFFFFFF)
 
-val OnSurfaceDark = Color(0xFFF8FAFC)
-val OnSurfaceVariantDark = Color(0xFF94A3B8)
-val OnBackgroundDark = Color(0xFFF8FAFC)
+val SecondaryDark = Color(0xFF8AE2B7)
+val OnSecondaryDark = Color(0xFF0B251B)
+val SecondaryContainerDark = Color(0xFF22493C)
+val OnSecondaryContainerDark = Color(0xFFD8F5E7)
 
-val OutlineDark = Color(0xFF334155)
-val OutlineVariantDark = Color(0xFF222C3D)
+val OnSurfaceDark = Color(0xFFF2FAF6)
+val OnSurfaceVariantDark = Color(0xFFA1BEB2)
+val OnBackgroundDark = Color(0xFFF2FAF6)
 
+val OutlineDark = Color(0xFF386052)
+val OutlineVariantDark = Color(0xFF244439)
 
-// ☀️ Light Theme: Sun-Drenched Nomad Coast (Crisp Sky Mist + Warm Terracotta & Ocean Blue)
-val BackgroundLight = Color(0xFFF4F6F9)
-val SurfaceLight = Color(0xFFFFFFFF)
-val SurfaceContainerLowestLight = Color(0xFFFFFFFF)
-val SurfaceContainerLowLight = Color(0xFFF8FAFC)
-val SurfaceContainerLight = Color(0xFFFFFFFF)
-val SurfaceContainerHighLight = Color(0xFFF1F5F9)
-val SurfaceContainerHighestLight = Color(0xFFE2E8F0)
-val SurfaceBrightLight = Color(0xFFFFFFFF)
-
-val PrimaryLight = Color(0xFFD94E1F)
-val OnPrimaryLight = Color(0xFFFFFFFF)
-val PrimaryContainerLight = Color(0xFFFFEDD5)
-val OnPrimaryContainerLight = Color(0xFF0F172A)
-
-val SecondaryLight = Color(0xFF0284C7)
-val OnSecondaryLight = Color(0xFFFFFFFF)
-val SecondaryContainerLight = Color(0xFFE0F2FE)
-val OnSecondaryContainerLight = Color(0xFF075985)
-
-val OnSurfaceLight = Color(0xFF0F172A)
-val OnSurfaceVariantLight = Color(0xFF475569)
-val OnBackgroundLight = Color(0xFF0F172A)
-
-val OutlineLight = Color(0xFF94A3B8)
-val OutlineVariantLight = Color(0xFFCBD5E1)
-
+// ── Special Sage Card & Moss Glass Tokens (from reference image) ──
+val SageCardDark = Color(0xFF4E7767)
+val SageCardSurfaceDark = Color(0xFF5D8877)
+val MossButtonGradientStart = Color(0xFF457351)
+val MossButtonGradientEnd = Color(0xFF2F5539)
+val MossButtonBorder = Color(0x558CB998)
 
 // ── Common Semantic & Accent Colors ──
 val Error = Color(0xFFEF4444)
@@ -66,11 +51,12 @@ val OnError = Color(0xFFFFFFFF)
 val ErrorContainer = Color(0xFFFEE2E2)
 val OnErrorContainer = Color(0xFF991B1B)
 
-val InverseSurface = Color(0xFF0F172A)
-val InverseOnSurface = Color(0xFFF8FAFC)
-val SurfaceTint = Color(0xFFFF6B35)
+val InverseSurface = Color(0xFF0F1E19)
+val InverseOnSurface = Color(0xFFF2FAF6)
+val SurfaceTint = Color(0xFF6EAD91)
 
 val SafetyGreen = Color(0xFF10B981)
 val SafetyYellow = Color(0xFFF59E0B)
 val SafetyRed = Color(0xFFEF4444)
 val AccentAmber = Color(0xFFF59E0B)
+

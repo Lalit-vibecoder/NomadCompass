@@ -119,26 +119,29 @@ fun NomadBottomNavigationBar(
                     .padding(horizontal = 4.dp)
                     .clayShadow(
                         cornerRadius = 24.dp,
-                        ambientShadowColor = Primary.copy(alpha = if (isDark) 0.38f else 0.22f),
-                        spotShadowColor = Primary.copy(alpha = if (isDark) 0.48f else 0.32f),
-                        blurRadius = 10.dp
+                        ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f),
+                        spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f),
+                        blurRadius = 8.dp
                     )
                     .clip(pillShape)
                     .background(
-                        brush = Brush.horizontalGradient(
+                        brush = Brush.verticalGradient(
                             colors = listOf(
-                                Primary.copy(alpha = if (isDark) 0.24f else 0.16f),
-                                Primary.copy(alpha = if (isDark) 0.18f else 0.12f),
-                                Primary.copy(alpha = if (isDark) 0.24f else 0.16f)
+                                Color.White.copy(alpha = if (isDark) 0.18f else 0.30f),
+                                Color.White.copy(alpha = if (isDark) 0.08f else 0.15f)
                             )
                         ),
                         shape = pillShape
                     )
-                    .border(1.5.dp, Primary.copy(alpha = if (isDark) 0.58f else 0.42f), pillShape)
+                    .border(
+                        width = 1.dp,
+                        color = Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
+                        shape = pillShape
+                    )
                     .drawBehind {
                         // Liquid top glass specular light reflection
                         drawRect(
-                            color = Color.White.copy(alpha = if (isDark) 0.22f else 0.65f),
+                            color = Color.White.copy(alpha = if (isDark) 0.40f else 0.70f),
                             size = size.copy(height = 1.5.dp.toPx())
                         )
                     }

@@ -29,6 +29,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.example.nomadcompass.ui.components.AppBackground
+
 object Destinations {
     const val SPLASH = "splash"
     const val APP_LOCK = "app_lock"
@@ -43,25 +47,32 @@ object Destinations {
 }
 
 @Composable
-fun NomadCompassNavGraph() {
+fun NomadCompassNavGraph(
+    profileViewModel: ProfileSetupViewModel = hiltViewModel()
+) {
+    val profileUiState by profileViewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = Destinations.SPLASH,
-        enterTransition = {
-            fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
-        },
-        exitTransition = {
-            fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
-        },
-        popEnterTransition = {
-            fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
-        },
-        popExitTransition = {
-            fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
-        }
+    AppBackground(
+        bgPhotoUri = profileUiState.bgPhotoUri,
+        blurRadius = profileUiState.bgBlurRadius
     ) {
+        NavHost(
+            navController = navController,
+            startDestination = Destinations.SPLASH,
+            enterTransition = {
+                fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
+            },
+            popEnterTransition = {
+                fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
+            },
+            popExitTransition = {
+                fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
+            }
+        ) {
         // Splash Screen
         composable(Destinations.SPLASH) {
             val viewModel: SplashViewModel = hiltViewModel()
@@ -185,4 +196,5 @@ fun NomadCompassNavGraph() {
             )
         }
     }
+}
 }

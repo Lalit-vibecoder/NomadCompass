@@ -253,17 +253,17 @@ fun CurrencyConverterModal(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(CircleShape)
-                                .background(SecondaryContainer.copy(alpha = 0.5f))
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                                .background(com.example.nomadcompass.ui.theme.PillInactiveBackground)
+                                .border(1.dp, com.example.nomadcompass.ui.theme.PillInactiveBorder, CircleShape)
                                 .clickable { onInputAmountChanged(preset) }
-                                .padding(vertical = 6.dp),
+                                .padding(vertical = 8.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "+$preset",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Primary,
-                                fontWeight = FontWeight.Bold
+                                color = com.example.nomadcompass.ui.theme.PillInactiveText,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
@@ -275,16 +275,21 @@ fun CurrencyConverterModal(
                 Box(
                     modifier = Modifier
                         .size(44.dp)
+                        .clayShadow(
+                            cornerRadius = 9999.dp,
+                            ambientShadowColor = Color.Black.copy(alpha = 0.50f),
+                            spotShadowColor = Color.Black.copy(alpha = 0.70f),
+                            blurRadius = 8.dp
+                        )
                         .clip(CircleShape)
                         .background(PrimaryContainer)
-                        .border(1.dp, Primary.copy(alpha = 0.4f), CircleShape)
                         .clickable { onToggleSwap() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.SwapVert,
                         contentDescription = "Swap currencies",
-                        tint = OnPrimary,
+                        tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                         modifier = Modifier.size(24.dp)
                     )
                 }

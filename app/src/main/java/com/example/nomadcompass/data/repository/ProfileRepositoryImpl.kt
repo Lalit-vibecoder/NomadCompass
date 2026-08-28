@@ -26,6 +26,8 @@ class ProfileRepositoryImpl @Inject constructor(
                     isBiometricEnabled = it.isBiometricEnabled,
                     accessCode = it.accessCode,
                     themeMode = it.themeMode,
+                    bgPhotoUri = it.bgPhotoUri,
+                    bgBlurRadius = it.bgBlurRadius,
                 )
             }
         }
@@ -42,6 +44,8 @@ class ProfileRepositoryImpl @Inject constructor(
                 isBiometricEnabled = profile.isBiometricEnabled,
                 accessCode = profile.accessCode,
                 themeMode = profile.themeMode,
+                bgPhotoUri = profile.bgPhotoUri,
+                bgBlurRadius = profile.bgBlurRadius,
             )
         )
     }

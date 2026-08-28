@@ -30,6 +30,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.NoteAdd
+import androidx.compose.material.icons.automirrored.filled.Notes
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.AttachMoney
@@ -47,12 +51,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Luggage
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.NoteAdd
-import androidx.compose.material.icons.filled.Notes
-import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
-import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -360,7 +360,7 @@ private fun WorkspaceTabSelectorRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(9999.dp))
             .background(SurfaceContainerLow)
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -368,19 +368,19 @@ private fun WorkspaceTabSelectorRow(
         WorkspaceTab.entries.forEach { tab ->
             val isSelected = tab == activeTab
             val (icon, label) = when (tab) {
-                WorkspaceTab.EXPENSES -> Pair(Icons.Default.ReceiptLong, "Expenses")
+                WorkspaceTab.EXPENSES -> Pair(Icons.AutoMirrored.Filled.ReceiptLong, "Expenses")
                 WorkspaceTab.DOCS -> Pair(Icons.Default.FolderZip, "Docs")
                 WorkspaceTab.ITINERARY -> Pair(Icons.Default.Map, "Itinerary")
                 WorkspaceTab.PACKING -> Pair(Icons.Default.Luggage, "Packing")
             }
 
             val animatedBgColor by androidx.compose.animation.animateColorAsState(
-                targetValue = if (isSelected) Primary else Color.Transparent,
+                targetValue = if (isSelected) com.example.nomadcompass.ui.theme.PillActiveBackground else Color.Transparent,
                 animationSpec = androidx.compose.animation.core.tween(200),
                 label = "workspace_tab_bg"
             )
             val animatedContentColor by androidx.compose.animation.animateColorAsState(
-                targetValue = if (isSelected) OnPrimary else OnSurfaceVariant,
+                targetValue = if (isSelected) com.example.nomadcompass.ui.theme.PillActiveText else com.example.nomadcompass.ui.theme.PillInactiveText,
                 animationSpec = androidx.compose.animation.core.tween(200),
                 label = "workspace_tab_content"
             )
@@ -388,10 +388,10 @@ private fun WorkspaceTabSelectorRow(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(9999.dp))
                     .background(animatedBgColor)
                     .bounceClick(scaleDown = 0.94f) { onTabSelected(tab) }
-                    .bounceOnState(state = isSelected, maxScale = 1.05f)
+                    .bounceOnState(state = isSelected, maxScale = 1.04f)
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -522,7 +522,7 @@ private fun DocsTabContent(
                     )
                     AttachmentStatBox(
                         modifier = Modifier.weight(1f),
-                        icon = Icons.Default.Notes,
+                        icon = Icons.AutoMirrored.Filled.Notes,
                         count = noteCount,
                         label = "Trip Notes",
                         tint = Color(0xFFFFCA28)
@@ -1000,7 +1000,7 @@ private fun UnifiedAttachmentCard(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Notes,
+                                imageVector = Icons.AutoMirrored.Filled.Notes,
                                 contentDescription = null,
                                 tint = Color(0xFFFFB300),
                                 modifier = Modifier.size(22.dp)
@@ -1102,16 +1102,16 @@ private fun UnifiedAttachmentCard(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Default.OpenInNew,
+                                    imageVector = Icons.AutoMirrored.Filled.OpenInNew,
                                     contentDescription = null,
-                                    tint = OnPrimary,
+                                    tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                                     modifier = Modifier.size(13.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "VIEW",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = OnPrimary,
+                                    color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 10.sp
                                 )
@@ -1261,7 +1261,7 @@ private fun AddOptionsChoiceDialog(
                     onClick = onSelectImage
                 )
                 ChoiceRowItem(
-                    icon = Icons.Default.NoteAdd,
+                    icon = Icons.AutoMirrored.Filled.NoteAdd,
                     title = "Write Trip Note",
                     subtitle = "Co-working passwords, places to visit, plans",
                     tint = Color(0xFFFFCA28),

@@ -14,19 +14,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.nomadcompass.ui.theme.LocalThemeController
-import com.example.nomadcompass.ui.theme.OnPrimaryContainer
-import com.example.nomadcompass.ui.theme.OnSurfaceVariant
-import com.example.nomadcompass.ui.theme.OutlineVariant
-import com.example.nomadcompass.ui.theme.Primary
-import com.example.nomadcompass.ui.theme.PrimaryContainer
-import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
+import androidx.compose.ui.unit.sp
+import com.example.nomadcompass.ui.theme.PillActiveBackground
+import com.example.nomadcompass.ui.theme.PillActiveText
+import com.example.nomadcompass.ui.theme.PillInactiveBackground
+import com.example.nomadcompass.ui.theme.PillInactiveBorder
+import com.example.nomadcompass.ui.theme.PillInactiveText
 
 /**
- * Filter pill for category & filter bars with 360-degree pop-out shadows.
+ * High-end tactile pill/capsule filter button matching the porcelain & charcoal aesthetic.
  */
 @Composable
 fun ClayPill(
@@ -35,71 +34,58 @@ fun ClayPill(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isDark = LocalThemeController.current.isDarkMode
     val shape = RoundedCornerShape(9999.dp)
-    
-    val ambientShadow = if (isDark) Color.Black.copy(alpha = 0.55f) else Color(0x280F172A)
-    val spotShadow = if (isDark) Color.Black.copy(alpha = 0.75f) else Color(0x1E0F172A)
 
     // Smooth animated color transitions
     val animatedBgColor by animateColorAsState(
-        targetValue = if (isActive) PrimaryContainer else SurfaceContainerHigh,
+        targetValue = if (isActive) PillActiveBackground else PillInactiveBackground,
         animationSpec = tween(durationMillis = 200),
         label = "pill_bg_color"
     )
     val animatedTextColor by animateColorAsState(
-        targetValue = if (isActive) OnPrimaryContainer else OnSurfaceVariant,
+        targetValue = if (isActive) PillActiveText else PillInactiveText,
         animationSpec = tween(durationMillis = 200),
         label = "pill_text_color"
     )
     val animatedBorderColor by animateColorAsState(
-        targetValue = if (isActive) Primary.copy(alpha = 0.5f) else OutlineVariant,
+        targetValue = if (isActive) Color.Transparent else PillInactiveBorder,
         animationSpec = tween(durationMillis = 200),
         label = "pill_border_color"
     )
 
-    val shadowModifier: Modifier = if (!isActive) {
+    val shadowModifier = if (isActive) {
         Modifier.clayShadow(
             cornerRadius = 9999.dp,
-            ambientShadowColor = ambientShadow,
-            spotShadowColor = spotShadow,
-            blurRadius = if (isDark) 10.dp else 8.dp,
+            ambientShadowColor = Color.Black.copy(alpha = 0.50f),
+            spotShadowColor = Color.Black.copy(alpha = 0.65f),
+            blurRadius = 8.dp,
         )
     } else {
         Modifier.clayShadow(
             cornerRadius = 9999.dp,
-            ambientShadowColor = Primary.copy(alpha = 0.35f),
-            spotShadowColor = Primary.copy(alpha = 0.45f),
-            blurRadius = 10.dp,
+            ambientShadowColor = Color.Black.copy(alpha = 0.60f),
+            spotShadowColor = Color.Black.copy(alpha = 0.80f),
+            blurRadius = 8.dp,
         )
-    }
-
-    val activeHighlightModifier: Modifier = if (isActive) {
-        Modifier.drawBehind {
-            drawRect(
-                color = Color.Black.copy(alpha = 0.2f),
-                size = size.copy(height = 2.dp.toPx()),
-            )
-        }
-    } else {
-        Modifier
     }
 
     Box(
         modifier = modifier
             .bounceClick(scaleDown = 0.94f, onClick = onClick)
-            .bounceOnState(state = isActive, maxScale = 1.05f)
+            .bounceOnState(state = isActive, maxScale = 1.04f)
             .then(shadowModifier)
             .clip(shape)
             .background(animatedBgColor, shape)
             .border(1.dp, animatedBorderColor, shape)
-            .then(activeHighlightModifier)
-            .padding(horizontal = 28.dp, vertical = 10.dp),
+            .padding(horizontal = 26.dp, vertical = 11.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontSize = 14.sp,
+                fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium
+            ),
             color = animatedTextColor,
         )
     }

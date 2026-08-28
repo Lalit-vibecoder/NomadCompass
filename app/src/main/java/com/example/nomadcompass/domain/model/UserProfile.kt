@@ -9,4 +9,6 @@ data class UserProfile(
     val isBiometricEnabled: Boolean = false,
     val accessCode: String = "", // 4-digit PIN
     val themeMode: String = "DARK", // "DARK" or "LIGHT"
+    val bgPhotoUri: String? = null, // Custom background wallpaper photo path
+    val bgBlurRadius: Float = 24f, // Background blur radius in dp (0f..50f)
 )

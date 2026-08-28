@@ -116,7 +116,7 @@ fun AppLockScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(Color.Transparent)
             .statusBarsPadding()
             .padding(24.dp),
         contentAlignment = Alignment.Center

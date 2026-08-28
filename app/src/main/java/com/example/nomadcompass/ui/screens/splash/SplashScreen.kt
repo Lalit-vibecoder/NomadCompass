@@ -74,7 +74,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(SurfaceContainerLow)
+            .background(Color.Transparent)
     ) {
 
         // Center Content

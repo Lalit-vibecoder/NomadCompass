@@ -32,16 +32,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Fingerprint
-import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -76,7 +73,6 @@ import com.example.nomadcompass.ui.components.ClayPill
 import com.example.nomadcompass.ui.components.bounceClick
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.Error
-import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -88,6 +84,17 @@ import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.res.painterResource
+import com.example.nomadcompass.R
+import com.example.nomadcompass.ui.components.GlassPillButton
 import com.example.nomadcompass.ui.theme.SurfaceContainerLowest
 import java.io.File
 
@@ -98,7 +105,6 @@ fun ProfileSetupScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val themeController = LocalThemeController.current
 
     LaunchedEffect(uiState.isSaved) {
         if (uiState.isSaved) {
@@ -116,6 +122,15 @@ fun ProfileSetupScreen(
         }
     }
 
+    // Background Wallpaper picker launcher
+    val bgPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            viewModel.onBgPhotoSelected(context, uri)
+        }
+    }
+
     val currencies = listOf("USD", "EUR", "GBP", "JPY", "AUD", "CAD", "SGD", "BRL", "INR")
     var countryDropdownExpanded by remember { mutableStateOf(false) }
     var currencyDropdownExpanded by remember { mutableStateOf(false) }
@@ -123,7 +138,7 @@ fun ProfileSetupScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(Color.Transparent)
             .statusBarsPadding()
             .padding(horizontal = 20.dp, vertical = 16.dp),
         contentAlignment = Alignment.TopCenter
@@ -412,37 +427,177 @@ fun ProfileSetupScreen(
                             )
                         }
                     }
+                }
+            }
 
-                    // Theme Preference (Dark vs Light Mode)
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(
-                            text = "THEME PREFERENCE",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = OnSurfaceVariant,
-                            letterSpacing = 1.sp
+            // App Background Wallpaper & Blurriness Card
+            ClayCard(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 28.dp,
+                backgroundColor = SurfaceContainer
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(18.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Image,
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(24.dp)
                         )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "App Background Wallpaper",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = OnSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Upload custom wallpaper & adjust blur level",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant
+                            )
+                        }
+                    }
+
+                    // Live Wallpaper Preview Window
+                    val customBgFile = if (!uiState.bgPhotoUri.isNullOrBlank()) File(uiState.bgPhotoUri!!) else null
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(140.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(20.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val blurModifier = Modifier
+                            .fillMaxSize()
+                            .then(
+                                if (uiState.bgBlurRadius > 0f) Modifier.blur(uiState.bgBlurRadius.dp)
+                                else Modifier
+                            )
+
+                        if (customBgFile != null && customBgFile.exists()) {
+                            AsyncImage(
+                                model = customBgFile,
+                                contentDescription = "Custom Background Preview",
+                                contentScale = ContentScale.Crop,
+                                modifier = blurModifier
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.app_default_bg),
+                                contentDescription = "Default Background Preview",
+                                contentScale = ContentScale.Crop,
+                                modifier = blurModifier
+                            )
+                        }
+
+                        // Gradient overlay with status badge
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.35f))
+                        )
+
+                        // Badge showing current source
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(9999.dp))
+                                .background(Color.Black.copy(alpha = 0.65f))
+                                .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
+                                .padding(horizontal = 14.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = if (customBgFile != null && customBgFile.exists()) "📷 Custom Wallpaper" else "🎡 Default Ferris Wheel",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+
+                    // Wallpaper Action Buttons
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        GlassPillButton(
+                            onClick = {
+                                bgPickerLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            },
+                            modifier = Modifier.weight(1.2f),
+                            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp)
+                        ) {
+                            Icon(imageVector = Icons.Default.Upload, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Upload Photo", style = MaterialTheme.typography.labelMedium, color = Primary, fontWeight = FontWeight.Bold)
+                        }
+
+                        if (!uiState.bgPhotoUri.isNullOrBlank()) {
+                            GlassPillButton(
+                                onClick = viewModel::onResetDefaultBg,
+                                modifier = Modifier.weight(0.9f),
+                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Refresh, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Reset Default", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
+                            }
+                        }
+                    }
+
+                    // Blur Slider Section
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            ClayPill(
-                                text = "🌙 Dark Mode",
-                                isActive = uiState.themeMode == "DARK",
-                                onClick = {
-                                    viewModel.onThemeModeChanged("DARK")
-                                    themeController.updateTheme(true)
-                                },
-                                modifier = Modifier.weight(1f)
+                            Text(
+                                text = "BLURRINESS LEVEL",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = OnSurfaceVariant,
+                                letterSpacing = 1.sp
                             )
-                            ClayPill(
-                                text = "☀️ Light Mode",
-                                isActive = uiState.themeMode == "LIGHT",
-                                onClick = {
-                                    viewModel.onThemeModeChanged("LIGHT")
-                                    themeController.updateTheme(false)
-                                },
-                                modifier = Modifier.weight(1f)
+                            Text(
+                                text = "${uiState.bgBlurRadius.toInt()} dp",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Primary,
+                                fontWeight = FontWeight.Bold
                             )
+                        }
+
+                        Slider(
+                            value = uiState.bgBlurRadius,
+                            onValueChange = viewModel::onBgBlurRadiusChanged,
+                            valueRange = 0f..50f,
+                            steps = 25,
+                            colors = SliderDefaults.colors(
+                                thumbColor = Primary,
+                                activeTrackColor = Primary,
+                                inactiveTrackColor = Color.White.copy(alpha = 0.15f)
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Clear (0 dp)", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant.copy(alpha = 0.6f), fontSize = 11.sp)
+                            Text("Frosted (24 dp)", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant.copy(alpha = 0.6f), fontSize = 11.sp)
+                            Text("Ultra Blur (50 dp)", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant.copy(alpha = 0.6f), fontSize = 11.sp)
                         }
                     }
                 }

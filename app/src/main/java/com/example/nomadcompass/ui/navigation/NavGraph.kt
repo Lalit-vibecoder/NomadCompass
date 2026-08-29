@@ -61,16 +61,16 @@ fun NomadCompassNavGraph(
             navController = navController,
             startDestination = Destinations.SPLASH,
             enterTransition = {
-                fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
+                fadeIn(animationSpec = tween(200, easing = FastOutSlowInEasing))
             },
             exitTransition = {
-                fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
+                fadeOut(animationSpec = tween(200, easing = FastOutSlowInEasing))
             },
             popEnterTransition = {
-                fadeIn(animationSpec = tween(180, easing = FastOutSlowInEasing))
+                fadeIn(animationSpec = tween(200, easing = FastOutSlowInEasing))
             },
             popExitTransition = {
-                fadeOut(animationSpec = tween(140, easing = FastOutLinearInEasing))
+                fadeOut(animationSpec = tween(200, easing = FastOutSlowInEasing))
             }
         ) {
         // Splash Screen
@@ -86,6 +86,7 @@ fun NomadCompassNavGraph(
                     }
                     navController.navigate(destination) {
                         popUpTo(Destinations.SPLASH) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
@@ -99,6 +100,7 @@ fun NomadCompassNavGraph(
                 onUnlocked = {
                     navController.navigate(Destinations.EXPLORE) {
                         popUpTo(Destinations.APP_LOCK) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
@@ -112,6 +114,7 @@ fun NomadCompassNavGraph(
                 onContinue = {
                     navController.navigate(Destinations.EXPLORE) {
                         popUpTo(Destinations.PROFILE_SETUP) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
@@ -123,13 +126,21 @@ fun NomadCompassNavGraph(
             ExploreScreen(
                 viewModel = viewModel,
                 onCountryClick = { cca3 ->
-                    navController.navigate(Destinations.countryProfileRoute(cca3))
+                    navController.navigate(Destinations.countryProfileRoute(cca3)) {
+                        launchSingleTop = true
+                    }
                 },
                 onPlannerClick = {
-                    navController.navigate(Destinations.PLANNER)
+                    navController.navigate(Destinations.PLANNER) {
+                        popUpTo(Destinations.EXPLORE) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 onProfileClick = {
-                    navController.navigate(Destinations.PROFILE_SETUP)
+                    navController.navigate(Destinations.PROFILE_SETUP) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -141,11 +152,15 @@ fun NomadCompassNavGraph(
                 viewModel = viewModel,
                 onExploreClick = {
                     navController.navigate(Destinations.EXPLORE) {
-                        popUpTo(Destinations.EXPLORE) { inclusive = true }
+                        popUpTo(Destinations.EXPLORE) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                 onProfileClick = {
-                    navController.navigate(Destinations.PROFILE_SETUP)
+                    navController.navigate(Destinations.PROFILE_SETUP) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -159,11 +174,15 @@ fun NomadCompassNavGraph(
                 viewModel = viewModel,
                 onExploreClick = {
                     navController.navigate(Destinations.EXPLORE) {
-                        popUpTo(Destinations.EXPLORE) { inclusive = true }
+                        popUpTo(Destinations.EXPLORE) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                 onProfileClick = {
-                    navController.navigate(Destinations.PROFILE_SETUP)
+                    navController.navigate(Destinations.PROFILE_SETUP) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -177,21 +196,33 @@ fun NomadCompassNavGraph(
             CountryProfileScreen(
                 viewModel = viewModel,
                 onNeighborClick = { neighborCca3 ->
-                    navController.navigate(Destinations.countryProfileRoute(neighborCca3))
+                    navController.navigate(Destinations.countryProfileRoute(neighborCca3)) {
+                        launchSingleTop = true
+                    }
                 },
                 onExploreClick = {
                     navController.navigate(Destinations.EXPLORE) {
-                        popUpTo(Destinations.EXPLORE) { inclusive = true }
+                        popUpTo(Destinations.EXPLORE) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                 onPlannerClick = {
-                    navController.navigate(Destinations.PLANNER)
+                    navController.navigate(Destinations.PLANNER) {
+                        popUpTo(Destinations.EXPLORE) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 onProfileClick = {
-                    navController.navigate(Destinations.PROFILE_SETUP)
+                    navController.navigate(Destinations.PROFILE_SETUP) {
+                        launchSingleTop = true
+                    }
                 },
                 onAddTripClick = { cca3 ->
-                    navController.navigate(Destinations.plannerRoute(cca3))
+                    navController.navigate(Destinations.plannerRoute(cca3)) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }

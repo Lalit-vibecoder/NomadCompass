@@ -23,6 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+
 data class ExploreUiState(
     val searchQuery: String = "",
     val selectedPill: String = "All",
@@ -30,7 +33,7 @@ data class ExploreUiState(
     val userProfile: UserProfile? = null,
 )
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
     private val getAllCountriesUseCase: GetAllCountriesUseCase,
@@ -46,17 +49,22 @@ class ExploreViewModel @Inject constructor(
     private val _selectedPill = MutableStateFlow("All")
     val selectedPill: StateFlow<String> = _selectedPill.asStateFlow()
 
-    val uiState: StateFlow<ExploreUiState> = combine(
-        _searchQuery,
-        _selectedPill,
-        getProfileUseCase(),
-        _searchQuery.flatMapLatest { query ->
+    private val _debouncedCountries = _searchQuery
+        .debounce(200)
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
             if (query.isBlank()) {
                 getAllCountriesUseCase()
             } else {
                 searchCountriesUseCase(query)
             }
         }
+
+    val uiState: StateFlow<ExploreUiState> = combine(
+        _searchQuery,
+        _selectedPill,
+        getProfileUseCase(),
+        _debouncedCountries
     ) { query, pill, profile, countryList ->
         withContext(Dispatchers.Default) {
             val filtered = when (pill) {

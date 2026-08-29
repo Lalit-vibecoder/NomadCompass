@@ -248,7 +248,11 @@ fun ExploreScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.padding(top = 8.dp, bottom = 20.dp)
                 ) {
-                    items(pills, key = { it }) { pill ->
+                    items(
+                        items = pills,
+                        key = { it },
+                        contentType = { "pill" }
+                    ) { pill ->
                         ClayPill(
                             text = pill,
                             isActive = pill == uiState.selectedPill,
@@ -336,7 +340,11 @@ fun ExploreScreen(
                 }
             } else {
                 // Stacked Sage Destination Cards (Bali aesthetic from reference image)
-                items(uiState.countries, key = { it.cca3 }) { country ->
+                items(
+                    items = uiState.countries,
+                    key = { it.cca3 },
+                    contentType = { "country_card" }
+                ) { country ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()

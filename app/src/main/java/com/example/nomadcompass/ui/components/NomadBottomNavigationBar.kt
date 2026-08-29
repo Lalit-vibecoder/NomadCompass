@@ -68,22 +68,44 @@ fun NomadBottomNavigationBar(
     val isDark = LocalThemeController.current.isDarkMode
     val targetIndex = if (currentTab == NomadNavTab.EXPLORE) 0 else 1
 
+    val navBarShape = RoundedCornerShape(32.dp)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(SurfaceContainerHigh.copy(alpha = if (isDark) 0.94f else 0.98f))
-            .border(width = 1.dp, color = OutlineVariant)
             .navigationBarsPadding()
-            .height(72.dp)
-            .padding(horizontal = 20.dp, vertical = 8.dp),
+            .padding(horizontal = 20.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center
     ) {
-        BoxWithConstraints(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
-            contentAlignment = Alignment.CenterStart
+                .height(64.dp)
+                .clayShadow(
+                    cornerRadius = 32.dp,
+                    ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.40f else 0.12f),
+                    spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.50f else 0.18f),
+                    blurRadius = 14.dp
+                )
+                .clip(navBarShape)
+                .background(
+                    color = SurfaceContainerHigh.copy(alpha = if (isDark) 0.92f else 0.96f),
+                    shape = navBarShape
+                )
+                .border(
+                    width = 1.dp,
+                    color = OutlineVariant,
+                    shape = navBarShape
+                )
+                .padding(horizontal = 8.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center
         ) {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.CenterStart
+            ) {
             val totalWidth = maxWidth
 
             // ── Fluid Elastic Liquid Physics: Asymmetric Leading & Trailing Spring ──
@@ -175,6 +197,7 @@ fun NomadBottomNavigationBar(
             }
         }
     }
+}
 }
 
 @Composable

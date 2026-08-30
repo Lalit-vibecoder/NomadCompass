@@ -9,13 +9,15 @@ import com.example.nomadcompass.data.local.entity.ExpenseCategory
 import com.example.nomadcompass.domain.model.AttachmentType
 import com.example.nomadcompass.domain.model.Country
 import com.example.nomadcompass.domain.model.Expense
+import com.example.nomadcompass.domain.model.ItineraryEvent
 import com.example.nomadcompass.domain.model.PackingItem
 import com.example.nomadcompass.domain.model.Trip
 import com.example.nomadcompass.domain.model.TripAttachment
+import com.example.nomadcompass.domain.model.UserProfile
 import com.example.nomadcompass.domain.repository.ExpenseRepository
+import com.example.nomadcompass.domain.repository.ItineraryRepository
 import com.example.nomadcompass.domain.repository.PackingRepository
 import com.example.nomadcompass.domain.repository.TripRepository
-import com.example.nomadcompass.domain.model.UserProfile
 import com.example.nomadcompass.domain.usecase.CalculateExpenseUseCase
 import com.example.nomadcompass.domain.usecase.GetAllCountriesUseCase
 import com.example.nomadcompass.domain.usecase.GetProfileUseCase
@@ -46,7 +48,8 @@ data class WorkspaceDetails(
     val attachments: List<TripAttachment>,
     val expenses: List<Expense>,
     val totalSpent: Double,
-    val packingItems: List<PackingItem>
+    val packingItems: List<PackingItem>,
+    val itineraryEvents: List<ItineraryEvent> = emptyList(),
 )
 
 data class PlannerUiState(
@@ -64,6 +67,7 @@ data class PlannerUiState(
     val workspaceAttachments: List<TripAttachment> = emptyList(),
     val workspaceExpenses: List<Expense> = emptyList(),
     val workspacePackingItems: List<PackingItem> = emptyList(),
+    val workspaceItineraryEvents: List<ItineraryEvent> = emptyList(),
     val totalSpentHome: Double = 0.0,
     val userCurrencyCode: String = "USD",
     val tripDestinationCurrencyCode: String = "JPY",
@@ -76,6 +80,7 @@ class PlannerViewModel @Inject constructor(
     private val tripRepository: TripRepository,
     private val expenseRepository: ExpenseRepository,
     private val packingRepository: PackingRepository,
+    private val itineraryRepository: ItineraryRepository,
     private val calculateExpenseUseCase: CalculateExpenseUseCase,
     private val getAllCountriesUseCase: GetAllCountriesUseCase,
     private val getProfileUseCase: GetProfileUseCase,
@@ -136,13 +141,22 @@ class PlannerViewModel @Inject constructor(
         }
     }
 
+    private val _itineraryEventsFlow = _activeTripId.flatMapLatest { tripId ->
+        if (tripId != null) {
+            itineraryRepository.getItineraryEvents(tripId.toLong())
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
     private val _workspaceDetailsFlow = combine(
         _attachmentsFlow,
         _expensesFlow,
         _totalSpentHomeFlow,
-        _packingItemsFlow
-    ) { attachments, expenses, totalSpent, packingItems ->
-        WorkspaceDetails(attachments, expenses, totalSpent, packingItems)
+        _packingItemsFlow,
+        _itineraryEventsFlow
+    ) { attachments, expenses, totalSpent, packingItems, itineraryEvents ->
+        WorkspaceDetails(attachments, expenses, totalSpent, packingItems, itineraryEvents)
     }
 
     val uiState: StateFlow<PlannerUiState> = combine(
@@ -152,7 +166,7 @@ class PlannerViewModel @Inject constructor(
         _workspaceDetailsFlow,
         getProfileUseCase()
     ) { state, trips, sortedCountries, workspaceDetails, profile ->
-        val (attachments, expenses, totalSpent, packingItems) = workspaceDetails
+        val (attachments, expenses, totalSpent, packingItems, itineraryEvents) = workspaceDetails
         val currency = profile?.baseCurrencyCode?.ifBlank { "USD" } ?: "USD"
         val activeTrip = state.activeWorkspaceTrip
         val destCountry = sortedCountries.find { it.cca3.equals(activeTrip?.destinationCca3, ignoreCase = true) }
@@ -164,6 +178,7 @@ class PlannerViewModel @Inject constructor(
             workspaceAttachments = attachments,
             workspaceExpenses = expenses,
             workspacePackingItems = packingItems,
+            workspaceItineraryEvents = itineraryEvents,
             totalSpentHome = totalSpent,
             userCurrencyCode = currency,
             tripDestinationCurrencyCode = destCurrency,
@@ -190,6 +205,31 @@ class PlannerViewModel @Inject constructor(
 
     fun selectWorkspaceTab(tab: WorkspaceTab) {
         _uiState.value = _uiState.value.copy(activeWorkspaceTab = tab)
+    }
+
+    // Itinerary Actions
+    fun saveItineraryEvents(events: List<ItineraryEvent>) {
+        viewModelScope.launch {
+            itineraryRepository.saveItineraryEvents(events)
+        }
+    }
+
+    fun addItineraryEvent(event: ItineraryEvent) {
+        viewModelScope.launch {
+            itineraryRepository.saveItineraryEvent(event)
+        }
+    }
+
+    fun updateItineraryEvent(event: ItineraryEvent) {
+        viewModelScope.launch {
+            itineraryRepository.updateItineraryEvent(event)
+        }
+    }
+
+    fun deleteItineraryEvent(id: Long) {
+        viewModelScope.launch {
+            itineraryRepository.deleteItineraryEvent(id)
+        }
     }
 
     // Packing Actions

@@ -1,6 +1,9 @@
 package com.example.nomadcompass.ui.components
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -26,6 +29,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,25 +39,36 @@ import androidx.compose.material.icons.automirrored.filled.NoteAdd
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.FolderZip
+import androidx.compose.material.icons.filled.Hotel
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Luggage
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,6 +85,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -83,16 +100,20 @@ import coil3.compose.AsyncImage
 import com.example.nomadcompass.data.local.entity.ExpenseCategory
 import com.example.nomadcompass.domain.model.AttachmentType
 import com.example.nomadcompass.domain.model.Expense
+import com.example.nomadcompass.domain.model.ItineraryCategory
+import com.example.nomadcompass.domain.model.ItineraryEvent
 import com.example.nomadcompass.domain.model.PackingItem
 import com.example.nomadcompass.domain.model.Trip
 import com.example.nomadcompass.domain.model.TripAttachment
 import com.example.nomadcompass.ui.screens.planner.WorkspaceTab
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
 import com.example.nomadcompass.ui.theme.PrimaryContainer
+import com.example.nomadcompass.ui.theme.Secondary
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
@@ -112,6 +133,7 @@ fun TripWorkspaceModal(
     attachments: List<TripAttachment>,
     expenses: List<Expense> = emptyList(),
     packingItems: List<PackingItem> = emptyList(),
+    itineraryEvents: List<ItineraryEvent> = emptyList(),
     totalSpentHome: Double = 0.0,
     activeTab: WorkspaceTab = WorkspaceTab.EXPENSES,
     currencyCode: String = "USD",
@@ -123,6 +145,10 @@ fun TripWorkspaceModal(
     onTogglePackingItem: (PackingItem) -> Unit = {},
     onAddPackingItem: (String) -> Unit = {},
     onDeletePackingItem: (Long) -> Unit = {},
+    onSaveItineraryEvents: (List<ItineraryEvent>) -> Unit = {},
+    onAddItineraryEvent: (ItineraryEvent) -> Unit = {},
+    onUpdateItineraryEvent: (ItineraryEvent) -> Unit = {},
+    onDeleteItineraryEvent: (Long) -> Unit = {},
     onAddFileAttachment: (Uri, AttachmentType, String) -> Unit,
     onAddNoteAttachment: (title: String, text: String) -> Unit,
     onUpdateNoteAttachment: (id: Long, title: String, text: String) -> Unit,
@@ -134,6 +160,9 @@ fun TripWorkspaceModal(
     var isAddChoiceMenuOpen by remember { mutableStateOf(false) }
     var isAddNoteDialogOpen by remember { mutableStateOf(false) }
     var isAddPackingDialogOpen by remember { mutableStateOf(false) }
+    var isExtractorModalOpen by remember { mutableStateOf(false) }
+    var isAddEventDialogOpen by remember { mutableStateOf(false) }
+    var editingItineraryEvent by remember { mutableStateOf<ItineraryEvent?>(null) }
     var editingNote by remember { mutableStateOf<TripAttachment?>(null) }
     var pendingFileAttachment by remember { mutableStateOf<PendingFileAttachment?>(null) }
 
@@ -264,7 +293,20 @@ fun TripWorkspaceModal(
                             }
 
                             WorkspaceTab.ITINERARY -> {
-                                ItineraryTabContent(trip = trip)
+                                ItineraryTabContent(
+                                    trip = trip,
+                                    itineraryEvents = itineraryEvents,
+                                    onOpenExtractor = { isExtractorModalOpen = true },
+                                    onAddEventClick = {
+                                        editingItineraryEvent = null
+                                        isAddEventDialogOpen = true
+                                    },
+                                    onEditEvent = { event ->
+                                        editingItineraryEvent = event
+                                        isAddEventDialogOpen = true
+                                    },
+                                    onDeleteEvent = onDeleteItineraryEvent
+                                )
                             }
 
                             WorkspaceTab.PACKING -> {
@@ -280,6 +322,41 @@ fun TripWorkspaceModal(
                 }
             }
         }
+    }
+
+    // Offline Itinerary Extractor Modal
+    if (isExtractorModalOpen) {
+        ItineraryExtractorModal(
+            tripId = trip.id.toLong(),
+            destinationName = trip.countryName,
+            onDismiss = { isExtractorModalOpen = false },
+            onSaveEvents = { events ->
+                onSaveItineraryEvents(events)
+                isExtractorModalOpen = false
+            }
+        )
+    }
+
+    // Add / Edit Manual Itinerary Event Dialog
+    if (isAddEventDialogOpen) {
+        AddEditItineraryEventDialog(
+            tripId = trip.id.toLong(),
+            defaultLocation = trip.countryName,
+            existingEvent = editingItineraryEvent,
+            onDismiss = {
+                isAddEventDialogOpen = false
+                editingItineraryEvent = null
+            },
+            onSave = { event ->
+                if (editingItineraryEvent != null) {
+                    onUpdateItineraryEvent(event)
+                } else {
+                    onAddItineraryEvent(event)
+                }
+                isAddEventDialogOpen = false
+                editingItineraryEvent = null
+            }
+        )
     }
 
     // Add Custom Packing Item Dialog
@@ -632,47 +709,571 @@ private fun DocsTabContent(
 }
 
 @Composable
-private fun ItineraryTabContent(trip: Trip) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item(key = "itinerary_overview") {
-            ClayCard(
-                modifier = Modifier.fillMaxWidth(),
-                cornerRadius = 20.dp,
-                backgroundColor = SurfaceContainerLow
-            ) {
-                Column(modifier = Modifier.padding(18.dp)) {
-                    Text(
-                        text = "🗺️ ${trip.countryName} Trip Itinerary",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = OnSurface,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Trip Dates: ${trip.startDate} to ${trip.endDate}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Primary,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Planned Legs & Work Hubs:",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = OnSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(
-                        text = trip.notes.ifBlank { "Remote work setup and exploration itinerary." },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = OnSurface
+private fun ItineraryTabContent(
+    trip: Trip,
+    itineraryEvents: List<ItineraryEvent>,
+    onOpenExtractor: () -> Unit,
+    onAddEventClick: () -> Unit,
+    onEditEvent: (ItineraryEvent) -> Unit,
+    onDeleteEvent: (Long) -> Unit,
+) {
+    val context = LocalContext.current
+    val isDark = LocalThemeController.current.isDarkMode
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            contentPadding = PaddingValues(bottom = 80.dp)
+        ) {
+            // Header Overview Card
+            item(key = "itinerary_overview") {
+                ClayCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 20.dp,
+                    backgroundColor = SurfaceContainerLow
+                ) {
+                    Column(modifier = Modifier.padding(18.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text(
+                                    text = "🗺️ ${trip.countryName} Schedule",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = OnSurface,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "${trip.startDate} to ${trip.endDate}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Primary,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(Primary.copy(alpha = 0.15f))
+                                    .border(1.dp, Primary.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = "${itineraryEvents.size} Events",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Primary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        if (trip.notes.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                text = trip.notes,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        // Action Buttons Row: Offline Extractor + Add Event
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            // Offline Extractor Button (Highlighted)
+                            Box(
+                                modifier = Modifier
+                                    .weight(1.3f)
+                                    .bounceClick(scaleDown = 0.96f, onClick = onOpenExtractor)
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            colors = listOf(
+                                                PrimaryContainer,
+                                                Primary.copy(alpha = 0.85f)
+                                            )
+                                        )
+                                    )
+                                    .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                                    .padding(vertical = 10.dp, horizontal = 12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AutoAwesome,
+                                        contentDescription = null,
+                                        tint = OnPrimary,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "Offline Extractor",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = OnPrimary,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            // Manual Add Button
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .bounceClick(scaleDown = 0.96f, onClick = onAddEventClick)
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.22f))
+                                    .border(1.dp, Color.White.copy(alpha = if (isDark) 0.25f else 0.40f), RoundedCornerShape(9999.dp))
+                                    .padding(vertical = 10.dp, horizontal = 12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = null,
+                                        tint = OnSurface,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = "Add Event",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = OnSurface,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Timeline Items
+            if (itineraryEvents.isEmpty()) {
+                item(key = "empty_itinerary") {
+                    ClayCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        cornerRadius = 20.dp,
+                        backgroundColor = SurfaceContainerLow
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(54.dp)
+                                    .clip(CircleShape)
+                                    .background(Primary.copy(alpha = 0.15f))
+                                    .border(1.dp, Primary.copy(alpha = 0.35f), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = "No Itinerary Events Yet",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = OnSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "Ingest unformatted text, PDFs, HTML, or screenshots to extract flights, hotels, and activities on-device.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 12.dp),
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(18.dp))
+
+                            GlassPillButton(
+                                onClick = onOpenExtractor,
+                                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Launch Offline Extractor", color = Primary, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+            } else {
+                itemsIndexed(
+                    items = itineraryEvents,
+                    key = { _, item -> item.id }
+                ) { _, event ->
+                    ItineraryTimelineCard(
+                        event = event,
+                        onEdit = { onEditEvent(event) },
+                        onDelete = { onDeleteEvent(event.id) },
+                        onCopyCode = { code ->
+                            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as? ClipboardManager
+                            val clip = ClipData.newPlainText("Confirmation Code", code)
+                            clipboard?.setPrimaryClip(clip)
+                            Toast.makeText(context, "Copied code: $code", Toast.LENGTH_SHORT).show()
+                        }
                     )
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ItineraryTimelineCard(
+    event: ItineraryEvent,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onCopyCode: (String) -> Unit,
+) {
+    val isDark = LocalThemeController.current.isDarkMode
+
+    ClayCard(
+        modifier = Modifier.fillMaxWidth(),
+        cornerRadius = 16.dp,
+        backgroundColor = SurfaceContainerLow
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Header Row: Category Badge + Title + Action Icons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(event.category.defaultColor.copy(alpha = 0.20f))
+                            .border(1.dp, event.category.defaultColor.copy(alpha = 0.40f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = event.category.icon,
+                            contentDescription = event.category.displayName,
+                            tint = event.category.defaultColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = event.title,
+                            style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),
+                            color = OnSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "${event.category.emoji} ${event.category.displayName}",
+                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                            color = event.category.defaultColor,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onEdit, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = OnSurfaceVariant.copy(alpha = 0.7f),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(2.dp))
+                    IconButton(onClick = onDelete, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = OnSurfaceVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Dates & Times Row
+            if (event.startDateTime.isNotBlank() || event.endDateTime.isNotBlank()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = null,
+                        tint = Primary,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = if (event.endDateTime.isNotBlank()) "${event.startDateTime} → ${event.endDateTime}" else event.startDateTime,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = OnSurface,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+
+            // Location Row
+            if (event.location.isNotBlank()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = Color(0xFFFF5252),
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = event.location,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = OnSurfaceVariant
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // Bottom Confirmation Code & Notes Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (event.confirmationCode.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(9999.dp))
+                            .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.25f))
+                            .border(1.dp, Primary.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                            .clickable { onCopyCode(event.confirmationCode) }
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Code: ${event.confirmationCode}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Primary,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                imageVector = Icons.Default.ContentCopy,
+                                contentDescription = "Copy code",
+                                tint = Primary,
+                                modifier = Modifier.size(12.dp)
+                            )
+                        }
+                    }
+                }
+
+                if (event.notes.isNotBlank()) {
+                    Text(
+                        text = event.notes,
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                        color = OnSurfaceVariant.copy(alpha = 0.75f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false).padding(start = 8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddEditItineraryEventDialog(
+    tripId: Long,
+    defaultLocation: String,
+    existingEvent: ItineraryEvent?,
+    onDismiss: () -> Unit,
+    onSave: (ItineraryEvent) -> Unit,
+) {
+    var title by remember { mutableStateOf(existingEvent?.title ?: "") }
+    var selectedCategory by remember { mutableStateOf(existingEvent?.category ?: ItineraryCategory.ACTIVITY) }
+    var location by remember { mutableStateOf(existingEvent?.location ?: defaultLocation) }
+    var startDateTime by remember { mutableStateOf(existingEvent?.startDateTime ?: "") }
+    var endDateTime by remember { mutableStateOf(existingEvent?.endDateTime ?: "") }
+    var confirmationCode by remember { mutableStateOf(existingEvent?.confirmationCode ?: "") }
+    var notes by remember { mutableStateOf(existingEvent?.notes ?: "") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = if (existingEvent != null) "Edit Itinerary Event" else "Add Itinerary Event",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Event Title *") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary)
+                )
+
+                // Category Selector
+                Text(
+                    text = "Category",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = OnSurfaceVariant
+                )
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(ItineraryCategory.entries) { cat ->
+                        val isSelected = cat == selectedCategory
+                        Box(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(if (isSelected) cat.defaultColor else Color.White.copy(alpha = 0.10f))
+                                .border(1.dp, cat.defaultColor.copy(alpha = 0.40f), CircleShape)
+                                .clickable { selectedCategory = cat }
+                                .padding(horizontal = 10.dp, vertical = 5.dp)
+                        ) {
+                            Text(
+                                text = "${cat.emoji} ${cat.displayName}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (isSelected) OnPrimary else OnSurface,
+                                fontSize = 10.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = location,
+                    onValueChange = { location = it },
+                    label = { Text("Location / Airport / Address") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = startDateTime,
+                        onValueChange = { startDateTime = it },
+                        label = { Text("Start Date/Time") },
+                        placeholder = { Text("YYYY-MM-DD HH:mm") },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary)
+                    )
+                    OutlinedTextField(
+                        value = endDateTime,
+                        onValueChange = { endDateTime = it },
+                        label = { Text("End Date/Time") },
+                        placeholder = { Text("YYYY-MM-DD HH:mm") },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary)
+                    )
+                }
+
+                OutlinedTextField(
+                    value = confirmationCode,
+                    onValueChange = { confirmationCode = it },
+                    label = { Text("Confirmation Code / PNR") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary)
+                )
+
+                OutlinedTextField(
+                    value = notes,
+                    onValueChange = { notes = it },
+                    label = { Text("Notes / Details") },
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Primary)
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (title.isNotBlank()) {
+                        val event = ItineraryEvent(
+                            id = existingEvent?.id ?: 0,
+                            tripId = tripId,
+                            title = title.trim(),
+                            category = selectedCategory,
+                            location = location.trim(),
+                            startDateTime = startDateTime.trim(),
+                            endDateTime = endDateTime.trim(),
+                            confirmationCode = confirmationCode.trim(),
+                            notes = notes.trim()
+                        )
+                        onSave(event)
+                    }
+                }
+            ) {
+                Text("Save", color = Primary, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = OnSurfaceVariant)
+            }
+        }
+    )
 }
 
 @Composable

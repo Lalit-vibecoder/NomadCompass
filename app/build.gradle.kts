@@ -84,6 +84,12 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // On-Device Offline Extractors (PDF, HTML, ML Kit OCR, Entity Extraction)
+    implementation(libs.jsoup)
+    implementation(libs.pdfbox.android)
+    implementation(libs.mlkit.text.recognition)
+    implementation(libs.mlkit.entity.extraction)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

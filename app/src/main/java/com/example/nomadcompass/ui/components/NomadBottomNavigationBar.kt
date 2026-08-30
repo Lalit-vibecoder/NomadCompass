@@ -83,20 +83,31 @@ fun NomadBottomNavigationBar(
                 .height(64.dp)
                 .clayShadow(
                     cornerRadius = 32.dp,
-                    ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.40f else 0.12f),
-                    spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.50f else 0.18f),
-                    blurRadius = 14.dp
+                    ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.60f else 0.22f),
+                    spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.80f else 0.32f),
+                    blurRadius = 20.dp
                 )
                 .clip(navBarShape)
                 .background(
-                    color = SurfaceContainerHigh.copy(alpha = if (isDark) 0.92f else 0.96f),
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            SurfaceContainerHigh.copy(alpha = if (isDark) 0.75f else 0.85f),
+                            SurfaceContainerHigh.copy(alpha = if (isDark) 0.65f else 0.75f)
+                        )
+                    ),
                     shape = navBarShape
                 )
                 .border(
-                    width = 1.dp,
-                    color = OutlineVariant,
+                    width = 1.2.dp,
+                    color = if (isDark) Color.White.copy(alpha = 0.22f) else Color.White.copy(alpha = 0.40f),
                     shape = navBarShape
                 )
+                .drawBehind {
+                    drawRect(
+                        color = Color.White.copy(alpha = if (isDark) 0.30f else 0.50f),
+                        size = size.copy(height = 1.5.dp.toPx())
+                    )
+                }
                 .padding(horizontal = 8.dp, vertical = 6.dp),
             contentAlignment = Alignment.Center
         ) {

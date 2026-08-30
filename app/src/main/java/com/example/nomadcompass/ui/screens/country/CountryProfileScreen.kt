@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -98,12 +99,29 @@ fun CountryProfileScreen(
 
     Scaffold(
         topBar = {
-            // Header Top Navigation with System Status Bar Padding & Subtle Glass Look
+            val isDark = LocalThemeController.current.isDarkMode
+            // Header Top Navigation with System Status Bar Padding & Subtle Frosted Glass Look
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(SurfaceContainerHigh)
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                SurfaceContainerHigh.copy(alpha = if (isDark) 0.65f else 0.80f),
+                                SurfaceContainerHigh.copy(alpha = if (isDark) 0.45f else 0.60f)
+                            )
+                        )
+                    )
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = if (isDark) 0.20f else 0.35f),
+                                Color.White.copy(alpha = 0.05f)
+                            )
+                        ),
+                        shape = RectangleShape
+                    )
                     .statusBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -114,8 +132,12 @@ fun CountryProfileScreen(
                         .weight(1f)
                         .height(48.dp)
                         .clip(CircleShape)
-                        .background(SurfaceContainerLow)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                        .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.20f))
+                        .border(
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = if (isDark) 0.25f else 0.40f),
+                            shape = CircleShape
+                        )
                         .bounceClick(scaleDown = 0.97f, onClick = onExploreClick)
                         .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.CenterStart
@@ -212,8 +234,9 @@ fun CountryProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(top = paddingValues.calculateTopPadding())
                     .verticalScroll(rememberScrollState())
+                    .padding(bottom = 100.dp)
             ) {
                 // Hero Banner
                 Box(

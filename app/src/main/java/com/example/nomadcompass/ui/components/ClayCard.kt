@@ -9,20 +9,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.nomadcompass.ui.theme.LocalThemeController
-import com.example.nomadcompass.ui.theme.OutlineVariant
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 
 /**
- * A composable that applies tactile depth:
- * - Dynamic background color
- * - 360-degree omni-directional ambient and directional drop shadows on all sides to strongly pop out
- * - Subtle top-edge light reflection highlight
- * - Crisp theme-adaptive border
+ * A composable that renders a modern frosted glassmorphic card:
+ * - Translucent glass surface tint allowing background wallpaper/content to shine through
+ * - Vertical frosted glass specular gradient sheen
+ * - Glass refraction rim border
+ * - Omni-directional ambient & spot drop shadows
+ * - Top-edge specular light highlight reflection
  */
 @Composable
 fun ClayCard(
@@ -35,10 +36,29 @@ fun ClayCard(
     val isDark = LocalThemeController.current.isDarkMode
     val shape = RoundedCornerShape(cornerRadius)
 
-    val ambientShadow = if (isDark) Color.Black.copy(alpha = 0.70f) else Color(0x300F172A)
-    val spotShadow = if (isDark) Color.Black.copy(alpha = 0.85f) else Color(0x250F172A)
-    val borderColor = if (isDark) OutlineVariant else OutlineVariant
-    val glowColor = if (isDark) Color.White.copy(alpha = 0.08f) else Color.White.copy(alpha = 0.7f)
+    val effectiveBg = if (backgroundColor.alpha == 1f) {
+        backgroundColor.copy(alpha = if (isDark) 0.55f else 0.70f)
+    } else {
+        backgroundColor
+    }
+
+    val ambientShadow = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f)
+    val spotShadow = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f)
+
+    val borderBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
+            Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
+        )
+    )
+
+    val frostedSheenBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color.White.copy(alpha = if (isDark) 0.12f else 0.24f),
+            Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
+            Color.Transparent,
+        )
+    )
 
     Box(
         modifier = modifier
@@ -56,18 +76,61 @@ fun ClayCard(
                 blurRadius = if (isDark) 16.dp else 14.dp,
             )
             .clip(shape)
-            .background(backgroundColor, shape)
-            .border(1.dp, borderColor, shape)
+            .background(effectiveBg, shape)
+            .background(brush = frostedSheenBrush, shape = shape)
+            .border(width = 1.dp, brush = borderBrush, shape = shape)
             .drawBehind {
-                // Subtle top-edge ambient highlight reflection
+                // Subtle frosted top-edge specular light highlight reflection
                 drawRect(
-                    color = glowColor,
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
+                            Color.Transparent,
+                        )
+                    ),
                     size = size.copy(height = 1.5.dp.toPx()),
                 )
             },
         content = content,
     )
 }
+
+/**
+ * Semantic alias for ClayCard with Frosted Glassmorphism aesthetics.
+ */
+@Composable
+fun FrostedGlassCard(
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 24.dp,
+    backgroundColor: Color = SurfaceContainer,
+    onClick: (() -> Unit)? = null,
+    content: @Composable BoxScope.() -> Unit,
+) = ClayCard(
+    modifier = modifier,
+    cornerRadius = cornerRadius,
+    backgroundColor = backgroundColor,
+    onClick = onClick,
+    content = content,
+)
+
+/**
+ * Semantic alias for ClayCard.
+ */
+@Composable
+fun GlassCard(
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = 24.dp,
+    backgroundColor: Color = SurfaceContainer,
+    onClick: (() -> Unit)? = null,
+    content: @Composable BoxScope.() -> Unit,
+) = ClayCard(
+    modifier = modifier,
+    cornerRadius = cornerRadius,
+    backgroundColor = backgroundColor,
+    onClick = onClick,
+    content = content,
+)
 
 /**
  * Hardware-accelerated GPU 360-degree omni-directional shadow modifier running on Android RenderThread.
@@ -88,3 +151,4 @@ fun Modifier.clayShadow(
         this.spotShadowColor = spotShadowColor
     }
 }
+

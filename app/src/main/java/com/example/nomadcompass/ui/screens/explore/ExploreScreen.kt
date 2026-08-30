@@ -17,10 +17,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -97,111 +101,229 @@ fun ExploreScreen(
 
     val pills = listOf("All", "My Favs", "Europe", "Asia", "Americas", "Africa", "Oceania", "Themes")
 
+    val currentDateText = remember {
+        val now = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("EEE. d MMMM", Locale.ENGLISH)
+        now.format(formatter)
+    }
+    val greetingName = uiState.userProfile?.userName?.takeIf { it.isNotBlank() } ?: "alvi"
+
     Scaffold(
         topBar = {
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF132A22).copy(alpha = 0.75f),
+                                Color(0xFF132A22).copy(alpha = 0.85f),
+                                Color(0xFF132A22).copy(alpha = 0.40f),
                                 Color.Transparent
                             )
                         )
                     )
                     .statusBarsPadding()
-                    .padding(horizontal = 20.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
-                // Search Bar with Frosted Glass Look
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp)
-                        .clip(RoundedCornerShape(9999.dp))
-                        .background(Color.White.copy(alpha = 0.12f))
-                        .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp)),
-                    contentAlignment = Alignment.CenterStart
+                // Top Header Row matching attached reference design
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedTextField(
-                        value = uiState.searchQuery,
-                        onValueChange = viewModel::onSearchQueryChanged,
-                        placeholder = {
-                            Text(
-                                "Search destinations...",
-                                color = OnSurfaceVariant,
-                                style = MaterialTheme.typography.bodyMedium
+                    // Profile Avatar
+                    val photoUri = uiState.userProfile?.photoUri
+                    val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
+
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .bounceClick(onClick = onProfileClick)
+                            .clayShadow(
+                                cornerRadius = 9999.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.40f else 0.15f),
+                                spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.50f else 0.20f),
+                                blurRadius = 6.dp
                             )
-                        },
-                        leadingIcon = {
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = if (isDark) 0.15f else 0.25f))
+                            .border(1.2.dp, Color.White.copy(alpha = if (isDark) 0.35f else 0.50f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (photoFile != null && photoFile.exists()) {
+                            AsyncImage(
+                                model = photoFile,
+                                contentDescription = "Profile",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Profile",
+                                tint = OnSurface,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    // Date & Greeting Column
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = currentDateText,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            color = OnSurfaceVariant,
+                            maxLines = 1
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Hello $greetingName",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = OnSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    // Right Actions: Glass Search Button + Glass Settings Wheel Button
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Circular Glass Search Button
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .bounceClick(onClick = { searchVisible = !searchVisible })
+                                .clayShadow(
+                                    cornerRadius = 9999.dp,
+                                    ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f),
+                                    spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f),
+                                    blurRadius = 6.dp
+                                )
+                                .clip(CircleShape)
+                                .background(
+                                    if (searchVisible || uiState.searchQuery.isNotEmpty())
+                                        Primary.copy(alpha = if (isDark) 0.32f else 0.22f)
+                                    else
+                                        Color.White.copy(alpha = if (isDark) 0.14f else 0.22f)
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = if (searchVisible || uiState.searchQuery.isNotEmpty())
+                                        Primary.copy(alpha = 0.6f)
+                                    else
+                                        Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = null,
-                                tint = Primary,
+                                contentDescription = "Search",
+                                tint = if (searchVisible || uiState.searchQuery.isNotEmpty()) Primary else OnSurface,
                                 modifier = Modifier.size(20.dp)
                             )
-                        },
-                        trailingIcon = {
-                            if (uiState.searchQuery.isNotEmpty()) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Clear",
-                                    tint = OnSurfaceVariant,
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                        .clickable { viewModel.onSearchQueryChanged("") }
+                        }
+
+                        // Circular Glass Settings Button (preserves setting wheel icon)
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .bounceClick(onClick = onProfileClick)
+                                .clayShadow(
+                                    cornerRadius = 9999.dp,
+                                    ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f),
+                                    spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f),
+                                    blurRadius = 6.dp
                                 )
-                            }
-                        },
-                        singleLine = true,
-                        shape = CircleShape,
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Transparent,
-                            unfocusedBorderColor = Color.Transparent,
-                            focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface,
-                            cursorColor = Primary,
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                        )
-                    )
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = if (isDark) 0.14f else 0.22f))
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings",
+                                tint = OnSurface,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 }
 
-                // Profile / Settings Button with Gear Icon
-                val photoUri = uiState.userProfile?.photoUri
-                val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
-
-                Box(
-                    modifier = Modifier
-                        .size(46.dp)
-                        .bounceClick(onClick = onProfileClick)
-                        .clayShadow(
-                            cornerRadius = 9999.dp,
-                            ambientShadowColor = Color.Black.copy(alpha = 0.35f),
-                            spotShadowColor = Color.Black.copy(alpha = 0.45f),
-                            blurRadius = 6.dp
-                        )
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.15f))
-                        .border(1.2.dp, Color.White.copy(alpha = 0.32f), CircleShape),
-                    contentAlignment = Alignment.Center
+                // Expandable Frosted Glass Search Bar
+                AnimatedVisibility(
+                    visible = searchVisible || uiState.searchQuery.isNotEmpty(),
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
                 ) {
-                    if (photoFile != null && photoFile.exists()) {
-                        AsyncImage(
-                            model = photoFile,
-                            contentDescription = "Profile & Settings",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings",
-                            tint = OnSurface,
-                            modifier = Modifier.size(22.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp)
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(9999.dp))
+                            .background(Color.White.copy(alpha = if (isDark) 0.14f else 0.20f))
+                            .border(1.dp, Color.White.copy(alpha = if (isDark) 0.25f else 0.40f), RoundedCornerShape(9999.dp)),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        OutlinedTextField(
+                            value = uiState.searchQuery,
+                            onValueChange = viewModel::onSearchQueryChanged,
+                            placeholder = {
+                                Text(
+                                    "Search destinations...",
+                                    color = OnSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            },
+                            trailingIcon = {
+                                if (uiState.searchQuery.isNotEmpty()) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Clear",
+                                        tint = OnSurfaceVariant,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                            .clickable { viewModel.onSearchQueryChanged("") }
+                                    )
+                                }
+                            },
+                            singleLine = true,
+                            shape = CircleShape,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color.Transparent,
+                                unfocusedBorderColor = Color.Transparent,
+                                focusedTextColor = OnSurface,
+                                unfocusedTextColor = OnSurface,
+                                cursorColor = Primary,
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                            )
                         )
                     }
                 }
@@ -217,10 +339,11 @@ fun ExploreScreen(
         containerColor = Color.Transparent
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(bottom = 24.dp)
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                top = paddingValues.calculateTopPadding(),
+                bottom = 100.dp
+            )
         ) {
             // Hero Title matching screenshot: "Where Will You Go Next?"
             item {
@@ -364,6 +487,7 @@ fun ExploreScreen(
 
 /**
  * Sage Green Curved Destination Card matching the Bali card layout in the reference image.
+ * Features stacked frosted glass top tabs, frosted sage glass frame, and translucent cutout notches for title and location.
  */
 @Composable
 private fun SageDestinationCard(
@@ -372,206 +496,230 @@ private fun SageDestinationCard(
     onFavoriteToggle: () -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
-    val cardShape = RoundedCornerShape(28.dp)
+    val cardShape = RoundedCornerShape(36.dp)
 
-    ClayCard(
-        modifier = Modifier.fillMaxWidth(),
-        cornerRadius = 28.dp,
-        backgroundColor = SageCardDark,
-        onClick = onCardClick
+    val sageGradientStart = if (isDark) Color(0xFF537E76) else Color(0xFF7AA59D)
+    val sageGradientEnd = if (isDark) Color(0xFF385E56) else Color(0xFF59857D)
+    val sageSolid = if (isDark) Color(0xFF456F67) else Color(0xFF67928A)
+
+    val titleNotchShape = RoundedCornerShape(
+        topStart = 28.dp,
+        bottomEnd = 26.dp,
+        topEnd = 8.dp,
+        bottomStart = 8.dp
+    )
+    val locationNotchShape = RoundedCornerShape(
+        topStart = 24.dp,
+        bottomEnd = 28.dp,
+        topEnd = 8.dp,
+        bottomStart = 8.dp
+    )
+
+    // Main Destination Card (matching reference image with Frosted Glass styling)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(340.dp)
+            .bounceClick(scaleDown = 0.98f, onClick = onCardClick)
+            .clayShadow(
+                cornerRadius = 36.dp,
+                ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.15f),
+                spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.50f else 0.22f),
+                blurRadius = 16.dp
+            )
+            .clip(cardShape)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        sageGradientStart.copy(alpha = if (isDark) 0.65f else 0.78f),
+                        sageGradientEnd.copy(alpha = if (isDark) 0.50f else 0.65f)
+                    )
+                ),
+                shape = cardShape
+            )
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = if (isDark) 0.15f else 0.25f),
+                        Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
+                        Color.Transparent
+                    )
+                ),
+                shape = cardShape
+            )
+            .border(
+                width = 1.2.dp,
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = if (isDark) 0.35f else 0.52f),
+                        Color.White.copy(alpha = if (isDark) 0.10f else 0.20f)
+                    )
+                ),
+                shape = cardShape
+            )
+            .drawBehind {
+                // Specular top edge ambient highlight reflection
+                drawRect(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White.copy(alpha = if (isDark) 0.40f else 0.65f),
+                            Color.Transparent
+                        )
+                    ),
+                    size = size.copy(height = 1.5.dp.toPx())
+                )
+            }
+            .padding(10.dp)
     ) {
-        Column(
+        // Main Destination Image Cutout Canvas with Deep Organic Rounded Corners
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(28.dp))
+                .background(Color.Black.copy(alpha = 0.25f))
         ) {
-            // Top Row inside Card: Destination Name + Favorite Heart
-            Row(
+            AsyncImage(
+                model = country.flagUrl,
+                contentDescription = country.commonName,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // Top-Left Frosted Sage Notch for Destination Title (matching "Bali" in image)
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .align(Alignment.TopStart)
+                    .clip(titleNotchShape)
+                    .background(sageSolid.copy(alpha = if (isDark) 0.75f else 0.88f))
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = if (isDark) 0.18f else 0.28f),
+                                Color.White.copy(alpha = 0.04f)
+                            )
+                        )
+                    )
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.40f),
+                                Color.White.copy(alpha = 0.15f)
+                            )
+                        ),
+                        shape = titleNotchShape
+                    )
+                    .padding(horizontal = 18.dp, vertical = 10.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
                 Text(
                     text = country.commonName,
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = (-0.5).sp
                     ),
                     color = Color.White,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
-
-                // Favorite Heart Button with glass backdrop
-                Box(
-                    modifier = Modifier
-                        .size(38.dp)
-                        .bounceClick(scaleDown = 0.85f, onClick = onFavoriteToggle)
-                        .bounceOnState(state = country.isFavorite, maxScale = 1.35f)
-                        .clayShadow(
-                            cornerRadius = 9999.dp,
-                            ambientShadowColor = Color.Black.copy(alpha = 0.35f),
-                            spotShadowColor = Color.Black.copy(alpha = 0.45f),
-                            blurRadius = 6.dp
-                        )
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = if (country.isFavorite) 0.35f else 0.18f))
-                        .border(1.dp, Color.White.copy(alpha = 0.35f), CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = if (country.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favorite",
-                        tint = if (country.isFavorite) Color(0xFFFF5252) else Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Main Destination Image Cutout with Organic Rounded Corners
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(230.dp)
-                    .clip(RoundedCornerShape(22.dp))
-                    .background(Color.Black.copy(alpha = 0.20f))
-            ) {
-                AsyncImage(
-                    model = country.flagUrl,
-                    contentDescription = country.commonName,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                // Frosted Glass Location Badge (Bottom Right matching "📍 Indonesia")
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(12.dp)
-                        .clayShadow(
-                            cornerRadius = 9999.dp,
-                            ambientShadowColor = Color.Black.copy(alpha = 0.40f),
-                            spotShadowColor = Color.Black.copy(alpha = 0.50f),
-                            blurRadius = 6.dp
-                        )
-                        .clip(RoundedCornerShape(9999.dp))
-                        .background(Color.Black.copy(alpha = 0.45f))
-                        .border(1.dp, Color.White.copy(alpha = 0.30f), RoundedCornerShape(9999.dp))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.LocationOn,
-                            contentDescription = null,
-                            tint = Color(0xFFFF6B6B),
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = country.region,
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            ),
-                            color = Color.White
-                        )
-                    }
-                }
-
-                // Nomad Connectivity Tag (Top Left inside photo)
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(12.dp)
-                        .clip(RoundedCornerShape(9999.dp))
-                        .background(Color.Black.copy(alpha = 0.45f))
-                        .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Wifi,
-                            contentDescription = null,
-                            tint = Secondary,
-                            modifier = Modifier.size(13.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "Fast WiFi",
-                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
-                            color = Color.White
-                        )
-                    }
-                }
-            }
-
-            // Dynamic Highlight Snippet if present
-            if (!country.highlightSnippet.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = country.highlightSnippet,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.85f)
-                    ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Moss-Emerald Glass "View Details" Pill Button (Matching bottom button in screenshot)
+            // Top-Right: Glass Favorite Heart Button
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .bounceClick(scaleDown = 0.96f, onClick = onCardClick)
-                    .clayShadow(
-                        cornerRadius = 9999.dp,
-                        ambientShadowColor = Color.Black.copy(alpha = 0.40f),
-                        spotShadowColor = Color.Black.copy(alpha = 0.55f),
-                        blurRadius = 8.dp
+                    .align(Alignment.TopEnd)
+                    .padding(10.dp)
+                    .size(40.dp)
+                    .bounceClick(scaleDown = 0.85f, onClick = onFavoriteToggle)
+                    .bounceOnState(state = country.isFavorite, maxScale = 1.35f)
+                .clayShadow(
+                    cornerRadius = 9999.dp,
+                    ambientShadowColor = Color.Black.copy(alpha = 0.35f),
+                    spotShadowColor = Color.Black.copy(alpha = 0.45f),
+                    blurRadius = 6.dp
+                )
+                .clip(CircleShape)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = if (isDark) 0.22f else 0.35f),
+                            Color.Black.copy(alpha = if (isDark) 0.35f else 0.20f)
+                        )
                     )
-                    .clip(RoundedCornerShape(9999.dp))
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color.White.copy(alpha = if (isDark) 0.35f else 0.50f),
+                    shape = CircleShape
+                ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (country.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = if (country.isFavorite) Color(0xFFFF5252) else Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            // Bottom-Right Frosted Sage Notch for Country / Region Location (matching "📍 Indonesia" in image)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .clip(locationNotchShape)
+                    .background(sageSolid.copy(alpha = if (isDark) 0.75f else 0.88f))
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                MossButtonGradientStart,
-                                MossButtonGradientEnd
+                                Color.White.copy(alpha = if (isDark) 0.18f else 0.28f),
+                                Color.White.copy(alpha = 0.04f)
                             )
-                        ),
-                        shape = RoundedCornerShape(9999.dp)
+                        )
                     )
                     .border(
                         width = 1.dp,
-                        color = MossButtonBorder,
-                        shape = RoundedCornerShape(9999.dp)
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.40f),
+                                Color.White.copy(alpha = 0.15f)
+                            )
+                        ),
+                        shape = locationNotchShape
                     )
-                    .drawBehind {
-                        drawRect(
-                            color = Color.White.copy(alpha = 0.35f),
-                            size = size.copy(height = 1.5.dp.toPx())
-                        )
-                    }
-                    .padding(vertical = 13.dp),
+                    .padding(horizontal = 16.dp, vertical = 9.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "View Details",
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = Color.White
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // Location pin icon
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFFE53935).copy(alpha = 0.20f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = null,
+                            tint = Color(0xFFFF5252),
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = country.region.ifBlank { country.commonName },
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        color = Color.White
+                    )
+                }
             }
         }
     }

@@ -196,7 +196,7 @@ fun PlannerScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(top = paddingValues.calculateTopPadding())
         ) {
             // Header Description
             Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
@@ -288,11 +288,15 @@ fun PlannerScreen(
             } else {
                 // Trips List
                 LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp),
+                    contentPadding = PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 100.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(uiState.trips, key = { it.id }) { trip ->
+                    items(
+                        items = uiState.trips,
+                        key = { it.id },
+                        contentType = { "trip_card" }
+                    ) { trip ->
                         TripCardItem(
                             trip = trip,
                             currencyCode = uiState.userCurrencyCode,

@@ -9,7 +9,6 @@ import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.InputStream
@@ -88,7 +87,7 @@ object OfflineDocumentExtractor {
         try {
             val inputImage = InputImage.fromFilePath(context, uri)
             val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-            val visionText = recognizer.process(inputImage).await()
+            val visionText = recognizer.process(inputImage).awaitResult()
             val text = visionText.text
             if (text.isNotBlank()) {
                 Result.success(text.trim())

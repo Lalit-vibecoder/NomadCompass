@@ -9,7 +9,6 @@ import com.google.mlkit.nl.entityextraction.EntityExtractorOptions
 import com.google.mlkit.nl.entityextraction.FlightNumberEntity
 import com.google.mlkit.nl.entityextraction.DateTimeEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -411,10 +410,10 @@ object OfflineTravelHeuristicParser {
                 EntityExtractorOptions.Builder(EntityExtractorOptions.ENGLISH).build()
             )
             // Attempt to check if local model is ready or available
-            val isAvailable = entityExtractor.isModelDownloaded.await()
+            val isAvailable = entityExtractor.isModelDownloaded.awaitResult()
             if (isAvailable) {
                 val params = EntityExtractionParams.Builder(text).build()
-                entityExtractor.annotate(params).await()
+                entityExtractor.annotate(params).awaitResult()
             } else {
                 emptyList()
             }

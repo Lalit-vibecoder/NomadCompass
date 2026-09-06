@@ -258,7 +258,10 @@ class PlannerViewModel @Inject constructor(
         amountLocal: Double,
         currencyCode: String,
         category: ExpenseCategory,
-        notes: String
+        notes: String,
+        date: Long = System.currentTimeMillis(),
+        paymentMethod: String = "Credit Card",
+        receiptPath: String? = null,
     ) {
         val currentTrip = uiState.value.activeWorkspaceTrip ?: return
         viewModelScope.launch {
@@ -276,8 +279,10 @@ class PlannerViewModel @Inject constructor(
                 amountHome = conversionResult.amountHome,
                 isUnconverted = conversionResult.isUnconverted,
                 category = category,
-                date = System.currentTimeMillis(),
-                notes = notes
+                date = date,
+                notes = notes,
+                paymentMethod = paymentMethod,
+                receiptPath = receiptPath,
             )
 
             expenseRepository.addExpense(expense)
@@ -306,7 +311,13 @@ class PlannerViewModel @Inject constructor(
     }
 
     // Workspace Attachments Actions
-    fun addFileAttachment(context: Context, uri: Uri, type: AttachmentType, customTitle: String) {
+    fun addFileAttachment(
+        context: Context,
+        uri: Uri,
+        type: AttachmentType,
+        customTitle: String,
+        category: String = "General"
+    ) {
         val currentTrip = uiState.value.activeWorkspaceTrip ?: return
         viewModelScope.launch {
             val fileInfo = FileStorageHelper.saveUriToInternalStorage(context, uri)
@@ -321,14 +332,15 @@ class PlannerViewModel @Inject constructor(
                     fileSize = fileInfo.fileSize,
                     mimeType = fileInfo.mimeType,
                     createdAt = System.currentTimeMillis(),
-                    displayOrder = nextOrder
+                    displayOrder = nextOrder,
+                    category = category
                 )
                 tripRepository.addAttachment(attachment)
             }
         }
     }
 
-    fun addNoteAttachment(title: String, text: String) {
+    fun addNoteAttachment(title: String, text: String, category: String = "Notes") {
         val currentTrip = uiState.value.activeWorkspaceTrip ?: return
         viewModelScope.launch {
             val nextOrder = (uiState.value.workspaceAttachments.maxOfOrNull { it.displayOrder } ?: -1) + 1
@@ -338,7 +350,8 @@ class PlannerViewModel @Inject constructor(
                 title = title.ifBlank { "Trip Note" },
                 content = text,
                 createdAt = System.currentTimeMillis(),
-                displayOrder = nextOrder
+                displayOrder = nextOrder,
+                category = category
             )
             tripRepository.addAttachment(attachment)
         }

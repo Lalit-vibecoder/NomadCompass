@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -299,9 +300,7 @@ fun PlannerScreen(
                     ) { trip ->
                         TripCardItem(
                             trip = trip,
-                            currencyCode = uiState.userCurrencyCode,
-                            onClick = { viewModel.openTripWorkspace(trip) },
-                            onDelete = { viewModel.deleteTrip(trip.id) }
+                            onClick = { viewModel.openTripWorkspace(trip) }
                         )
                     }
                 }
@@ -347,11 +346,12 @@ fun PlannerScreen(
             onAddItineraryEvent = viewModel::addItineraryEvent,
             onUpdateItineraryEvent = viewModel::updateItineraryEvent,
             onDeleteItineraryEvent = viewModel::deleteItineraryEvent,
-            onAddFileAttachment = { uri, type, customTitle -> viewModel.addFileAttachment(context, uri, type, customTitle) },
-            onAddNoteAttachment = { title, text -> viewModel.addNoteAttachment(title, text) },
+            onAddFileAttachment = { uri, type, customTitle, category -> viewModel.addFileAttachment(context, uri, type, customTitle, category) },
+            onAddNoteAttachment = { title, text, category -> viewModel.addNoteAttachment(title, text, category) },
             onUpdateNoteAttachment = { id, title, text -> viewModel.updateNoteAttachment(id, title, text) },
             onMoveAttachment = viewModel::moveAttachment,
             onDeleteAttachment = viewModel::deleteAttachment,
+            onDeleteTrip = { viewModel.deleteTrip(uiState.activeWorkspaceTrip!!.id) },
             onDismiss = viewModel::closeTripWorkspace
         )
     }
@@ -360,10 +360,25 @@ fun PlannerScreen(
 @Composable
 private fun TripCardItem(
     trip: Trip,
-    currencyCode: String = "USD",
     onClick: () -> Unit,
-    onDelete: () -> Unit,
 ) {
+    val isDark = LocalThemeController.current.isDarkMode
+
+    // Color-coded status badge styling
+    val (statusColor, statusBg) = when (trip.status.lowercase()) {
+        "upcoming" -> Pair(Color(0xFF2E7D32), if (isDark) Color(0xFF1B5E20).copy(alpha = 0.35f) else Color(0xFFE8F5E9))
+        "completed" -> Pair(Color(0xFF1976D2), if (isDark) Color(0xFF0D47A1).copy(alpha = 0.35f) else Color(0xFFE3F2FD))
+        else -> Pair(Color(0xFFEF6C00), if (isDark) Color(0xFFE65100).copy(alpha = 0.35f) else Color(0xFFFFF3E0)) // In Progress / Active
+    }
+
+    // Trip Readiness calculation: 75% for Upcoming, 90% for In Progress, 100% for Completed
+    val readinessPercent = when (trip.status.lowercase()) {
+        "completed" -> 100
+        "in progress", "active" -> 90
+        else -> 75
+    }
+    val readinessFraction = readinessPercent / 100f
+
     ClayCard(
         modifier = Modifier.fillMaxWidth(),
         onClick = onClick,
@@ -373,147 +388,150 @@ private fun TripCardItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Header Row: Flag + Name + Status Pill + Delete
+            // Header Row: Destination with Left Circular Flag + Color-Coded Status Badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (trip.flagUrl.isNotBlank()) {
-                        AsyncImage(
-                            model = trip.flagUrl,
-                            contentDescription = trip.countryName,
-                            modifier = Modifier
-                                .size(28.dp)
-                                .clip(CircleShape)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                    } else {
-                        Text(text = trip.flagEmoji, fontSize = 24.sp)
-                        Spacer(modifier = Modifier.width(10.dp))
-                    }
-                    Text(
-                        text = trip.countryName,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = OnSurface,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                // Destination Code & Name with Left Circular Flag
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
+                            .size(34.dp)
                             .clip(CircleShape)
-                            .background(SecondaryContainer)
-                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                            .background(Primary.copy(alpha = 0.15f))
+                            .border(1.dp, Primary.copy(alpha = 0.3f), CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
+                        if (trip.flagUrl.isNotBlank()) {
+                            AsyncImage(
+                                model = trip.flagUrl,
+                                contentDescription = trip.countryName,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                            )
+                        } else {
+                            Text(text = trip.flagEmoji, fontSize = 18.sp)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column {
                         Text(
-                            text = trip.status,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Secondary,
-                            fontWeight = FontWeight.Bold
+                            text = "${trip.destinationCca3.uppercase()} • ${trip.countryName}",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = OnSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete",
-                        tint = OnSurfaceVariant.copy(alpha = 0.6f),
-                        modifier = Modifier
-                            .size(20.dp)
-                            .bounceClick(scaleDown = 0.82f, onClick = onDelete)
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Visual Status Badge Tag
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(statusBg)
+                        .border(1.dp, statusColor.copy(alpha = 0.3f), CircleShape)
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = trip.status,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = statusColor,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
 
-            // Trip Details (Dates & Budget)
+            // Trip Duration / Dates Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Primary.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
                         contentDescription = null,
                         tint = Primary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "${trip.startDate} - ${trip.endDate}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = OnSurfaceVariant
+                        modifier = Modifier.size(16.dp)
                     )
                 }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AttachMoney,
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "${trip.budgetUsd.toInt()} $currencyCode / mo",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = OnSurface,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "${trip.startDate} — ${trip.endDate}",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = OnSurface
+                )
             }
 
-            if (trip.notes.isNotBlank()) {
+            // Trip Preparation / Planning Readiness Indicator
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Trip Preparation",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnSurfaceVariant,
+                        fontSize = 11.sp
+                    )
+                    Text(
+                        text = "$readinessPercent% Ready",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = Primary,
+                        fontSize = 11.sp
+                    )
+                }
+
+                // Subtle visual progress bar
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(SurfaceContainerLow)
-                        .padding(12.dp)
+                        .height(6.dp)
+                        .clip(CircleShape)
+                        .background(SurfaceContainerHigh)
                 ) {
-                    Row(verticalAlignment = Alignment.Top) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Note,
-                            contentDescription = null,
-                            tint = OnSurfaceVariant,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = trip.notes,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = OnSurfaceVariant
-                        )
-                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(readinessFraction)
+                            .clip(CircleShape)
+                            .background(
+                                brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                    colors = listOf(Primary, Primary.copy(alpha = 0.8f))
+                                )
+                            )
+                    )
                 }
-            }
-
-            // Workspace Hint Pill
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(CircleShape)
-                    .background(SecondaryContainer.copy(alpha = 0.5f))
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "📂 TAP TO OPEN WORKSPACE (PDFs, IMAGES, NOTES)",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Secondary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp
-                )
             }
         }
     }
@@ -564,12 +582,11 @@ private fun AddTripDialog(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(52.dp)
-                                .clip(CircleShape)
+                                .clip(RoundedCornerShape(14.dp))
                                 .background(SurfaceContainerLow)
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
                                 .clickable { countryDropdownExpanded = true }
-                                .padding(horizontal = 20.dp),
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -577,14 +594,15 @@ private fun AddTripDialog(
                                 Icon(
                                     imageVector = Icons.Default.Public,
                                     contentDescription = null,
-                                    tint = OnSurfaceVariant,
+                                    tint = Primary,
                                     modifier = Modifier.size(20.dp)
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Text(
                                     text = displayLabel,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = OnSurface
+                                    color = OnSurface,
+                                    fontWeight = FontWeight.Medium
                                 )
                             }
                             Icon(
@@ -656,7 +674,7 @@ private fun AddTripDialog(
                     }
                 }
 
-                // Dates Row (Start & End) - Aligned horizontally & Oval Shaped
+                // Dates Row (Start & End) - Clean RoundedCornerShape(14.dp)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -670,14 +688,13 @@ private fun AddTripDialog(
                         OutlinedTextField(
                             value = uiState.startDate,
                             onValueChange = onStartDateChanged,
+                            placeholder = { Text("YYYY-MM-DD", fontSize = 12.sp, color = OnSurfaceVariant.copy(alpha = 0.5f)) },
                             singleLine = true,
-                            shape = CircleShape,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                                 focusedContainerColor = SurfaceContainerLow,
                                 unfocusedContainerColor = SurfaceContainerLow,
                                 focusedTextColor = OnSurface,
@@ -694,14 +711,13 @@ private fun AddTripDialog(
                         OutlinedTextField(
                             value = uiState.endDate,
                             onValueChange = onEndDateChanged,
+                            placeholder = { Text("YYYY-MM-DD", fontSize = 12.sp, color = OnSurfaceVariant.copy(alpha = 0.5f)) },
                             singleLine = true,
-                            shape = CircleShape,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                                 focusedContainerColor = SurfaceContainerLow,
                                 unfocusedContainerColor = SurfaceContainerLow,
                                 focusedTextColor = OnSurface,
@@ -712,7 +728,7 @@ private fun AddTripDialog(
                     }
                 }
 
-                // Budget Field - Oval Shaped with user currency denomination
+                // Budget Field
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         text = "MONTHLY BUDGET (${uiState.userCurrencyCode})",
@@ -723,8 +739,9 @@ private fun AddTripDialog(
                     OutlinedTextField(
                         value = uiState.budgetUsd,
                         onValueChange = onBudgetChanged,
+                        placeholder = { Text("e.g. 2500", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
                         singleLine = true,
-                        shape = CircleShape,
+                        shape = RoundedCornerShape(14.dp),
                         leadingIcon = {
                             Text(
                                 text = uiState.userCurrencyCode,
@@ -734,12 +751,10 @@ private fun AddTripDialog(
                                 modifier = Modifier.padding(start = 12.dp)
                             )
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                             focusedContainerColor = SurfaceContainerLow,
                             unfocusedContainerColor = SurfaceContainerLow,
                             focusedTextColor = OnSurface,
@@ -749,7 +764,7 @@ private fun AddTripDialog(
                     )
                 }
 
-                // Notes Field - Oval Shaped
+                // Notes Field
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(text = "REMOTE WORK NOTES", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, letterSpacing = 1.sp)
                     OutlinedTextField(
@@ -757,13 +772,11 @@ private fun AddTripDialog(
                         onValueChange = onNotesChanged,
                         placeholder = { Text("e.g. Co-working, e-SIM setup...", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
                         singleLine = true,
-                        shape = CircleShape,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                             focusedContainerColor = SurfaceContainerLow,
                             unfocusedContainerColor = SurfaceContainerLow,
                             focusedTextColor = OnSurface,

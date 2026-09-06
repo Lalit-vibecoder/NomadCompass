@@ -1,6 +1,11 @@
 package com.example.nomadcompass.ui.screens.explore
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -272,60 +277,51 @@ fun ExploreScreen(
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically()
                 ) {
-                    Box(
+                    OutlinedTextField(
+                        value = uiState.searchQuery,
+                        onValueChange = viewModel::onSearchQueryChanged,
+                        placeholder = {
+                            Text(
+                                "Search destinations, countries...",
+                                color = OnSurfaceVariant.copy(alpha = 0.8f),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        trailingIcon = {
+                            if (uiState.searchQuery.isNotEmpty()) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Clear",
+                                    tint = OnSurfaceVariant,
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                        .clickable { viewModel.onSearchQueryChanged("") }
+                                )
+                            }
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(9999.dp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 12.dp)
-                            .height(48.dp)
-                            .clip(RoundedCornerShape(9999.dp))
-                            .background(Color.White.copy(alpha = if (isDark) 0.14f else 0.20f))
-                            .border(1.dp, Color.White.copy(alpha = if (isDark) 0.25f else 0.40f), RoundedCornerShape(9999.dp)),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.searchQuery,
-                            onValueChange = viewModel::onSearchQueryChanged,
-                            placeholder = {
-                                Text(
-                                    "Search destinations...",
-                                    color = OnSurfaceVariant,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = null,
-                                    tint = Primary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                if (uiState.searchQuery.isNotEmpty()) {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Clear",
-                                        tint = OnSurfaceVariant,
-                                        modifier = Modifier
-                                            .size(18.dp)
-                                            .clickable { viewModel.onSearchQueryChanged("") }
-                                    )
-                                }
-                            },
-                            singleLine = true,
-                            shape = CircleShape,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent,
-                                focusedTextColor = OnSurface,
-                                unfocusedTextColor = OnSurface,
-                                cursorColor = Primary,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                            )
+                            .padding(top = 12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = Color.White.copy(alpha = if (isDark) 0.25f else 0.40f),
+                            focusedTextColor = OnSurface,
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
+                            focusedContainerColor = Color.White.copy(alpha = if (isDark) 0.14f else 0.20f),
+                            unfocusedContainerColor = Color.White.copy(alpha = if (isDark) 0.14f else 0.20f),
                         )
-                    }
+                    )
                 }
             }
         },
@@ -346,7 +342,7 @@ fun ExploreScreen(
             )
         ) {
             // Hero Title matching screenshot: "Where Will You Go Next?"
-            item {
+            item(key = "hero_title") {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -365,11 +361,11 @@ fun ExploreScreen(
             }
 
             // Horizontal Pill Carousel
-            item {
+            item(key = "pill_carousel") {
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 20.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.padding(top = 8.dp, bottom = 20.dp)
+                    modifier = Modifier.padding(top = 8.dp, bottom = 18.dp)
                 ) {
                     items(
                         items = pills,
@@ -386,11 +382,11 @@ fun ExploreScreen(
             }
 
             // Section Header: "You Might Also Like" + "See All"
-            item {
+            item(key = "section_header") {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                        .padding(horizontal = 20.dp, vertical = 6.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -416,9 +412,9 @@ fun ExploreScreen(
                 }
             }
 
-            // Empty State View when filters/search return no items
+            // Fast, Lazy Rendered Destination Cards with Key-Based Recycling
             if (uiState.countries.isEmpty()) {
-                item {
+                item(key = "empty_destinations") {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -437,7 +433,7 @@ fun ExploreScreen(
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "No destinations match your filter criteria",
+                                text = "No destinations in ${uiState.selectedPill}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = OnSurface
                             )
@@ -462,11 +458,9 @@ fun ExploreScreen(
                     }
                 }
             } else {
-                // Stacked Sage Destination Cards (Bali aesthetic from reference image)
                 items(
                     items = uiState.countries,
-                    key = { it.cca3 },
-                    contentType = { "country_card" }
+                    key = { it.cca3 }
                 ) { country ->
                     Box(
                         modifier = Modifier
@@ -487,7 +481,8 @@ fun ExploreScreen(
 
 /**
  * Sage Green Curved Destination Card matching the Bali card layout in the reference image.
- * Features stacked frosted glass top tabs, frosted sage glass frame, and translucent cutout notches for title and location.
+ * Features stacked frosted glass top tabs, frosted sage glass frame, semi-transparent dark overlay for high contrast,
+ * and translucent cutout notches for title and location.
  */
 @Composable
 private fun SageDestinationCard(
@@ -513,6 +508,18 @@ private fun SageDestinationCard(
         bottomEnd = 28.dp,
         topEnd = 8.dp,
         bottomStart = 8.dp
+    )
+
+    // Animated heart color and scale for interactive favoriting micro-interaction
+    val heartColor by animateColorAsState(
+        targetValue = if (country.isFavorite) Color(0xFFFF4B60) else Color.White,
+        animationSpec = tween(250),
+        label = "heartColor"
+    )
+    val heartScale by animateFloatAsState(
+        targetValue = if (country.isFavorite) 1.15f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
+        label = "heartScale"
     )
 
     // Main Destination Card (matching reference image with Frosted Glass styling)
@@ -586,17 +593,32 @@ private fun SageDestinationCard(
                 modifier = Modifier.fillMaxSize()
             )
 
+            // Semi-transparent dark overlay for high contrast and ultra-legible typography
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.50f),
+                                Color.Black.copy(alpha = 0.18f),
+                                Color.Black.copy(alpha = 0.60f)
+                            )
+                        )
+                    )
+            )
+
             // Top-Left Frosted Sage Notch for Destination Title (matching "Bali" in image)
             Box(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .clip(titleNotchShape)
-                    .background(sageSolid.copy(alpha = if (isDark) 0.75f else 0.88f))
+                    .background(sageSolid.copy(alpha = if (isDark) 0.85f else 0.92f))
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = if (isDark) 0.18f else 0.28f),
-                                Color.White.copy(alpha = 0.04f)
+                                Color.White.copy(alpha = if (isDark) 0.22f else 0.32f),
+                                Color.White.copy(alpha = 0.05f)
                             )
                         )
                     )
@@ -604,8 +626,8 @@ private fun SageDestinationCard(
                         width = 1.dp,
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.40f),
-                                Color.White.copy(alpha = 0.15f)
+                                Color.White.copy(alpha = 0.50f),
+                                Color.White.copy(alpha = 0.20f)
                             )
                         ),
                         shape = titleNotchShape
@@ -626,41 +648,41 @@ private fun SageDestinationCard(
                 )
             }
 
-            // Top-Right: Glass Favorite Heart Button
+            // Top-Right: Glass Favorite Heart Button with Interactive Micro-interactions
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(10.dp)
-                    .size(40.dp)
-                    .bounceClick(scaleDown = 0.85f, onClick = onFavoriteToggle)
+                    .size(42.dp)
+                    .bounceClick(scaleDown = 0.82f, onClick = onFavoriteToggle)
                     .bounceOnState(state = country.isFavorite, maxScale = 1.35f)
-                .clayShadow(
-                    cornerRadius = 9999.dp,
-                    ambientShadowColor = Color.Black.copy(alpha = 0.35f),
-                    spotShadowColor = Color.Black.copy(alpha = 0.45f),
-                    blurRadius = 6.dp
-                )
-                .clip(CircleShape)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = if (isDark) 0.22f else 0.35f),
-                            Color.Black.copy(alpha = if (isDark) 0.35f else 0.20f)
+                    .clayShadow(
+                        cornerRadius = 9999.dp,
+                        ambientShadowColor = Color.Black.copy(alpha = 0.40f),
+                        spotShadowColor = Color.Black.copy(alpha = 0.50f),
+                        blurRadius = 8.dp
+                    )
+                    .clip(CircleShape)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = if (isDark) 0.28f else 0.40f),
+                                Color.Black.copy(alpha = if (isDark) 0.45f else 0.25f)
+                            )
                         )
                     )
-                )
-                .border(
-                    width = 1.dp,
-                    color = Color.White.copy(alpha = if (isDark) 0.35f else 0.50f),
-                    shape = CircleShape
-                ),
+                    .border(
+                        width = 1.2.dp,
+                        color = if (country.isFavorite) Color(0xFFFF4B60).copy(alpha = 0.6f) else Color.White.copy(alpha = if (isDark) 0.40f else 0.55f),
+                        shape = CircleShape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = if (country.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
-                    tint = if (country.isFavorite) Color(0xFFFF5252) else Color.White,
-                    modifier = Modifier.size(20.dp)
+                    tint = heartColor,
+                    modifier = Modifier.size((20 * heartScale).dp)
                 )
             }
 

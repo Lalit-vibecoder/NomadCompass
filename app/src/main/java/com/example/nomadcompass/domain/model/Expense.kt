@@ -13,4 +13,6 @@ data class Expense(
     val category: ExpenseCategory,
     val date: Long,
     val notes: String = "",
+    val paymentMethod: String = "Credit Card",
+    val receiptPath: String? = null,
 )

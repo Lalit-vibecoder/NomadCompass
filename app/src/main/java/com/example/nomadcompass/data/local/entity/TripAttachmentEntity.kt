@@ -22,6 +22,7 @@ data class TripAttachmentEntity(
     val mimeType: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val displayOrder: Int = 0,
+    val category: String = "General",
 )
 
 fun TripAttachmentEntity.toDomain(): TripAttachment = TripAttachment(
@@ -39,6 +40,7 @@ fun TripAttachmentEntity.toDomain(): TripAttachment = TripAttachment(
     mimeType = mimeType,
     createdAt = createdAt,
     displayOrder = displayOrder,
+    category = category,
 )
 
 fun TripAttachment.toEntity(): TripAttachmentEntity = TripAttachmentEntity(
@@ -52,4 +54,5 @@ fun TripAttachment.toEntity(): TripAttachmentEntity = TripAttachmentEntity(
     mimeType = mimeType,
     createdAt = createdAt,
     displayOrder = displayOrder,
+    category = category,
 )

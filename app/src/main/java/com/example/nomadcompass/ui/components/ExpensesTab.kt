@@ -69,6 +69,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -126,8 +127,10 @@ fun ExpensesTab(
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 88.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
+            contentPadding = PaddingValues(bottom = 110.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // 1. Budget Summary Card with Visual Progress Ring / Chart Insights
@@ -262,9 +265,9 @@ private fun BudgetSummaryCard(
         label = "budgetProgress"
     )
 
-    val remaining = (tripBudgetHome - totalSpentHome).coerceAtLeast(0.0)
+    val remaining = tripBudgetHome - totalSpentHome
     val isOverBudget = totalSpentHome > tripBudgetHome && tripBudgetHome > 0
-    val percentSpent = if (tripBudgetHome > 0) ((totalSpentHome / tripBudgetHome) * 100).toInt() else 0
+    val percentSpent = if (tripBudgetHome > 0) Math.round((totalSpentHome / tripBudgetHome) * 100).toInt() else 0
 
     val progressRingColor = when {
         isOverBudget -> Color(0xFFEF5350)
@@ -454,7 +457,7 @@ private fun BudgetSummaryCard(
                         )
                     }
 
-                    // Remaining
+                    // Remaining / Over Budget
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -465,11 +468,11 @@ private fun BudgetSummaryCard(
                                 modifier = Modifier
                                     .size(8.dp)
                                     .clip(CircleShape)
-                                    .background(Primary)
+                                    .background(if (isOverBudget) Color(0xFFEF5350) else Primary)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "Remaining",
+                                text = if (isOverBudget) "Over Budget" else "Remaining",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = OnSurfaceVariant
                             )
@@ -477,7 +480,7 @@ private fun BudgetSummaryCard(
                         Text(
                             text = formatAmount(remaining, homeCurrencyCode),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Primary,
+                            color = if (isOverBudget) Color(0xFFEF5350) else Primary,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -1322,7 +1325,8 @@ private fun formatAmount(amount: Double, currencyCode: String): String {
         "INR" -> "₹"
         else -> "$currencyCode "
     }
-    return "$symbol${String.format(Locale.US, "%,.2f", amount)}"
+    val absFormatted = String.format(Locale.US, "%,.2f", kotlin.math.abs(amount))
+    return if (amount < 0) "-$symbol$absFormatted" else "$symbol$absFormatted"
 }
 
 private fun formatNumber(amount: Double): String {

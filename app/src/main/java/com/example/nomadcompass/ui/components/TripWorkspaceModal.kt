@@ -95,6 +95,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -629,8 +630,10 @@ private fun DocsTabContent(
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 88.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
+            contentPadding = PaddingValues(bottom = 100.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Section 1: Trip Meta Overview
@@ -920,9 +923,11 @@ private fun ItineraryTabContent(
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
             verticalArrangement = Arrangement.spacedBy(14.dp),
-            contentPadding = PaddingValues(bottom = 80.dp)
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
             // Header Overview Card
             item(key = "itinerary_overview") {
@@ -1537,9 +1542,11 @@ private fun PackingTabContent(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(bottom = 80.dp)
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
             item(key = "packing_header") {
                 Text(
@@ -2784,5 +2791,6 @@ private fun formatCurrencyAmount(amountUsd: Double, currencyCode: String): Strin
         "INR" -> "₹"
         else -> "$currencyCode "
     }
-    return "$symbol${String.format(Locale.US, "%,.0f", amountUsd)}"
+    val absFormatted = String.format(Locale.US, "%,.0f", kotlin.math.abs(amountUsd))
+    return if (amountUsd < 0) "-$symbol$absFormatted" else "$symbol$absFormatted"
 }

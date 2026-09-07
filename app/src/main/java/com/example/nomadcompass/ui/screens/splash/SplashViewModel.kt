@@ -45,24 +45,14 @@ class SplashViewModel @Inject constructor(
 
     private fun startHydration() {
         viewModelScope.launch {
-            // Seed DB asynchronously
             countryRepository.seedIfNeeded()
             val savedProfile = profileRepository.getProfile().firstOrNull()
             val hasProfile = savedProfile != null
             val isSecurityLocked = savedProfile != null && (savedProfile.isBiometricEnabled || savedProfile.accessCode.isNotBlank())
 
-            // Smooth progress loading matching splash animation
-            for (p in 1..100) {
-                delay(5)
-                val msgIndex = (p / 25).coerceIn(0, messages.size - 1)
-                _uiState.value = _uiState.value.copy(
-                    progress = p,
-                    statusMessage = if (p == 100) "Sync Complete" else messages[msgIndex]
-                )
-            }
-
-            delay(100)
-            _uiState.value = _uiState.value.copy(
+            _uiState.value = SplashUiState(
+                progress = 100,
+                statusMessage = "Sync Complete",
                 isComplete = true,
                 hasProfile = hasProfile,
                 isSecurityLocked = isSecurityLocked

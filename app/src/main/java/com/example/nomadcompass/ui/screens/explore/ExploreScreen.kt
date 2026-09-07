@@ -62,6 +62,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -335,10 +336,12 @@ fun ExploreScreen(
         containerColor = Color.Transparent
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
             contentPadding = PaddingValues(
                 top = paddingValues.calculateTopPadding(),
-                bottom = 100.dp
+                bottom = 110.dp
             )
         ) {
             // Hero Title matching screenshot: "Where Will You Go Next?"

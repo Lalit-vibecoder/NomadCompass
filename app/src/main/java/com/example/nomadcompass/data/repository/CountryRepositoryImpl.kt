@@ -13,8 +13,10 @@ import com.example.nomadcompass.domain.repository.CountryRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,8 +58,8 @@ class CountryRepositoryImpl @Inject constructor(
         countryDao.toggleFavorite(cca3)
     }
 
-    override suspend fun seedIfNeeded() {
-        if (countryDao.count() > 0) return
+    override suspend fun seedIfNeeded() = withContext(Dispatchers.IO) {
+        if (countryDao.count() > 0) return@withContext
         val seedDtos = loadSeedFromAssets()
         val entities = seedDtos.mapNotNull { it.toEntity() }
         countryDao.insertAll(entities)

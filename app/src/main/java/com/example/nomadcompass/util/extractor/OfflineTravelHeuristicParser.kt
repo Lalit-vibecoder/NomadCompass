@@ -39,8 +39,7 @@ object OfflineTravelHeuristicParser {
 
     // PNR & Confirmation Code Patterns (e.g., PNR: 7J9KL2, Booking Ref #ABCD12, Confirmation: 8493021)
     private val CONFIRMATION_CODE_REGEX = Pattern.compile(
-        "\\b(?:PNR|Booking(?:\\s+Ref|\\s+Reference|\\s+Code|\\s+Number|\\s+#)?|Confirmation(?:\\s+Code|\\s+Number|\\s+#)?|Reservation(?:\\s+Code|\\s+Number|\\s+#)?|E-Ticket|Ticket(?:\\s+Number|\\s+#)?|Record\\s+Locator)[:\\s#=]*([A-Z0-9]{5,10})\\b",
-        Pattern.CASE_INSENSITIVE
+        "(?i)\\b(?:PNR|Booking\\s*(?:Ref|Reference|Code|Number|#)?(?:\\s*/\\s*PNR)?|Confirmation\\s*(?:Code|Number|#)?|Reservation\\s*(?:Code|Number|#)?|E-Ticket\\s*(?:Number|#)?|Ticket\\s*(?:Number|#)|Record\\s+Locator)\\s*[:#=]+\\s*([A-Z0-9]{5,16})\\b"
     )
 
     // Standard Formatted Dates (YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD.MM.YYYY)
@@ -332,9 +331,9 @@ object OfflineTravelHeuristicParser {
     }
 
     private fun splitIntoLogicalSections(text: String): List<String> {
-        val paragraphs = text.split(Regex("(?m)^\\s*(?:Flight|Leg|Stay|Hotel|Day \\d+|Day [A-Za-z]+|Segment|Reservation|Booking)\\s*[:#-]?"))
+        val paragraphs = text.split(Regex("(?m)^\\s*(?:Day\\s*\\d+|Segment\\s*\\d+|Leg\\s*\\d+|Item\\s*\\d+)\\s*[:#-]?"))
         val filtered = paragraphs.map { it.trim() }.filter { it.length > 20 }
-        return if (filtered.size > 1) filtered else text.split("\n\n").map { it.trim() }.filter { it.length > 20 }
+        return if (filtered.size > 1) filtered else text.split(Regex("\n\n+")).map { it.trim() }.filter { it.length > 20 }
     }
 
     private fun formatDateTime(date: String, time: String): String {

@@ -13,16 +13,13 @@ data class CountryHighlight(
     val mediaItems: List<HighlightMediaItem> = emptyList(),
 ) {
     /**
-     * Dynamically selects a single formatted highlight string from available candidates,
-     * or returns null if no highlight data exists for this country.
+     * Fast deterministic highlight string snippet for list cards, avoiding repeated list allocations.
      */
-    fun getRandomHighlightString(): String? {
-        val candidates = mutableListOf<String>()
-        topPlaces.forEach { candidates.add("📍 Top Place: $it") }
-        famousFestivals.forEach { candidates.add("✨ Festival: $it") }
-        attractiveFeatures.forEach { candidates.add("🌟 Feature: $it") }
-
-        if (candidates.isEmpty()) return null
-        return candidates.random()
+    val highlightSnippet: String? by lazy {
+        topPlaces.firstOrNull()?.let { "📍 Top Place: $it" }
+            ?: famousFestivals.firstOrNull()?.let { "✨ Festival: $it" }
+            ?: attractiveFeatures.firstOrNull()?.let { "🌟 Feature: $it" }
     }
+
+    fun getRandomHighlightString(): String? = highlightSnippet
 }

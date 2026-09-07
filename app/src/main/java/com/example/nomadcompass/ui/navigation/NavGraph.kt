@@ -196,9 +196,7 @@ fun NomadCompassNavGraph(
             CountryProfileScreen(
                 viewModel = viewModel,
                 onNeighborClick = { neighborCca3 ->
-                    navController.navigate(Destinations.countryProfileRoute(neighborCca3)) {
-                        launchSingleTop = true
-                    }
+                    navController.navigate(Destinations.countryProfileRoute(neighborCca3))
                 },
                 onExploreClick = {
                     navController.navigate(Destinations.EXPLORE) {

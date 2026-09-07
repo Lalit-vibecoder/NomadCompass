@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.shape.CircleShape
@@ -617,73 +617,75 @@ fun CountryProfileScreen(
                         }
                     }
 
-                    // Neighboring Destinations Carousel
+                    // Neighboring Destinations (2 cards per row)
                     if (detail.neighbors.isNotEmpty()) {
-                        Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Nearby Destinations",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    color = OnSurface
-                                )
-                                Text(
-                                    text = "VIEW ALL",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = Primary
-                                )
+                        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                            Text(
+                                text = "Nearby Destinations",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = OnSurface
+                            )
+
+                            val neighborRows = remember(detail.neighbors) {
+                                detail.neighbors.chunked(2)
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                items(detail.neighbors, key = { it.cca3 }) { neighbor ->
-                                    ClayCard(
-                                        modifier = Modifier
-                                            .width(200.dp)
-                                            .height(140.dp)
-                                            .clickable { onNeighborClick(neighbor.cca3) },
-                                        cornerRadius = 20.dp,
-                                        backgroundColor = SurfaceContainer
-                                    ) {
-                                        Box(modifier = Modifier.fillMaxSize()) {
-                                            AsyncImage(
-                                                model = neighbor.flagUrl,
-                                                contentDescription = neighbor.commonName,
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier.fillMaxSize()
-                                            )
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(
-                                                        Brush.verticalGradient(
-                                                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                            for (rowNeighbors in neighborRows) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    for (neighbor in rowNeighbors) {
+                                        ClayCard(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .height(140.dp),
+                                            onClick = { onNeighborClick(neighbor.cca3) },
+                                            cornerRadius = 20.dp,
+                                            backgroundColor = SurfaceContainer
+                                        ) {
+                                            Box(modifier = Modifier.fillMaxSize()) {
+                                                AsyncImage(
+                                                    model = neighbor.flagUrl,
+                                                    contentDescription = neighbor.commonName,
+                                                    contentScale = ContentScale.Crop,
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .background(
+                                                            Brush.verticalGradient(
+                                                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f))
+                                                            )
                                                         )
+                                                )
+                                                Column(
+                                                    modifier = Modifier
+                                                        .align(Alignment.BottomStart)
+                                                        .padding(12.dp)
+                                                ) {
+                                                    Text(
+                                                        text = "${neighbor.flagEmoji} ${neighbor.commonName}",
+                                                        style = MaterialTheme.typography.titleMedium.copy(
+                                                            fontSize = 15.sp,
+                                                            fontWeight = FontWeight.Bold
+                                                        ),
+                                                        color = Color.White,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
                                                     )
-                                            )
-                                            Column(
-                                                modifier = Modifier
-                                                    .align(Alignment.BottomStart)
-                                                    .padding(12.dp)
-                                            ) {
-                                                Text(
-                                                    text = "${neighbor.flagEmoji} ${neighbor.commonName}",
-                                                    style = MaterialTheme.typography.titleMedium,
-                                                    color = Color.White
-                                                )
-                                                Text(
-                                                    text = neighbor.region,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = Color.White.copy(alpha = 0.8f)
-                                                )
+                                                    Text(
+                                                        text = neighbor.region,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = Color.White.copy(alpha = 0.85f)
+                                                    )
+                                                }
                                             }
                                         }
+                                    }
+                                    if (rowNeighbors.size == 1) {
+                                        Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
                             }

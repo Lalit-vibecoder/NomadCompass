@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,17 +23,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.EventNote
-import androidx.compose.material.icons.automirrored.filled.Note
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -41,8 +37,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.ui.layout.ContentScale
-import java.io.File
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -56,37 +50,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.domain.model.Trip
-import androidx.compose.ui.platform.LocalContext
-import com.example.nomadcompass.ui.components.ClayButton
-import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.GlassPillButton
-import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.TripWorkspaceModal
+import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.theme.LocalThemeController
-import com.example.nomadcompass.ui.theme.Background
-import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
-import com.example.nomadcompass.ui.theme.PrimaryContainer
 import com.example.nomadcompass.ui.theme.Secondary
-import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
-import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
-
-import androidx.compose.foundation.layout.statusBarsPadding
-
-import com.example.nomadcompass.ui.components.bounceClick
-import com.example.nomadcompass.ui.components.bounceOnState
+import java.io.File
 
 @Composable
 fun PlannerScreen(
@@ -95,46 +84,85 @@ fun PlannerScreen(
     onProfileClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val isDark = LocalThemeController.current.isDarkMode
 
     Scaffold(
         topBar = {
+            val photoUri = uiState.userProfile?.photoUri
+            val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(SurfaceContainerHigh)
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFF132A22).copy(alpha = 0.85f),
+                                Color(0xFF132A22).copy(alpha = 0.40f),
+                                Color.Transparent
+                            )
+                        )
+                    )
                     .statusBarsPadding()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.EventNote,
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
+                // Header Title with Icon
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clayShadow(
+                                cornerRadius = 9999.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f),
+                                spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f),
+                                blurRadius = 6.dp
+                            )
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = if (isDark) 0.14f else 0.22f))
+                            .border(
+                                width = 1.dp,
+                                color = Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.EventNote,
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+
                     Text(
                         text = "Trip Planner",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = OnSurface,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = OnSurface
                     )
                 }
 
                 // Profile Avatar on Right
-                val photoUri = uiState.userProfile?.photoUri
-                val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
-
                 Box(
                     modifier = Modifier
                         .size(44.dp)
+                        .bounceClick(onClick = onProfileClick)
+                        .clayShadow(
+                            cornerRadius = 9999.dp,
+                            ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.40f else 0.15f),
+                            spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.50f else 0.20f),
+                            blurRadius = 6.dp
+                        )
                         .clip(CircleShape)
-                        .background(SecondaryContainer)
-                        .border(1.5.dp, if (photoFile != null && photoFile.exists()) Primary else Secondary.copy(alpha = 0.3f), CircleShape)
-                        .bounceClick(onClick = onProfileClick),
+                        .background(Color.White.copy(alpha = if (isDark) 0.15f else 0.25f))
+                        .border(1.2.dp, Color.White.copy(alpha = if (isDark) 0.35f else 0.50f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     if (photoFile != null && photoFile.exists()) {
@@ -146,10 +174,10 @@ fun PlannerScreen(
                         )
                     } else {
                         Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Profile & Settings",
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile",
                             tint = OnSurface,
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
@@ -163,7 +191,6 @@ fun PlannerScreen(
             )
         },
         floatingActionButton = {
-            val isDark = LocalThemeController.current.isDarkMode
             // Floating Action Button - Glass Pill matching bottom navigation bar
             GlassPillButton(
                 onClick = { viewModel.openAddDialog() },
@@ -195,78 +222,119 @@ fun PlannerScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding())
+                .clipToBounds(),
+            contentPadding = PaddingValues(
+                top = paddingValues.calculateTopPadding(),
+                bottom = 110.dp
+            )
         ) {
-            // Header Description
-            Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
-                Text(
-                    text = "Your Nomad Work Legs",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = OnSurface
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Organize upcoming destinations, monthly travel budgets, and remote work arrangements.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = OnSurfaceVariant
-                )
+            // Hero Title matching Explore screen typography
+            item(key = "hero_title") {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 12.dp)
+                ) {
+                    Text(
+                        text = "Your Nomad\nWork Legs",
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 38.sp
+                        ),
+                        color = OnSurface
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Organize upcoming destinations, monthly travel budgets, and remote work arrangements.",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 14.sp
+                        ),
+                        color = OnSurfaceVariant
+                    )
+                }
+            }
+
+            // Section Header: "Your Planned Trips" + "+ New Trip"
+            item(key = "section_header") {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Your Planned Trips",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = OnSurface
+                    )
+                    Text(
+                        text = "+ New Trip",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = Primary,
+                        modifier = Modifier
+                            .clickable { viewModel.openAddDialog() }
+                            .padding(4.dp)
+                    )
+                }
             }
 
             if (uiState.trips.isEmpty()) {
-                // Empty State View
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ClayCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        cornerRadius = 28.dp,
-                        backgroundColor = SurfaceContainer
+                item(key = "empty_trips") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 40.dp),
+                        contentAlignment = Alignment.Center
                     ) {
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(32.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.FlightTakeoff,
                                 contentDescription = null,
-                                tint = Primary,
-                                modifier = Modifier.size(56.dp)
+                                tint = OnSurfaceVariant,
+                                modifier = Modifier.size(48.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = "No Trips Planned Yet",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = OnSurface,
-                                fontWeight = FontWeight.Bold
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = OnSurface
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "Map out your next destination, dates, and budget to keep your nomad travel organized.",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = OnSurfaceVariant
+                                color = OnSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 16.dp)
                             )
-                            Spacer(modifier = Modifier.height(24.dp))
-                            val isDarkEmpty = LocalThemeController.current.isDarkMode
+                            Spacer(modifier = Modifier.height(20.dp))
                             GlassPillButton(
                                 onClick = { viewModel.openAddDialog() },
-                                modifier = Modifier.fillMaxWidth(),
-                                contentPadding = PaddingValues(vertical = 14.dp)
+                                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp)
                             ) {
                                 Box(
                                     modifier = Modifier
                                         .size(24.dp)
                                         .clip(CircleShape)
-                                        .background(Primary.copy(alpha = if (isDarkEmpty) 0.25f else 0.15f))
-                                        .border(1.dp, Primary.copy(alpha = if (isDarkEmpty) 0.45f else 0.30f), CircleShape),
+                                        .background(Primary.copy(alpha = if (isDark) 0.25f else 0.15f))
+                                        .border(1.dp, Primary.copy(alpha = if (isDark) 0.45f else 0.30f), CircleShape),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
@@ -288,21 +356,18 @@ fun PlannerScreen(
                     }
                 }
             } else {
-                // Trips List
-                LazyColumn(
-                    contentPadding = PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 110.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clipToBounds()
-                ) {
-                    items(
-                        items = uiState.trips,
-                        key = { it.id },
-                        contentType = { "trip_card" }
-                    ) { trip ->
-                        TripCardItem(
+                items(
+                    items = uiState.trips,
+                    key = { it.id }
+                ) { trip ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 8.dp)
+                    ) {
+                        SageTripCard(
                             trip = trip,
+                            currencyCode = uiState.userCurrencyCode,
                             onClick = { viewModel.openTripWorkspace(trip) }
                         )
                     }
@@ -360,21 +425,47 @@ fun PlannerScreen(
     }
 }
 
+/**
+ * Compact Sage Green Trip Card matching Explore screen aesthetics without oversized height or thick outer framing.
+ * Features frosted sage glass frame, subtle specular highlight, circular flag icon, clean status badge,
+ * compact date and budget chips, and preparation readiness progress bar.
+ */
+private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+
 @Composable
-private fun TripCardItem(
+private fun SageTripCard(
     trip: Trip,
+    currencyCode: String,
     onClick: () -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
+    val cardShape = RoundedCornerShape(24.dp)
 
-    // Color-coded status badge styling
-    val (statusColor, statusBg) = when (trip.status.lowercase()) {
-        "upcoming" -> Pair(Color(0xFF2E7D32), if (isDark) Color(0xFF1B5E20).copy(alpha = 0.35f) else Color(0xFFE8F5E9))
-        "completed" -> Pair(Color(0xFF1976D2), if (isDark) Color(0xFF0D47A1).copy(alpha = 0.35f) else Color(0xFFE3F2FD))
-        else -> Pair(Color(0xFFEF6C00), if (isDark) Color(0xFFE65100).copy(alpha = 0.35f) else Color(0xFFFFF3E0)) // In Progress / Active
+    val sageGradientStart = if (isDark) Color(0xFF537E76) else Color(0xFF7AA59D)
+    val sageGradientEnd = if (isDark) Color(0xFF385E56) else Color(0xFF59857D)
+
+    // High-contrast vibrant status styling for dark/sage card surfaces
+    val (statusLabel, statusTextColor, statusBg, statusBorder) = when (trip.status.lowercase()) {
+        "upcoming" -> Quadruple(
+            "Upcoming",
+            Color(0xFF81C784),
+            Color(0xFF1B5E20).copy(alpha = 0.55f),
+            Color(0xFF81C784).copy(alpha = 0.60f)
+        )
+        "completed" -> Quadruple(
+            "Completed",
+            Color(0xFF90CAF9),
+            Color(0xFF0D47A1).copy(alpha = 0.55f),
+            Color(0xFF90CAF9).copy(alpha = 0.60f)
+        )
+        else -> Quadruple(
+            "In Progress",
+            Color(0xFFFFB74D),
+            Color(0xFFE65100).copy(alpha = 0.55f),
+            Color(0xFFFFB74D).copy(alpha = 0.60f)
+        )
     }
 
-    // Trip Readiness calculation: 75% for Upcoming, 90% for In Progress, 100% for Completed
     val readinessPercent = when (trip.status.lowercase()) {
         "completed" -> 100
         "in progress", "active" -> 90
@@ -382,35 +473,89 @@ private fun TripCardItem(
     }
     val readinessFraction = readinessPercent / 100f
 
-    ClayCard(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick,
-        cornerRadius = 24.dp,
-        backgroundColor = SurfaceContainer
+    // Compact Sage Card Frame matching Explore Visuals with standard padding
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .bounceClick(scaleDown = 0.98f, onClick = onClick)
+            .clayShadow(
+                cornerRadius = 24.dp,
+                ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f),
+                spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f),
+                blurRadius = 12.dp
+            )
+            .clip(cardShape)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        sageGradientStart.copy(alpha = if (isDark) 0.55f else 0.70f),
+                        sageGradientEnd.copy(alpha = if (isDark) 0.40f else 0.55f)
+                    )
+                ),
+                shape = cardShape
+            )
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = if (isDark) 0.12f else 0.20f),
+                        Color.White.copy(alpha = if (isDark) 0.02f else 0.05f),
+                        Color.Transparent
+                    )
+                ),
+                shape = cardShape
+            )
+            .border(
+                width = 1.2.dp,
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = if (isDark) 0.35f else 0.50f),
+                        Color.White.copy(alpha = if (isDark) 0.08f else 0.18f)
+                    )
+                ),
+                shape = cardShape
+            )
+            .drawBehind {
+                // Specular top edge ambient highlight reflection
+                drawRect(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
+                            Color.Transparent
+                        )
+                    ),
+                    size = size.copy(height = 1.5.dp.toPx())
+                )
+            }
+            .padding(18.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(18.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Header Row: Destination with Left Circular Flag + Color-Coded Status Badge
+            // Header Row: Circular Flag + Destination Title + Status Badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Destination Code & Name with Left Circular Flag
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.weight(1f)
                 ) {
+                    // Circular flag with glass border
                     Box(
                         modifier = Modifier
-                            .size(34.dp)
+                            .size(38.dp)
+                            .clayShadow(
+                                cornerRadius = 9999.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = 0.25f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.30f),
+                                blurRadius = 4.dp
+                            )
                             .clip(CircleShape)
-                            .background(Primary.copy(alpha = 0.15f))
-                            .border(1.dp, Primary.copy(alpha = 0.3f), CircleShape),
+                            .background(Color.White.copy(alpha = 0.15f))
+                            .border(1.dp, Color.White.copy(alpha = 0.40f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         if (trip.flagUrl.isNotBlank()) {
@@ -427,16 +572,18 @@ private fun TripCardItem(
                         }
                     }
 
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
                     Column {
                         Text(
-                            text = "${trip.destinationCca3.uppercase()} • ${trip.countryName}",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = OnSurface,
-                            fontWeight = FontWeight.Bold,
+                            text = "${trip.destinationCca3.uppercase()} • ${trip.countryName.ifBlank { trip.destinationCca3 }}",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = Color.White,
                             maxLines = 1,
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -448,48 +595,87 @@ private fun TripCardItem(
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(statusBg)
-                        .border(1.dp, statusColor.copy(alpha = 0.3f), CircleShape)
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                        .border(1.dp, statusBorder, CircleShape)
+                        .padding(horizontal = 12.dp, vertical = 5.dp)
                 ) {
                     Text(
-                        text = trip.status,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = statusColor,
-                        fontWeight = FontWeight.Bold
+                        text = statusLabel,
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = statusTextColor
                     )
                 }
             }
 
-            // Trip Duration / Dates Row
+            // Info Chips: Dates & Budget Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Dates Pill
                 Box(
                     modifier = Modifier
-                        .size(30.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Primary.copy(alpha = 0.12f)),
-                    contentAlignment = Alignment.Center
+                        .clip(RoundedCornerShape(9999.dp))
+                        .background(Color.Black.copy(alpha = if (isDark) 0.30f else 0.18f))
+                        .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(16.dp)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = null,
+                            tint = Color.White.copy(alpha = 0.9f),
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Text(
+                            text = "${trip.startDate}  ➔  ${trip.endDate}",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            ),
+                            color = Color.White
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "${trip.startDate} — ${trip.endDate}",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = OnSurface
-                )
+
+                // Budget Pill
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(9999.dp))
+                        .background(Color.Black.copy(alpha = if (isDark) 0.30f else 0.18f))
+                        .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = currencyCode,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = Primary
+                        )
+                        Text(
+                            text = "${trip.budgetUsd} / mo",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            ),
+                            color = Color.White.copy(alpha = 0.92f)
+                        )
+                    }
+                }
             }
 
-            // Trip Preparation / Planning Readiness Indicator
+            // Readiness Indicator with Progress Bar
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -501,27 +687,30 @@ private fun TripCardItem(
                 ) {
                     Text(
                         text = "Trip Preparation",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = OnSurfaceVariant,
-                        fontSize = 11.sp
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                     Text(
                         text = "$readinessPercent% Ready",
                         style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         ),
-                        color = Primary,
-                        fontSize = 11.sp
+                        color = Color.White
                     )
                 }
 
-                // Subtle visual progress bar
+                // Sleek progress bar
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(6.dp)
                         .clip(CircleShape)
-                        .background(SurfaceContainerHigh)
+                        .background(Color.Black.copy(alpha = 0.30f))
+                        .border(0.5.dp, Color.White.copy(alpha = 0.20f), CircleShape)
                 ) {
                     Box(
                         modifier = Modifier
@@ -529,8 +718,11 @@ private fun TripCardItem(
                             .fillMaxWidth(readinessFraction)
                             .clip(CircleShape)
                             .background(
-                                brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
-                                    colors = listOf(Primary, Primary.copy(alpha = 0.8f))
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Primary,
+                                        Primary.copy(alpha = 0.85f)
+                                    )
                                 )
                             )
                     )
@@ -810,52 +1002,4 @@ private fun AddTripDialog(
         },
         containerColor = SurfaceContainer
     )
-}
-
-@Composable
-private fun BottomNavItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-) {
-    val animatedBgColor by androidx.compose.animation.animateColorAsState(
-        targetValue = if (isSelected) SecondaryContainer else Color.Transparent,
-        animationSpec = androidx.compose.animation.core.tween(200),
-        label = "planner_nav_bg"
-    )
-    val animatedContentColor by androidx.compose.animation.animateColorAsState(
-        targetValue = if (isSelected) Secondary else OnSurfaceVariant,
-        animationSpec = androidx.compose.animation.core.tween(200),
-        label = "planner_nav_color"
-    )
-
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(animatedBgColor)
-            .bounceClick(scaleDown = 0.92f, onClick = onClick)
-            .bounceOnState(state = isSelected, maxScale = 1.08f)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = animatedContentColor,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = animatedContentColor,
-                fontSize = 11.sp
-            )
-        }
-    }
 }

@@ -105,7 +105,7 @@ fun ExploreScreen(
     var searchVisible by remember { mutableStateOf(false) }
     var filterMenuExpanded by remember { mutableStateOf(false) }
 
-    val pills = listOf("All", "My Favs", "Europe", "Asia", "Americas", "Africa", "Oceania", "Themes")
+    val pills = listOf("All", "My Favs", "Europe", "Asia", "Americas", "Africa", "Oceania")
 
     val currentDateText = remember {
         val now = LocalDate.now()
@@ -384,7 +384,7 @@ fun ExploreScreen(
                 }
             }
 
-            // Section Header: "You Might Also Like" + "See All"
+            // Section Header: "You Might Also Like"
             item(key = "section_header") {
                 Row(
                     modifier = Modifier
@@ -404,10 +404,9 @@ fun ExploreScreen(
                     Text(
                         text = "See All",
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.SemiBold
                         ),
-                        color = OnSurfaceVariant,
+                        color = Primary,
                         modifier = Modifier
                             .clickable { viewModel.onPillSelected("All") }
                             .padding(4.dp)
@@ -415,7 +414,7 @@ fun ExploreScreen(
                 }
             }
 
-            // Fast, Lazy Rendered Destination Cards with Key-Based Recycling
+            // Fast, Lazy Rendered Destination Cards (matching Bali card layout in screenshot)
             if (uiState.countries.isEmpty()) {
                 item(key = "empty_destinations") {
                     Box(
@@ -463,7 +462,8 @@ fun ExploreScreen(
             } else {
                 items(
                     items = uiState.countries,
-                    key = { it.cca3 }
+                    key = { it.cca3 },
+                    contentType = { "destination_card" }
                 ) { country ->
                     Box(
                         modifier = Modifier
@@ -749,5 +749,6 @@ private fun SageDestinationCard(
         }
     }
 }
+
 
 

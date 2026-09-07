@@ -532,66 +532,22 @@ private fun WorkspaceTabSelectorRow(
     activeTab: WorkspaceTab,
     onTabSelected: (WorkspaceTab) -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(9999.dp))
-            .background(SurfaceContainerLow)
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        WorkspaceTab.entries.forEach { tab ->
-            val isSelected = tab == activeTab
-            val (icon, label) = when (tab) {
-                WorkspaceTab.EXPENSES -> Pair(Icons.AutoMirrored.Filled.ReceiptLong, "Expenses")
-                WorkspaceTab.DOCS -> Pair(Icons.Default.FolderZip, "Docs")
-                WorkspaceTab.ITINERARY -> Pair(Icons.Default.Map, "Itinerary")
-                WorkspaceTab.PACKING -> Pair(Icons.Default.Luggage, "Packing")
+        items(WorkspaceTab.entries) { tab ->
+            val label = when (tab) {
+                WorkspaceTab.EXPENSES -> "Expenses"
+                WorkspaceTab.DOCS -> "Docs"
+                WorkspaceTab.ITINERARY -> "Itinerary"
+                WorkspaceTab.PACKING -> "Packing"
             }
-
-            val animatedBgColor by androidx.compose.animation.animateColorAsState(
-                targetValue = if (isSelected) com.example.nomadcompass.ui.theme.PillActiveBackground else Color.Transparent,
-                animationSpec = androidx.compose.animation.core.tween(120),
-                label = "workspace_tab_bg"
+            ClayPill(
+                text = label,
+                isActive = tab == activeTab,
+                onClick = { onTabSelected(tab) }
             )
-            val animatedContentColor by androidx.compose.animation.animateColorAsState(
-                targetValue = if (isSelected) com.example.nomadcompass.ui.theme.PillActiveText else com.example.nomadcompass.ui.theme.PillInactiveText,
-                animationSpec = androidx.compose.animation.core.tween(120),
-                label = "workspace_tab_content"
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(9999.dp))
-                    .background(animatedBgColor)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { onTabSelected(tab) }
-                    )
-                    .padding(vertical = 10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = label,
-                        tint = animatedContentColor,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = animatedContentColor,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                    )
-                }
-            }
         }
     }
 }

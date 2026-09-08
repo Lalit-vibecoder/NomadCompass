@@ -123,7 +123,10 @@ class ProfileSetupViewModel @Inject constructor(
     fun onPhotoSelected(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val destinationFile = File(context.filesDir, "profile_avatar.jpg")
+                // Delete previous avatar files to prevent cache collisions and free disk space
+                context.filesDir.listFiles { file -> file.name.startsWith("profile_avatar") }?.forEach { it.delete() }
+
+                val destinationFile = File(context.filesDir, "profile_avatar_${System.currentTimeMillis()}.jpg")
                 context.contentResolver.openInputStream(uri)?.use { input ->
                     destinationFile.outputStream().use { output ->
                         input.copyTo(output)
@@ -140,7 +143,10 @@ class ProfileSetupViewModel @Inject constructor(
     fun onBgPhotoSelected(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val destinationFile = File(context.filesDir, "app_custom_bg.jpg")
+                // Delete previous custom background files to prevent cache collisions and free disk space
+                context.filesDir.listFiles { file -> file.name.startsWith("app_custom_bg") }?.forEach { it.delete() }
+
+                val destinationFile = File(context.filesDir, "app_custom_bg_${System.currentTimeMillis()}.jpg")
                 context.contentResolver.openInputStream(uri)?.use { input ->
                     destinationFile.outputStream().use { output ->
                         input.copyTo(output)
@@ -154,8 +160,15 @@ class ProfileSetupViewModel @Inject constructor(
         }
     }
 
-    fun onResetDefaultBg() {
-        _uiState.value = _uiState.value.copy(bgPhotoUri = null)
+    fun onResetDefaultBg(context: Context? = null) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                context?.filesDir?.listFiles { file -> file.name.startsWith("app_custom_bg") }?.forEach { it.delete() }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            _uiState.value = _uiState.value.copy(bgPhotoUri = null)
+        }
     }
 
     fun onBgBlurRadiusChanged(radius: Float) {

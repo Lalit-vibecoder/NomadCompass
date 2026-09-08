@@ -119,6 +119,7 @@ import com.example.nomadcompass.domain.model.Trip
 import com.example.nomadcompass.domain.model.TripAttachment
 import com.example.nomadcompass.ui.screens.planner.WorkspaceTab
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.LocalAppBackground
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -151,6 +152,8 @@ fun TripWorkspaceModal(
     activeTab: WorkspaceTab = WorkspaceTab.EXPENSES,
     currencyCode: String = "USD",
     tripDestinationCurrencyCode: String = "",
+    bgPhotoUri: String? = LocalAppBackground.current.bgPhotoUri,
+    bgBlurRadius: Float = LocalAppBackground.current.bgBlurRadius,
     onSelectTab: (WorkspaceTab) -> Unit = {},
     onAddExpense: (
         title: String,
@@ -214,21 +217,24 @@ fun TripWorkspaceModal(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background.copy(alpha = 0.95f))
-                .statusBarsPadding()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
+        AppBackground(
+            bgPhotoUri = bgPhotoUri,
+            blurRadius = bgBlurRadius
         ) {
-            ClayCard(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.94f),
-                cornerRadius = 28.dp,
-                backgroundColor = SurfaceContainer
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
+                ClayCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.94f),
+                    cornerRadius = 28.dp,
+                    backgroundColor = SurfaceContainer
+                ) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier
@@ -368,6 +374,7 @@ fun TripWorkspaceModal(
             }
         }
     }
+}
 
     // Delete Trip Confirmation Dialog
     if (isDeleteTripConfirmOpen) {
@@ -427,6 +434,8 @@ fun TripWorkspaceModal(
         ItineraryExtractorModal(
             tripId = trip.id.toLong(),
             destinationName = trip.countryName,
+            bgPhotoUri = bgPhotoUri,
+            bgBlurRadius = bgBlurRadius,
             onDismiss = { isExtractorModalOpen = false },
             onSaveEvents = { events ->
                 onSaveItineraryEvents(events)
@@ -532,11 +541,11 @@ private fun WorkspaceTabSelectorRow(
     activeTab: WorkspaceTab,
     onTabSelected: (WorkspaceTab) -> Unit,
 ) {
-    LazyRow(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        items(WorkspaceTab.entries) { tab ->
+        WorkspaceTab.entries.forEach { tab ->
             val label = when (tab) {
                 WorkspaceTab.EXPENSES -> "Expenses"
                 WorkspaceTab.DOCS -> "Docs"
@@ -546,7 +555,10 @@ private fun WorkspaceTabSelectorRow(
             ClayPill(
                 text = label,
                 isActive = tab == activeTab,
-                onClick = { onTabSelected(tab) }
+                onClick = { onTabSelected(tab) },
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
+                fontSize = 12.5.sp
             )
         }
     }

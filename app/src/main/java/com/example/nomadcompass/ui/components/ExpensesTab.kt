@@ -4,10 +4,18 @@ import android.app.DatePickerDialog
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,8 +42,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Delete
@@ -65,6 +75,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,6 +113,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ExpensesTab(
@@ -205,7 +218,8 @@ fun ExpensesTab(
                     ExpenseLedgerRow(
                         expense = expense,
                         homeCurrencyCode = homeCurrencyCode,
-                        onDelete = { onDeleteExpense(expense.id) }
+                        onDelete = { onDeleteExpense(expense.id) },
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
@@ -522,11 +536,12 @@ private fun ExpenseLedgerRow(
     expense: Expense,
     homeCurrencyCode: String,
     onDelete: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val (icon, categoryBg, categoryIconColor) = getCategoryStyle(expense.category)
 
     ClayCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         cornerRadius = 18.dp,
         backgroundColor = SurfaceContainerLow
     ) {
@@ -721,6 +736,8 @@ private fun LogExpenseBottomSheet(
 
     var isCurrencyDropdownOpen by remember { mutableStateOf(false) }
     var isPaymentDropdownOpen by remember { mutableStateOf(false) }
+    var isSavingSuccess by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     val availableCurrencies = remember {
         listOf("USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "INR", "HKD", "SGD", "THB", "IDR", "MXN", "BRL", "KRW").distinct()
@@ -996,12 +1013,21 @@ private fun LogExpenseBottomSheet(
                                 )
                             }
 
-                            Text(
-                                text = "~${formatAmount(previewAmountHome, homeCurrencyCode)}",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = if (isPreviewUnconverted) Color(0xFFFFB74D) else Primary,
-                                fontWeight = FontWeight.Bold
-                            )
+                            AnimatedContent(
+                                targetState = previewAmountHome,
+                                transitionSpec = {
+                                    (slideInVertically { height -> height / 3 } + fadeIn(animationSpec = tween(150))) togetherWith
+                                        (slideOutVertically { height -> -height / 3 } + fadeOut(animationSpec = tween(150)))
+                                },
+                                label = "conversion_preview_amount"
+                            ) { convertedAmt ->
+                                Text(
+                                    text = "~${formatAmount(convertedAmt, homeCurrencyCode)}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = if (isPreviewUnconverted) Color(0xFFFFB74D) else Primary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -1277,28 +1303,74 @@ private fun LogExpenseBottomSheet(
                 ClayButton(
                     onClick = {
                         val amt = amountText.toDoubleOrNull() ?: 0.0
-                        if (isFormValid) {
-                            onSave(
-                                title,
-                                amt,
-                                selectedCurrency,
-                                selectedCategory,
-                                notes,
-                                selectedDateMillis,
-                                selectedPaymentMethod,
-                                attachedReceiptPath
-                            )
+                        if (isFormValid && !isSavingSuccess) {
+                            scope.launch {
+                                isSavingSuccess = true
+                                kotlinx.coroutines.delay(320)
+                                onSave(
+                                    title,
+                                    amt,
+                                    selectedCurrency,
+                                    selectedCategory,
+                                    notes,
+                                    selectedDateMillis,
+                                    selectedPaymentMethod,
+                                    attachedReceiptPath
+                                )
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = isFormValid
+                    enabled = isFormValid && !isSavingSuccess
                 ) {
-                    Text(
-                        text = "Save Expense",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
-                        fontWeight = FontWeight.Bold
-                    )
+                    AnimatedContent(
+                        targetState = isSavingSuccess,
+                        transitionSpec = {
+                            (fadeIn(animationSpec = tween(140)) + slideInVertically { it / 2 }) togetherWith
+                                (fadeOut(animationSpec = tween(140)) + slideOutVertically { -it / 2 })
+                        },
+                        label = "save_expense_btn_anim"
+                    ) { success ->
+                        if (success) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = "Success",
+                                    tint = Color(0xFF4CAF50),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Expense Logged!",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = Color(0xFF4CAF50),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        } else {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = null,
+                                    tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Save Expense",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

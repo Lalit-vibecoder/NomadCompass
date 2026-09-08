@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nomadcompass.ui.theme.PillActiveBackground
@@ -36,6 +39,8 @@ fun ClayPill(
     isActive: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 22.dp, vertical = 10.dp),
+    fontSize: TextUnit = 14.sp,
 ) {
     val shape = RoundedCornerShape(9999.dp)
     val interactionSource = remember { MutableInteractionSource() }
@@ -67,16 +72,18 @@ fun ClayPill(
                 indication = null,
                 onClick = onClick
             )
-            .padding(horizontal = 22.dp, vertical = 10.dp),
+            .padding(contentPadding),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelLarge.copy(
-                fontSize = 14.sp,
+                fontSize = fontSize,
                 fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium
             ),
             color = animatedTextColor,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
         )
     }
 }

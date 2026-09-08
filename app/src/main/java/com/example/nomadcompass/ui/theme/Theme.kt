@@ -10,7 +10,13 @@ class ThemeController {
     val isDarkMode: Boolean = true
 }
 
+data class AppBackgroundState(
+    val bgPhotoUri: String? = null,
+    val bgBlurRadius: Float = 24f,
+)
+
 val LocalThemeController = staticCompositionLocalOf { ThemeController() }
+val LocalAppBackground = staticCompositionLocalOf { AppBackgroundState() }
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryDark,

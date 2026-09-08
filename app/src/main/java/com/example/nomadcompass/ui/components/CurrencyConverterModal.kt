@@ -1,6 +1,16 @@
 package com.example.nomadcompass.ui.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,10 +41,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -70,6 +82,15 @@ fun CurrencyConverterModal(
     val fromCurrency = if (isSwapped) targetCurrency else baseCurrency
     val toCurrency = if (isSwapped) baseCurrency else targetCurrency
     val effectiveRate = if (isSwapped && exchangeRate > 0) 1.0 / exchangeRate else exchangeRate
+
+    val swapRotation by animateFloatAsState(
+        targetValue = if (isSwapped) 180f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "swap_button_rotation"
+    )
 
     Dialog(onDismissRequest = onDismiss) {
         ClayCard(
@@ -290,7 +311,9 @@ fun CurrencyConverterModal(
                         imageVector = Icons.Default.SwapVert,
                         contentDescription = "Swap currencies",
                         tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier
+                            .size(24.dp)
+                            .graphicsLayer { rotationZ = swapRotation }
                     )
                 }
 
@@ -318,12 +341,21 @@ fun CurrencyConverterModal(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = formattedResult,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = Primary,
-                            fontWeight = FontWeight.Bold
-                        )
+                        AnimatedContent(
+                            targetState = formattedResult,
+                            transitionSpec = {
+                                (slideInVertically { height -> height / 3 } + fadeIn(animationSpec = tween(150))) togetherWith
+                                    (slideOutVertically { height -> -height / 3 } + fadeOut(animationSpec = tween(150)))
+                            },
+                            label = "converter_result_anim"
+                        ) { resultText ->
+                            Text(
+                                text = resultText,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = Primary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                         Text(
                             text = toCurrency,
                             style = MaterialTheme.typography.titleMedium,

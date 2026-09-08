@@ -403,6 +403,8 @@ fun PlannerScreen(
             activeTab = uiState.activeWorkspaceTab,
             currencyCode = uiState.userCurrencyCode,
             tripDestinationCurrencyCode = uiState.tripDestinationCurrencyCode,
+            bgPhotoUri = uiState.userProfile?.bgPhotoUri,
+            bgBlurRadius = uiState.userProfile?.bgBlurRadius ?: 24f,
             onSelectTab = viewModel::selectWorkspaceTab,
             onAddExpense = viewModel::addExpense,
             onDeleteExpense = viewModel::deleteExpense,

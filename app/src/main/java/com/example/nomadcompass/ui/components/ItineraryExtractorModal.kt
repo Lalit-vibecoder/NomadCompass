@@ -70,6 +70,7 @@ import com.example.nomadcompass.domain.model.DraftItineraryEvent
 import com.example.nomadcompass.domain.model.ItineraryCategory
 import com.example.nomadcompass.domain.model.ItineraryEvent
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.LocalAppBackground
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -97,6 +98,8 @@ private enum class ExtractorSourceTab(val title: String, val emoji: String) {
 fun ItineraryExtractorModal(
     tripId: Long,
     destinationName: String,
+    bgPhotoUri: String? = LocalAppBackground.current.bgPhotoUri,
+    bgBlurRadius: Float = LocalAppBackground.current.bgBlurRadius,
     onDismiss: () -> Unit,
     onSaveEvents: (List<ItineraryEvent>) -> Unit,
 ) {
@@ -185,27 +188,30 @@ fun ItineraryExtractorModal(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background.copy(alpha = 0.95f))
-                .statusBarsPadding()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
+        AppBackground(
+            bgPhotoUri = bgPhotoUri,
+            blurRadius = bgBlurRadius
         ) {
-            ClayCard(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.96f),
-                cornerRadius = 28.dp,
-                backgroundColor = SurfaceContainer
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Column(
+                ClayCard(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp)
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.96f),
+                    cornerRadius = 28.dp,
+                    backgroundColor = SurfaceContainer
                 ) {
-                    // Header Bar
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp)
+                    ) {
+                        // Header Bar
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -539,6 +545,7 @@ fun ItineraryExtractorModal(
             }
         }
     }
+}
 }
 
 @Composable

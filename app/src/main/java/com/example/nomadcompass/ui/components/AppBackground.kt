@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.R
+import com.example.nomadcompass.ui.theme.LocalAppBackground
 import java.io.File
 
 /**
@@ -25,8 +26,8 @@ import java.io.File
  */
 @Composable
 fun AppBackground(
-    bgPhotoUri: String? = null,
-    blurRadius: Float = 24f,
+    bgPhotoUri: String? = LocalAppBackground.current.bgPhotoUri,
+    blurRadius: Float = LocalAppBackground.current.bgBlurRadius,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {

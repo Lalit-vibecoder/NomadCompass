@@ -546,7 +546,7 @@ fun ProfileSetupScreen(
 
                         if (!uiState.bgPhotoUri.isNullOrBlank()) {
                             GlassPillButton(
-                                onClick = viewModel::onResetDefaultBg,
+                                onClick = { viewModel.onResetDefaultBg(context) },
                                 modifier = Modifier.weight(0.9f),
                                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)
                             ) {

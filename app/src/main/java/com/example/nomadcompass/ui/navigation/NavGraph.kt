@@ -29,9 +29,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.nomadcompass.ui.components.AppBackground
+import com.example.nomadcompass.ui.theme.AppBackgroundState
+import com.example.nomadcompass.ui.theme.LocalAppBackground
 
 object Destinations {
     const val SPLASH = "splash"
@@ -53,11 +56,17 @@ fun NomadCompassNavGraph(
     val profileUiState by profileViewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
-    AppBackground(
-        bgPhotoUri = profileUiState.bgPhotoUri,
-        blurRadius = profileUiState.bgBlurRadius
+    CompositionLocalProvider(
+        LocalAppBackground provides AppBackgroundState(
+            bgPhotoUri = profileUiState.bgPhotoUri,
+            bgBlurRadius = profileUiState.bgBlurRadius
+        )
     ) {
-        NavHost(
+        AppBackground(
+            bgPhotoUri = profileUiState.bgPhotoUri,
+            blurRadius = profileUiState.bgBlurRadius
+        ) {
+            NavHost(
             navController = navController,
             startDestination = Destinations.SPLASH,
             enterTransition = {
@@ -225,5 +234,6 @@ fun NomadCompassNavGraph(
             )
         }
     }
+}
 }
 }

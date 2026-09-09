@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -67,6 +68,8 @@ import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.TripWorkspaceModal
 import com.example.nomadcompass.ui.components.bounceClick
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.ui.draw.blur
 import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -86,7 +89,14 @@ fun PlannerScreen(
     val uiState by viewModel.uiState.collectAsState()
     val isDark = LocalThemeController.current.isDarkMode
 
+    val isModalOpen = uiState.activeWorkspaceTrip != null || uiState.isAddDialogOpen
+    val backgroundBlur by animateDpAsState(
+        targetValue = if (isModalOpen) 20.dp else 0.dp,
+        label = "planner_bg_blur"
+    )
+
     Scaffold(
+        modifier = Modifier.blur(backgroundBlur),
         topBar = {
             val photoUri = uiState.userProfile?.photoUri
             val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
@@ -183,17 +193,13 @@ fun PlannerScreen(
                 }
             }
         },
-        bottomBar = {
-            NomadBottomNavigationBar(
-                currentTab = NomadNavTab.PLANNER,
-                onExploreClick = onExploreClick,
-                onPlannerClick = { }
-            )
-        },
         floatingActionButton = {
-            // Floating Action Button - Glass Pill matching bottom navigation bar
+            // Floating Action Button - Glass Pill elevated above bottom navigation bar
             GlassPillButton(
                 onClick = { viewModel.openAddDialog() },
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = 88.dp),
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
             ) {
                 Box(
@@ -228,7 +234,7 @@ fun PlannerScreen(
                 .clipToBounds(),
             contentPadding = PaddingValues(
                 top = paddingValues.calculateTopPadding(),
-                bottom = 110.dp
+                bottom = 180.dp
             )
         ) {
             // Hero Title matching Explore screen typography

@@ -8,10 +8,12 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.ui.draw.blur
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -213,6 +215,22 @@ fun TripWorkspaceModal(
         }
     }
 
+    val isSubModalOpen = isAddChoiceMenuOpen ||
+        isAddNoteDialogOpen ||
+        editingNote != null ||
+        isAddPackingDialogOpen ||
+        isExtractorModalOpen ||
+        isAddEventDialogOpen ||
+        editingItineraryEvent != null ||
+        isDeleteTripConfirmOpen ||
+        previewingAttachment != null ||
+        pendingFileAttachment != null
+
+    val workspaceBlur by animateDpAsState(
+        targetValue = if (isSubModalOpen) 18.dp else 0.dp,
+        label = "workspace_submodal_blur"
+    )
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -231,7 +249,8 @@ fun TripWorkspaceModal(
                 ClayCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.94f),
+                        .fillMaxHeight(0.94f)
+                        .blur(workspaceBlur),
                     cornerRadius = 28.dp,
                     backgroundColor = SurfaceContainer
                 ) {
@@ -541,27 +560,22 @@ private fun WorkspaceTabSelectorRow(
     activeTab: WorkspaceTab,
     onTabSelected: (WorkspaceTab) -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        WorkspaceTab.entries.forEach { tab ->
-            val label = when (tab) {
+    ClaySlidingTabRow(
+        tabs = WorkspaceTab.entries,
+        selectedTab = activeTab,
+        onTabSelected = onTabSelected,
+        height = 42.dp,
+        cornerRadius = 21.dp,
+        fontSize = 12.5.sp,
+        labelProvider = { tab ->
+            when (tab) {
                 WorkspaceTab.EXPENSES -> "Expenses"
                 WorkspaceTab.DOCS -> "Docs"
                 WorkspaceTab.ITINERARY -> "Itinerary"
                 WorkspaceTab.PACKING -> "Packing"
             }
-            ClayPill(
-                text = label,
-                isActive = tab == activeTab,
-                onClick = { onTabSelected(tab) },
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
-                fontSize = 12.5.sp
-            )
         }
-    }
+    )
 }
 
 @Composable
@@ -708,40 +722,24 @@ private fun DocsTabContent(
                 )
             }
 
-            // Section 3: Category Filter Pills Row
+            // Section 3: Category Filter Pills Row with Animated Sliding Background
             item(key = "category_filter_pills") {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(categories) { cat ->
-                        val isSelected = cat == selectedCategory
+                ScrollableClaySlidingTabRow(
+                    tabs = categories,
+                    selectedTab = selectedCategory,
+                    onTabSelected = { selectedCategory = it },
+                    contentPadding = PaddingValues(horizontal = 0.dp),
+                    height = 36.dp,
+                    spacing = 8.dp,
+                    fontSize = 12.sp,
+                    labelProvider = { cat ->
                         val count = if (cat == "All") attachments.size else {
                             if (cat == "Notes") attachments.count { it.type == AttachmentType.NOTE || it.category.equals("Notes", true) }
                             else attachments.count { it.category.equals(cat, true) }
                         }
-
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .background(if (isSelected) Primary else SurfaceContainerLow)
-                                .border(
-                                    width = 1.dp,
-                                    color = if (isSelected) Primary else MaterialTheme.colorScheme.outlineVariant,
-                                    shape = RoundedCornerShape(20.dp)
-                                )
-                                .clickable { selectedCategory = cat }
-                                .padding(horizontal = 14.dp, vertical = 6.dp)
-                        ) {
-                            Text(
-                                text = "$cat ($count)",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = if (isSelected) OnPrimary else OnSurface,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                            )
-                        }
+                        "$cat ($count)"
                     }
-                }
+                )
             }
 
             // Section 4: Summary Stats Row

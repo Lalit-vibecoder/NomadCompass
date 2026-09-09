@@ -21,6 +21,7 @@ import com.example.nomadcompass.ui.screens.splash.SplashViewModel
 import com.example.nomadcompass.ui.screens.planner.PlannerScreen
 import com.example.nomadcompass.ui.screens.planner.PlannerViewModel
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -28,11 +29,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.nomadcompass.ui.components.AppBackground
+import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
+import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.theme.AppBackgroundState
 import com.example.nomadcompass.ui.theme.LocalAppBackground
 
@@ -56,6 +63,16 @@ fun NomadCompassNavGraph(
     val profileUiState by profileViewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+    val isPlanner = currentRoute == Destinations.PLANNER || currentRoute == Destinations.PLANNER_WITH_COUNTRY
+    val showBottomBar = currentRoute in listOf(
+        Destinations.EXPLORE,
+        Destinations.PLANNER,
+        Destinations.PLANNER_WITH_COUNTRY,
+        Destinations.COUNTRY_PROFILE
+    )
+
     CompositionLocalProvider(
         LocalAppBackground provides AppBackgroundState(
             bgPhotoUri = profileUiState.bgPhotoUri,
@@ -66,9 +83,10 @@ fun NomadCompassNavGraph(
             bgPhotoUri = profileUiState.bgPhotoUri,
             blurRadius = profileUiState.bgBlurRadius
         ) {
-            NavHost(
-            navController = navController,
-            startDestination = Destinations.SPLASH,
+            Box(modifier = Modifier.fillMaxSize()) {
+                NavHost(
+                    navController = navController,
+                    startDestination = Destinations.SPLASH,
             enterTransition = {
                 fadeIn(animationSpec = tween(200, easing = FastOutSlowInEasing))
             },
@@ -234,6 +252,36 @@ fun NomadCompassNavGraph(
             )
         }
     }
+
+    AnimatedVisibility(
+        visible = showBottomBar,
+        enter = fadeIn(animationSpec = tween(200, easing = FastOutSlowInEasing)),
+        exit = fadeOut(animationSpec = tween(200, easing = FastOutSlowInEasing)),
+        modifier = Modifier.align(Alignment.BottomCenter)
+    ) {
+        NomadBottomNavigationBar(
+            currentTab = if (isPlanner) NomadNavTab.PLANNER else NomadNavTab.EXPLORE,
+            onExploreClick = {
+                if (currentRoute != Destinations.EXPLORE) {
+                    navController.navigate(Destinations.EXPLORE) {
+                        popUpTo(Destinations.EXPLORE) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            },
+            onPlannerClick = {
+                if (!isPlanner) {
+                    navController.navigate(Destinations.PLANNER) {
+                        popUpTo(Destinations.EXPLORE) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            }
+        )
+    }
+}
 }
 }
 }

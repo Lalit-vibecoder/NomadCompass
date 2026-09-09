@@ -70,6 +70,7 @@ import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
+import com.example.nomadcompass.ui.components.ClaySlidingTabRow
 import com.example.nomadcompass.ui.components.bounceClick
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.Error
@@ -409,23 +410,12 @@ fun ProfileSetupScreen(
                             color = OnSurfaceVariant,
                             letterSpacing = 1.sp
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            ClayPill(
-                                text = "Celsius (°C)",
-                                isActive = uiState.tempUnit == "C",
-                                onClick = { viewModel.onTempUnitChanged("C") },
-                                modifier = Modifier.weight(1f)
-                            )
-                            ClayPill(
-                                text = "Fahrenheit (°F)",
-                                isActive = uiState.tempUnit == "F",
-                                onClick = { viewModel.onTempUnitChanged("F") },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
+                        ClaySlidingTabRow(
+                            tabs = listOf("C", "F"),
+                            selectedTab = uiState.tempUnit,
+                            onTabSelected = viewModel::onTempUnitChanged,
+                            labelProvider = { if (it == "C") "Celsius (°C)" else "Fahrenheit (°F)" }
+                        )
                     }
                 }
             }
@@ -678,23 +668,18 @@ fun ProfileSetupScreen(
                                 letterSpacing = 1.sp
                             )
 
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                ClayPill(
-                                    text = "🔐 PIN Code",
-                                    isActive = uiState.securityOption == SecurityOption.PIN,
-                                    onClick = { viewModel.onSecurityOptionChanged(SecurityOption.PIN) },
-                                    modifier = Modifier.weight(1f)
-                                )
-                                ClayPill(
-                                    text = "👆 Biometric",
-                                    isActive = uiState.securityOption == SecurityOption.BIOMETRIC,
-                                    onClick = { viewModel.onSecurityOptionChanged(SecurityOption.BIOMETRIC) },
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
+                            ClaySlidingTabRow(
+                                tabs = listOf(SecurityOption.PIN, SecurityOption.BIOMETRIC),
+                                selectedTab = uiState.securityOption,
+                                onTabSelected = viewModel::onSecurityOptionChanged,
+                                labelProvider = {
+                                    when (it) {
+                                        SecurityOption.PIN -> "🔐 PIN Code"
+                                        SecurityOption.BIOMETRIC -> "👆 Biometric"
+                                        else -> ""
+                                    }
+                                }
+                            )
 
                             // PIN Input Field
                             if (uiState.securityOption == SecurityOption.PIN) {

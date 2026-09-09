@@ -75,6 +75,7 @@ import coil3.compose.AsyncImage
 import com.example.nomadcompass.domain.model.Country
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
+import com.example.nomadcompass.ui.components.ScrollableClaySlidingTabRow
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.bounceClick
@@ -326,13 +327,6 @@ fun ExploreScreen(
                 }
             }
         },
-        bottomBar = {
-            NomadBottomNavigationBar(
-                currentTab = NomadNavTab.EXPLORE,
-                onExploreClick = { },
-                onPlannerClick = onPlannerClick
-            )
-        },
         containerColor = Color.Transparent
     ) { paddingValues ->
         LazyColumn(
@@ -363,24 +357,19 @@ fun ExploreScreen(
                 }
             }
 
-            // Horizontal Pill Carousel
+            // Horizontal Pill Carousel with Animated Sliding Background Effect
             item(key = "pill_carousel") {
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.padding(top = 8.dp, bottom = 18.dp)
-                ) {
-                    items(
-                        items = pills,
-                        key = { it },
-                        contentType = { "pill" }
-                    ) { pill ->
-                        ClayPill(
-                            text = pill,
-                            isActive = pill == uiState.selectedPill,
-                            onClick = { viewModel.onPillSelected(pill) }
-                        )
-                    }
+                Box(modifier = Modifier.padding(top = 8.dp, bottom = 18.dp)) {
+                    ScrollableClaySlidingTabRow(
+                        tabs = pills,
+                        selectedTab = uiState.selectedPill,
+                        onTabSelected = viewModel::onPillSelected,
+                        contentPadding = PaddingValues(horizontal = 20.dp),
+                        height = 42.dp,
+                        spacing = 10.dp,
+                        fontSize = 13.5.sp,
+                        labelProvider = { it }
+                    )
                 }
             }
 

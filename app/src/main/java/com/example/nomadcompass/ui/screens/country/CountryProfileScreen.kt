@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -84,6 +85,8 @@ import com.example.nomadcompass.ui.theme.SafetyGreen
 import com.example.nomadcompass.ui.theme.SafetyYellow
 import com.example.nomadcompass.ui.theme.SafetyRed
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.ui.draw.blur
 import com.example.nomadcompass.ui.components.bounceClick
 import com.example.nomadcompass.ui.components.bounceOnState
 
@@ -98,7 +101,13 @@ fun CountryProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val converterBlur by animateDpAsState(
+        targetValue = if (uiState.isConverterOpen) 20.dp else 0.dp,
+        label = "converter_bg_blur"
+    )
+
     Scaffold(
+        modifier = Modifier.blur(converterBlur),
         topBar = {
             val isDark = LocalThemeController.current.isDarkMode
             // Header Top Navigation with System Status Bar Padding & Subtle Frosted Glass Look
@@ -176,16 +185,9 @@ fun CountryProfileScreen(
                 }
             }
         },
-        bottomBar = {
-            NomadBottomNavigationBar(
-                currentTab = NomadNavTab.EXPLORE,
-                onExploreClick = onExploreClick,
-                onPlannerClick = onPlannerClick
-            )
-        },
         floatingActionButton = {
             val isDark = LocalThemeController.current.isDarkMode
-            // Floating Action Button - Glass Pill matching bottom navigation bar
+            // Floating Action Button - Glass Pill elevated above bottom navigation bar
             GlassPillButton(
                 onClick = {
                     val currentCca3 = uiState.detail?.country?.cca3
@@ -195,6 +197,9 @@ fun CountryProfileScreen(
                         onPlannerClick()
                     }
                 },
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = 88.dp),
                 contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
             ) {
                 Box(

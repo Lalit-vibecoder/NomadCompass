@@ -29,8 +29,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,7 +70,15 @@ fun NomadBottomNavigationBar(
     modifier: Modifier = Modifier,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
-    val targetIndex = if (currentTab == NomadNavTab.EXPLORE) 0 else 1
+    var activeTab by remember(currentTab) { mutableStateOf(currentTab) }
+    val targetIndex = if (activeTab == NomadNavTab.EXPLORE) 0 else 1
+
+    var previousIndex by remember { mutableIntStateOf(targetIndex) }
+    val isMovingRight = targetIndex >= previousIndex
+
+    LaunchedEffect(targetIndex) {
+        previousIndex = targetIndex
+    }
 
     val navBarShape = RoundedCornerShape(32.dp)
 
@@ -124,7 +136,7 @@ fun NomadBottomNavigationBar(
                 targetValue = if (targetIndex == 0) 0f else 0.5f,
                 animationSpec = spring(
                     dampingRatio = 0.72f, // Natural liquid bounce
-                    stiffness = if (targetIndex == 0) Spring.StiffnessMedium else Spring.StiffnessLow
+                    stiffness = if (!isMovingRight) Spring.StiffnessMedium else Spring.StiffnessLow
                 ),
                 label = "liquid_left"
             )
@@ -133,7 +145,7 @@ fun NomadBottomNavigationBar(
                 targetValue = if (targetIndex == 0) 0.5f else 1.0f,
                 animationSpec = spring(
                     dampingRatio = 0.72f, // Natural liquid bounce
-                    stiffness = if (targetIndex == 1) Spring.StiffnessMedium else Spring.StiffnessLow
+                    stiffness = if (isMovingRight) Spring.StiffnessMedium else Spring.StiffnessLow
                 ),
                 label = "liquid_right"
             )
@@ -189,8 +201,13 @@ fun NomadBottomNavigationBar(
                 NomadNavTabItem(
                     iconRes = R.drawable.ic_travel_explore,
                     label = "Explore",
-                    isSelected = currentTab == NomadNavTab.EXPLORE,
-                    onClick = onExploreClick,
+                    isSelected = activeTab == NomadNavTab.EXPLORE,
+                    onClick = {
+                        if (activeTab != NomadNavTab.EXPLORE) {
+                            activeTab = NomadNavTab.EXPLORE
+                            onExploreClick()
+                        }
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
@@ -199,8 +216,13 @@ fun NomadBottomNavigationBar(
                 NomadNavTabItem(
                     iconRes = R.drawable.ic_planner_custom,
                     label = "Planner",
-                    isSelected = currentTab == NomadNavTab.PLANNER,
-                    onClick = onPlannerClick,
+                    isSelected = activeTab == NomadNavTab.PLANNER,
+                    onClick = {
+                        if (activeTab != NomadNavTab.PLANNER) {
+                            activeTab = NomadNavTab.PLANNER
+                            onPlannerClick()
+                        }
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()

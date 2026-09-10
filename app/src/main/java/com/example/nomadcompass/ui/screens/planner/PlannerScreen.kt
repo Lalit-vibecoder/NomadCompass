@@ -447,10 +447,54 @@ private fun SageTripCard(
     onClick: () -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
-    val cardShape = RoundedCornerShape(24.dp)
+    val cardShape = remember { RoundedCornerShape(24.dp) }
 
     val sageGradientStart = if (isDark) Color(0xFF537E76) else Color(0xFF7AA59D)
     val sageGradientEnd = if (isDark) Color(0xFF385E56) else Color(0xFF59857D)
+
+    val cardBgBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                sageGradientStart.copy(alpha = if (isDark) 0.55f else 0.70f),
+                sageGradientEnd.copy(alpha = if (isDark) 0.40f else 0.55f)
+            )
+        )
+    }
+    val cardSheenBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.12f else 0.20f),
+                Color.White.copy(alpha = if (isDark) 0.02f else 0.05f),
+                Color.Transparent
+            )
+        )
+    }
+    val cardBorderBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.35f else 0.50f),
+                Color.White.copy(alpha = if (isDark) 0.08f else 0.18f)
+            )
+        )
+    }
+    val specularBrush = remember(isDark) {
+        Brush.horizontalGradient(
+            colors = listOf(
+                Color.Transparent,
+                Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
+                Color.Transparent
+            )
+        )
+    }
+    val primaryColor = Primary
+    val readinessBrush = remember(primaryColor) {
+        Brush.horizontalGradient(
+            colors = listOf(
+                primaryColor,
+                primaryColor.copy(alpha = 0.85f)
+            )
+        )
+    }
 
     // High-contrast vibrant status styling for dark/sage card surfaces
     val (statusLabel, statusTextColor, statusBg, statusBorder) = when (trip.status.lowercase()) {
@@ -494,44 +538,22 @@ private fun SageTripCard(
             )
             .clip(cardShape)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        sageGradientStart.copy(alpha = if (isDark) 0.55f else 0.70f),
-                        sageGradientEnd.copy(alpha = if (isDark) 0.40f else 0.55f)
-                    )
-                ),
+                brush = cardBgBrush,
                 shape = cardShape
             )
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = if (isDark) 0.12f else 0.20f),
-                        Color.White.copy(alpha = if (isDark) 0.02f else 0.05f),
-                        Color.Transparent
-                    )
-                ),
+                brush = cardSheenBrush,
                 shape = cardShape
             )
             .border(
                 width = 1.2.dp,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = if (isDark) 0.35f else 0.50f),
-                        Color.White.copy(alpha = if (isDark) 0.08f else 0.18f)
-                    )
-                ),
+                brush = cardBorderBrush,
                 shape = cardShape
             )
             .drawBehind {
                 // Specular top edge ambient highlight reflection
                 drawRect(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
-                            Color.Transparent
-                        )
-                    ),
+                    brush = specularBrush,
                     size = size.copy(height = 1.5.dp.toPx())
                 )
             }
@@ -726,12 +748,7 @@ private fun SageTripCard(
                             .fillMaxWidth(readinessFraction)
                             .clip(CircleShape)
                             .background(
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(
-                                        Primary,
-                                        Primary.copy(alpha = 0.85f)
-                                    )
-                                )
+                                brush = readinessBrush
                             )
                     )
                 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -34,31 +35,47 @@ fun ClayCard(
     content: @Composable BoxScope.() -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
-    val shape = RoundedCornerShape(cornerRadius)
+    val shape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
 
-    val effectiveBg = if (backgroundColor.alpha == 1f) {
-        backgroundColor.copy(alpha = if (isDark) 0.55f else 0.70f)
-    } else {
-        backgroundColor
+    val effectiveBg = remember(backgroundColor, isDark) {
+        if (backgroundColor.alpha == 1f) {
+            backgroundColor.copy(alpha = if (isDark) 0.55f else 0.70f)
+        } else {
+            backgroundColor
+        }
     }
 
-    val ambientShadow = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f)
-    val spotShadow = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f)
+    val ambientShadow = remember(isDark) { Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f) }
+    val spotShadow = remember(isDark) { Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f) }
 
-    val borderBrush = Brush.verticalGradient(
-        colors = listOf(
-            Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
-            Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
+    val borderBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
+                Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
+            )
         )
-    )
+    }
 
-    val frostedSheenBrush = Brush.verticalGradient(
-        colors = listOf(
-            Color.White.copy(alpha = if (isDark) 0.12f else 0.24f),
-            Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
-            Color.Transparent,
+    val frostedSheenBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.12f else 0.24f),
+                Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
+                Color.Transparent,
+            )
         )
-    )
+    }
+
+    val topHighlightBrush = remember(isDark) {
+        Brush.horizontalGradient(
+            colors = listOf(
+                Color.Transparent,
+                Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
+                Color.Transparent,
+            )
+        )
+    }
 
     Box(
         modifier = modifier
@@ -82,13 +99,7 @@ fun ClayCard(
             .drawBehind {
                 // Subtle frosted top-edge specular light highlight reflection
                 drawRect(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
-                            Color.Transparent,
-                        )
-                    ),
+                    brush = topHighlightBrush,
                     size = size.copy(height = 1.5.dp.toPx()),
                 )
             },

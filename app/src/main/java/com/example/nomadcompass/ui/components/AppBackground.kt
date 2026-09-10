@@ -32,7 +32,9 @@ fun AppBackground(
     content: @Composable () -> Unit
 ) {
     val bgFile = remember(bgPhotoUri) {
-        if (!bgPhotoUri.isNullOrBlank()) File(bgPhotoUri) else null
+        if (!bgPhotoUri.isNullOrBlank()) {
+            File(bgPhotoUri).takeIf { it.exists() }
+        } else null
     }
     val effectiveBlur = blurRadius.coerceIn(0f, 60f)
 
@@ -62,7 +64,7 @@ fun AppBackground(
                     else Modifier
                 )
 
-            if (bgFile != null && bgFile.exists()) {
+            if (bgFile != null) {
                 AsyncImage(
                     model = bgFile,
                     contentDescription = "App Background",

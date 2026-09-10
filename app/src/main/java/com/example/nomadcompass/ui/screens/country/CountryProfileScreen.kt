@@ -161,18 +161,20 @@ fun CountryProfileScreen(
 
                 // Profile Avatar on Right
                 val photoUri = uiState.userProfile?.photoUri
-                val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
+                val photoFile = remember(photoUri) {
+                    if (!photoUri.isNullOrBlank()) File(photoUri).takeIf { it.exists() } else null
+                }
 
                 Box(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
                         .background(SecondaryContainer)
-                        .border(1.5.dp, if (photoFile != null && photoFile.exists()) Primary else Secondary.copy(alpha = 0.4f), CircleShape)
+                        .border(1.5.dp, if (photoFile != null) Primary else Secondary.copy(alpha = 0.4f), CircleShape)
                         .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (photoFile != null && photoFile.exists()) {
+                    if (photoFile != null) {
                         AsyncImage(
                             model = photoFile,
                             contentDescription = "Profile",
@@ -480,11 +482,13 @@ fun CountryProfileScreen(
 
                         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             // Dynamic Timezone Card using TimezoneHelper
-                            val tzInfo = com.example.nomadcompass.util.TimezoneHelper.getTimezoneInfo(
-                                cca3 = country.cca3,
-                                cca2 = country.cca2,
-                                longitude = country.longitude
-                            )
+                            val tzInfo = remember(country.cca3) {
+                                com.example.nomadcompass.util.TimezoneHelper.getTimezoneInfo(
+                                    cca3 = country.cca3,
+                                    cca2 = country.cca2,
+                                    longitude = country.longitude
+                                )
+                            }
 
                             ClayCard(
                                 modifier = Modifier.weight(1f),
@@ -506,27 +510,30 @@ fun CountryProfileScreen(
                             }
 
                             // Dynamic Next Holiday Card
-                            val todayStr = try {
-                                java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date())
-                            } catch (_: Exception) {
-                                "2026-01-01"
-                            }
-
-                            val upcomingHolidays = detail.holidays.filter { it.date >= todayStr }
-                            val nextHoliday = upcomingHolidays.firstOrNull() ?: detail.holidays.lastOrNull() ?: detail.holidays.firstOrNull()
-
-                            val holidayName = nextHoliday?.name?.ifBlank { nextHoliday.localName } ?: "No Upcoming Holidays"
-                            val holidayDateFormatted = if (nextHoliday != null && nextHoliday.date.isNotBlank()) {
-                                try {
-                                    val inFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                                    val outFormat = java.text.SimpleDateFormat("MMM dd, yyyy", Locale.US)
-                                    val dateObj = inFormat.parse(nextHoliday.date)
-                                    if (dateObj != null) outFormat.format(dateObj) else nextHoliday.date
+                            val (holidayName, holidayDateFormatted) = remember(detail.holidays) {
+                                val todayStr = try {
+                                    java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date())
                                 } catch (_: Exception) {
-                                    nextHoliday.date
+                                    "2026-01-01"
                                 }
-                            } else {
-                                "Check Local Listings"
+
+                                val upcomingHolidays = detail.holidays.filter { it.date >= todayStr }
+                                val nextHoliday = upcomingHolidays.firstOrNull() ?: detail.holidays.lastOrNull() ?: detail.holidays.firstOrNull()
+
+                                val name = nextHoliday?.name?.ifBlank { nextHoliday.localName } ?: "No Upcoming Holidays"
+                                val dateFormatted = if (nextHoliday != null && nextHoliday.date.isNotBlank()) {
+                                    try {
+                                        val inFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                                        val outFormat = java.text.SimpleDateFormat("MMM dd, yyyy", Locale.US)
+                                        val dateObj = inFormat.parse(nextHoliday.date)
+                                        if (dateObj != null) outFormat.format(dateObj) else nextHoliday.date
+                                    } catch (_: Exception) {
+                                        nextHoliday.date
+                                    }
+                                } else {
+                                    "Check Local Listings"
+                                }
+                                Pair(name, dateFormatted)
                             }
 
                             ClayCard(
@@ -584,8 +591,8 @@ fun CountryProfileScreen(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            items(highlights.topPlaces.size) { idx ->
-                                                ClayPill(text = highlights.topPlaces[idx], isActive = false, onClick = {})
+                                            items(highlights.topPlaces, key = { it }) { place ->
+                                                ClayPill(text = place, isActive = false, onClick = {})
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(12.dp))
@@ -598,8 +605,8 @@ fun CountryProfileScreen(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            items(highlights.famousFestivals.size) { idx ->
-                                                ClayPill(text = highlights.famousFestivals[idx], isActive = true, onClick = {})
+                                            items(highlights.famousFestivals, key = { it }) { festival ->
+                                                ClayPill(text = festival, isActive = true, onClick = {})
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(12.dp))
@@ -612,8 +619,8 @@ fun CountryProfileScreen(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            items(highlights.attractiveFeatures.size) { idx ->
-                                                ClayPill(text = highlights.attractiveFeatures[idx], isActive = false, onClick = {})
+                                            items(highlights.attractiveFeatures, key = { it }) { feature ->
+                                                ClayPill(text = feature, isActive = false, onClick = {})
                                             }
                                         }
                                     }

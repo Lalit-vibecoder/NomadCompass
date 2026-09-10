@@ -80,7 +80,31 @@ fun NomadBottomNavigationBar(
         previousIndex = targetIndex
     }
 
-    val navBarShape = RoundedCornerShape(32.dp)
+    val navBarShape = remember { RoundedCornerShape(32.dp) }
+    val surfaceHigh = SurfaceContainerHigh
+    val navBarBgBrush = remember(surfaceHigh, isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                surfaceHigh.copy(alpha = if (isDark) 0.75f else 0.85f),
+                surfaceHigh.copy(alpha = if (isDark) 0.65f else 0.75f)
+            )
+        )
+    }
+    val navBarSpecularColor = remember(isDark) {
+        Color.White.copy(alpha = if (isDark) 0.30f else 0.50f)
+    }
+    val pillShape = remember { RoundedCornerShape(24.dp) }
+    val pillBgBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.18f else 0.30f),
+                Color.White.copy(alpha = if (isDark) 0.08f else 0.15f)
+            )
+        )
+    }
+    val pillSpecularColor = remember(isDark) {
+        Color.White.copy(alpha = if (isDark) 0.40f else 0.70f)
+    }
 
     Box(
         modifier = modifier
@@ -101,12 +125,7 @@ fun NomadBottomNavigationBar(
                 )
                 .clip(navBarShape)
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            SurfaceContainerHigh.copy(alpha = if (isDark) 0.75f else 0.85f),
-                            SurfaceContainerHigh.copy(alpha = if (isDark) 0.65f else 0.75f)
-                        )
-                    ),
+                    brush = navBarBgBrush,
                     shape = navBarShape
                 )
                 .border(
@@ -116,7 +135,7 @@ fun NomadBottomNavigationBar(
                 )
                 .drawBehind {
                     drawRect(
-                        color = Color.White.copy(alpha = if (isDark) 0.30f else 0.50f),
+                        color = navBarSpecularColor,
                         size = size.copy(height = 1.5.dp.toPx())
                     )
                 }
@@ -153,8 +172,6 @@ fun NomadBottomNavigationBar(
             val leftOffset = totalWidth * leftFraction
             val pillWidth = totalWidth * (rightFraction - leftFraction)
 
-            val pillShape = RoundedCornerShape(24.dp)
-
             // ── Morphing / Fluid Liquid Glass Pill Indicator ──
             Box(
                 modifier = Modifier
@@ -170,12 +187,7 @@ fun NomadBottomNavigationBar(
                     )
                     .clip(pillShape)
                     .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = if (isDark) 0.18f else 0.30f),
-                                Color.White.copy(alpha = if (isDark) 0.08f else 0.15f)
-                            )
-                        ),
+                        brush = pillBgBrush,
                         shape = pillShape
                     )
                     .border(
@@ -186,7 +198,7 @@ fun NomadBottomNavigationBar(
                     .drawBehind {
                         // Liquid top glass specular light reflection
                         drawRect(
-                            color = Color.White.copy(alpha = if (isDark) 0.40f else 0.70f),
+                            color = pillSpecularColor,
                             size = size.copy(height = 1.5.dp.toPx())
                         )
                     }

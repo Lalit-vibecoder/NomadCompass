@@ -78,7 +78,16 @@ fun GlassPillButton(
     content: @Composable RowScope.() -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
-    val pillShape = RoundedCornerShape(cornerRadius)
+    val pillShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
+    val bgBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.18f else 0.30f),
+                Color.White.copy(alpha = if (isDark) 0.08f else 0.15f)
+            )
+        )
+    }
+    val highlightColor = remember(isDark) { Color.White.copy(alpha = if (isDark) 0.40f else 0.70f) }
 
     Box(
         modifier = modifier
@@ -90,15 +99,7 @@ fun GlassPillButton(
                 blurRadius = 8.dp
             )
             .clip(pillShape)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = if (isDark) 0.18f else 0.30f),
-                        Color.White.copy(alpha = if (isDark) 0.08f else 0.15f)
-                    )
-                ),
-                shape = pillShape
-            )
+            .background(brush = bgBrush, shape = pillShape)
             .border(
                 width = 1.dp,
                 color = Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
@@ -106,7 +107,7 @@ fun GlassPillButton(
             )
             .drawBehind {
                 drawRect(
-                    color = Color.White.copy(alpha = if (isDark) 0.40f else 0.70f),
+                    color = highlightColor,
                     size = size.copy(height = 1.5.dp.toPx())
                 )
             }

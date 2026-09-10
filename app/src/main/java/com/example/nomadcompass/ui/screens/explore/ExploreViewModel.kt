@@ -25,6 +25,8 @@ import javax.inject.Inject
 
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
 data class ExploreUiState(
     val searchQuery: String = "",
@@ -49,42 +51,41 @@ class ExploreViewModel @Inject constructor(
     private val _selectedPill = MutableStateFlow("All")
     val selectedPill: StateFlow<String> = _selectedPill.asStateFlow()
 
-    private val _debouncedCountries = _searchQuery
-        .debounce(200)
+    private val _debouncedSearch = _searchQuery
+        .debounce { if (it.isBlank()) 0L else 200L }
         .distinctUntilChanged()
         .flatMapLatest { query ->
-            if (query.isBlank()) {
+            val flow = if (query.isBlank()) {
                 getAllCountriesUseCase()
             } else {
                 searchCountriesUseCase(query)
             }
+            flow.map { list -> query to list }
         }
 
     val uiState: StateFlow<ExploreUiState> = combine(
-        _searchQuery,
         _selectedPill,
         getProfileUseCase(),
-        _debouncedCountries
-    ) { query, pill, profile, countryList ->
-        withContext(Dispatchers.Default) {
-            val filtered = when (pill) {
-                "My Favs" -> countryList.filter { it.isFavorite }
-                "Europe" -> countryList.filter { it.region.contains("Europe", ignoreCase = true) }
-                "Asia" -> countryList.filter { it.region.contains("Asia", ignoreCase = true) }
-                "Americas" -> countryList.filter { it.region.contains("Americas", ignoreCase = true) }
-                "Africa" -> countryList.filter { it.region.contains("Africa", ignoreCase = true) }
-                "Oceania" -> countryList.filter { it.region.contains("Oceania", ignoreCase = true) }
-                "Themes" -> countryList.take(6)
-                else -> countryList
-            }
-            ExploreUiState(
-                searchQuery = query,
-                selectedPill = pill,
-                countries = filtered,
-                userProfile = profile
-            )
+        _debouncedSearch
+    ) { pill, profile, (query, countryList) ->
+        val filtered = when (pill) {
+            "My Favs" -> countryList.filter { it.isFavorite }
+            "Europe" -> countryList.filter { it.region.contains("Europe", ignoreCase = true) }
+            "Asia" -> countryList.filter { it.region.contains("Asia", ignoreCase = true) }
+            "Americas" -> countryList.filter { it.region.contains("Americas", ignoreCase = true) }
+            "Africa" -> countryList.filter { it.region.contains("Africa", ignoreCase = true) }
+            "Oceania" -> countryList.filter { it.region.contains("Oceania", ignoreCase = true) }
+            "Themes" -> countryList.take(6)
+            else -> countryList
         }
-    }.stateIn(
+        ExploreUiState(
+            searchQuery = query,
+            selectedPill = pill,
+            countries = filtered,
+            userProfile = profile
+        )
+    }.flowOn(Dispatchers.Default)
+    .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ExploreUiState()

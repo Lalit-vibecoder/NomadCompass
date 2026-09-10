@@ -15,6 +15,7 @@ import com.squareup.moshi.Types
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,20 +34,27 @@ class CountryRepositoryImpl @Inject constructor(
     }
 
     override fun getAllCountries(): Flow<List<Country>> =
-        countryDao.getAll().map { entities -> entities.map { it.toDomain(highlightsMap) } }
+        countryDao.getAll()
+            .map { entities -> entities.map { it.toDomain(highlightsMap) } }
+            .flowOn(Dispatchers.Default)
 
     override fun getFavorites(): Flow<List<Country>> =
-        countryDao.getFavorites().map { entities -> entities.map { it.toDomain(highlightsMap) } }
+        countryDao.getFavorites()
+            .map { entities -> entities.map { it.toDomain(highlightsMap) } }
+            .flowOn(Dispatchers.Default)
 
     override fun search(query: String): Flow<List<Country>> =
-        countryDao.search(query).map { entities -> entities.map { it.toDomain(highlightsMap) } }
+        countryDao.search(query)
+            .map { entities -> entities.map { it.toDomain(highlightsMap) } }
+            .flowOn(Dispatchers.Default)
 
-    override suspend fun getCountryByCode(cca3: String): Country? =
+    override suspend fun getCountryByCode(cca3: String): Country? = withContext(Dispatchers.Default) {
         countryDao.getByCode(cca3)?.toDomain(highlightsMap)
+    }
 
-    override suspend fun getCountriesByCodes(cca3s: List<String>): List<Country> {
-        if (cca3s.isEmpty()) return emptyList()
-        return countryDao.getByCodes(cca3s).map { it.toDomain(highlightsMap) }
+    override suspend fun getCountriesByCodes(cca3s: List<String>): List<Country> = withContext(Dispatchers.Default) {
+        if (cca3s.isEmpty()) return@withContext emptyList()
+        countryDao.getByCodes(cca3s).map { it.toDomain(highlightsMap) }
     }
 
     override fun getCountryHighlight(cca3: String): CountryHighlight? {

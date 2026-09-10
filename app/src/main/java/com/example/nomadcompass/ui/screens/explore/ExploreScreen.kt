@@ -54,6 +54,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +67,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -105,6 +107,14 @@ fun ExploreScreen(
     val isDark = LocalThemeController.current.isDarkMode
     var searchVisible by remember { mutableStateOf(false) }
     var filterMenuExpanded by remember { mutableStateOf(false) }
+    var searchInput by remember { mutableStateOf(uiState.searchQuery) }
+
+    // Synchronize local input state when query is reset externally
+    LaunchedEffect(uiState.searchQuery) {
+        if (uiState.searchQuery.isEmpty() && searchInput.isNotEmpty()) {
+            searchInput = ""
+        }
+    }
 
     val pills = listOf("All", "My Favs", "Europe", "Asia", "Americas", "Africa", "Oceania")
 
@@ -139,7 +149,9 @@ fun ExploreScreen(
                 ) {
                     // Profile Avatar
                     val photoUri = uiState.userProfile?.photoUri
-                    val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null
+                    val photoFile = remember(photoUri) {
+                        if (!photoUri.isNullOrBlank()) File(photoUri).takeIf { it.exists() } else null
+                    }
 
                     Box(
                         modifier = Modifier
@@ -156,7 +168,7 @@ fun ExploreScreen(
                             .border(1.2.dp, Color.White.copy(alpha = if (isDark) 0.35f else 0.50f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (photoFile != null && photoFile.exists()) {
+                        if (photoFile != null) {
                             AsyncImage(
                                 model = photoFile,
                                 contentDescription = "Profile",
@@ -220,14 +232,14 @@ fun ExploreScreen(
                                 )
                                 .clip(CircleShape)
                                 .background(
-                                    if (searchVisible || uiState.searchQuery.isNotEmpty())
+                                    if (searchVisible || searchInput.isNotEmpty())
                                         Primary.copy(alpha = if (isDark) 0.32f else 0.22f)
                                     else
                                         Color.White.copy(alpha = if (isDark) 0.14f else 0.22f)
                                 )
                                 .border(
                                     width = 1.dp,
-                                    color = if (searchVisible || uiState.searchQuery.isNotEmpty())
+                                    color = if (searchVisible || searchInput.isNotEmpty())
                                         Primary.copy(alpha = 0.6f)
                                     else
                                         Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
@@ -238,7 +250,7 @@ fun ExploreScreen(
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "Search",
-                                tint = if (searchVisible || uiState.searchQuery.isNotEmpty()) Primary else OnSurface,
+                                tint = if (searchVisible || searchInput.isNotEmpty()) Primary else OnSurface,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -275,13 +287,16 @@ fun ExploreScreen(
 
                 // Expandable Frosted Glass Search Bar
                 AnimatedVisibility(
-                    visible = searchVisible || uiState.searchQuery.isNotEmpty(),
+                    visible = searchVisible || searchInput.isNotEmpty(),
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically()
                 ) {
                     OutlinedTextField(
-                        value = uiState.searchQuery,
-                        onValueChange = viewModel::onSearchQueryChanged,
+                        value = searchInput,
+                        onValueChange = {
+                            searchInput = it
+                            viewModel.onSearchQueryChanged(it)
+                        },
                         placeholder = {
                             Text(
                                 "Search destinations, countries...",
@@ -298,14 +313,17 @@ fun ExploreScreen(
                             )
                         },
                         trailingIcon = {
-                            if (uiState.searchQuery.isNotEmpty()) {
+                            if (searchInput.isNotEmpty()) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
                                     contentDescription = "Clear",
                                     tint = OnSurfaceVariant,
                                     modifier = Modifier
                                         .size(18.dp)
-                                        .clickable { viewModel.onSearchQueryChanged("") }
+                                        .clickable {
+                                            searchInput = ""
+                                            viewModel.onSearchQueryChanged("")
+                                        }
                                 )
                             }
                         },
@@ -436,7 +454,10 @@ fun ExploreScreen(
                             )
                             Spacer(modifier = Modifier.height(20.dp))
                             com.example.nomadcompass.ui.components.GlassPillButton(
-                                onClick = { viewModel.resetFilters() }
+                                onClick = {
+                                    searchInput = ""
+                                    viewModel.resetFilters()
+                                }
                             ) {
                                 Text(
                                     "Reset Filters",
@@ -483,24 +504,72 @@ private fun SageDestinationCard(
     onFavoriteToggle: () -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
-    val cardShape = RoundedCornerShape(36.dp)
+    val cardShape = remember { RoundedCornerShape(36.dp) }
 
     val sageGradientStart = if (isDark) Color(0xFF537E76) else Color(0xFF7AA59D)
     val sageGradientEnd = if (isDark) Color(0xFF385E56) else Color(0xFF59857D)
     val sageSolid = if (isDark) Color(0xFF456F67) else Color(0xFF67928A)
 
-    val titleNotchShape = RoundedCornerShape(
-        topStart = 28.dp,
-        bottomEnd = 26.dp,
-        topEnd = 8.dp,
-        bottomStart = 8.dp
-    )
-    val locationNotchShape = RoundedCornerShape(
-        topStart = 24.dp,
-        bottomEnd = 28.dp,
-        topEnd = 8.dp,
-        bottomStart = 8.dp
-    )
+    val titleNotchShape = remember {
+        RoundedCornerShape(
+            topStart = 28.dp,
+            bottomEnd = 26.dp,
+            topEnd = 8.dp,
+            bottomStart = 8.dp
+        )
+    }
+    val locationNotchShape = remember {
+        RoundedCornerShape(
+            topStart = 24.dp,
+            bottomEnd = 28.dp,
+            topEnd = 8.dp,
+            bottomStart = 8.dp
+        )
+    }
+
+    val cardBgBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                sageGradientStart.copy(alpha = if (isDark) 0.65f else 0.78f),
+                sageGradientEnd.copy(alpha = if (isDark) 0.50f else 0.65f)
+            )
+        )
+    }
+    val cardSheenBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.15f else 0.25f),
+                Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
+                Color.Transparent
+            )
+        )
+    }
+    val cardBorderBrush = remember(isDark) {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.White.copy(alpha = if (isDark) 0.35f else 0.52f),
+                Color.White.copy(alpha = if (isDark) 0.10f else 0.20f)
+            )
+        )
+    }
+    val cardSpecularBrush = remember(isDark) {
+        Brush.horizontalGradient(
+            colors = listOf(
+                Color.Transparent,
+                Color.White.copy(alpha = if (isDark) 0.40f else 0.65f),
+                Color.Transparent
+            )
+        )
+    }
+    val darkOverlayBrush = remember {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.Black.copy(alpha = 0.50f),
+                Color.Black.copy(alpha = 0.18f),
+                Color.Black.copy(alpha = 0.60f)
+            )
+        )
+    }
 
     // Animated heart color and scale for interactive favoriting micro-interaction
     val heartColor by animateColorAsState(
@@ -528,44 +597,22 @@ private fun SageDestinationCard(
             )
             .clip(cardShape)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        sageGradientStart.copy(alpha = if (isDark) 0.65f else 0.78f),
-                        sageGradientEnd.copy(alpha = if (isDark) 0.50f else 0.65f)
-                    )
-                ),
+                brush = cardBgBrush,
                 shape = cardShape
             )
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = if (isDark) 0.15f else 0.25f),
-                        Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
-                        Color.Transparent
-                    )
-                ),
+                brush = cardSheenBrush,
                 shape = cardShape
             )
             .border(
                 width = 1.2.dp,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = if (isDark) 0.35f else 0.52f),
-                        Color.White.copy(alpha = if (isDark) 0.10f else 0.20f)
-                    )
-                ),
+                brush = cardBorderBrush,
                 shape = cardShape
             )
             .drawBehind {
                 // Specular top edge ambient highlight reflection
                 drawRect(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.White.copy(alpha = if (isDark) 0.40f else 0.65f),
-                            Color.Transparent
-                        )
-                    ),
+                    brush = cardSpecularBrush,
                     size = size.copy(height = 1.5.dp.toPx())
                 )
             }
@@ -589,15 +636,7 @@ private fun SageDestinationCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Black.copy(alpha = 0.50f),
-                                Color.Black.copy(alpha = 0.18f),
-                                Color.Black.copy(alpha = 0.60f)
-                            )
-                        )
-                    )
+                    .background(brush = darkOverlayBrush)
             )
 
             // Top-Left Frosted Sage Notch for Destination Title (matching "Bali" in image)
@@ -674,7 +713,12 @@ private fun SageDestinationCard(
                     imageVector = if (country.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
                     tint = heartColor,
-                    modifier = Modifier.size((20 * heartScale).dp)
+                    modifier = Modifier
+                        .size(20.dp)
+                        .graphicsLayer {
+                            scaleX = heartScale
+                            scaleY = heartScale
+                        }
                 )
             }
 

@@ -30,12 +30,14 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -52,14 +54,18 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DirectionsCar
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Hotel
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Work
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -135,12 +141,24 @@ fun ExpensesTab(
         paymentMethod: String,
         receiptPath: String?
     ) -> Unit,
+    onEditExpense: (
+        id: Long,
+        title: String,
+        amountLocal: Double,
+        currencyCode: String,
+        category: ExpenseCategory,
+        notes: String,
+        date: Long,
+        paymentMethod: String,
+        receiptPath: String?
+    ) -> Unit = { _, _, _, _, _, _, _, _, _ -> },
     onDeleteExpense: (Long) -> Unit,
     onCalculateLivePreview: (amountLocal: Double, currencyCode: String, callback: (Double, Boolean) -> Unit) -> Unit,
 ) {
     var isLogSheetOpen by remember { mutableStateOf(false) }
+    var editingExpense by remember { mutableStateOf<Expense?>(null) }
     val logSheetBlur by animateDpAsState(
-        targetValue = if (isLogSheetOpen) 18.dp else 0.dp,
+        targetValue = if (isLogSheetOpen || editingExpense != null) 18.dp else 0.dp,
         label = "expenses_log_sheet_blur"
     )
 
@@ -156,7 +174,7 @@ fun ExpensesTab(
             contentPadding = PaddingValues(bottom = 110.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 1. Budget Summary Card with Visual Progress Ring / Chart Insights
+            // 1. Clean Budget Summary Card showing spent, budget, and remaining balances without extra text
             item(key = "budget_summary_card") {
                 BudgetSummaryCard(
                     totalSpentHome = totalSpentHome,
@@ -166,8 +184,8 @@ fun ExpensesTab(
                 )
             }
 
-            // 2. Ledger Header
-            item(key = "ledger_header") {
+            // 2. Recent Transactions Header (clean, without extra subtitle text)
+            item(key = "recent_transactions_header") {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -175,51 +193,52 @@ fun ExpensesTab(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    Text(
+                        text = "Recent Transactions",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = OnSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (expenses.isNotEmpty()) {
                         Text(
-                            text = "EXPENSE LEDGER (${expenses.size})",
-                            style = MaterialTheme.typography.labelLarge,
+                            text = "${expenses.size}",
+                            style = MaterialTheme.typography.labelMedium,
                             color = Primary,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.5.sp
-                        )
-                        Text(
-                            text = "Chronological trip transactions & payment methods",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = OnSurfaceVariant
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
             }
 
-            // 3. Ledger Items / Empty State
+            // 3. Transactions List or Minimalist Empty State
             if (expenses.isEmpty()) {
-                item(key = "empty_ledger") {
+                item(key = "empty_expenses") {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 36.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = Icons.Default.Receipt,
-                                contentDescription = null,
-                                tint = OnSurfaceVariant.copy(alpha = 0.4f),
-                                modifier = Modifier.size(52.dp)
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = "No Expenses Logged Yet",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = OnSurface
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "Tap the '+' button below to log food, stay, or transport expenses.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = OnSurfaceVariant
-                            )
+                        ClayButton(
+                            onClick = { isLogSheetOpen = true },
+                            modifier = Modifier.wrapContentWidth()
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Log your first expense",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
                         }
                     }
                 }
@@ -228,6 +247,7 @@ fun ExpensesTab(
                     ExpenseLedgerRow(
                         expense = expense,
                         homeCurrencyCode = homeCurrencyCode,
+                        onClick = { editingExpense = expense },
                         onDelete = { onDeleteExpense(expense.id) },
                         modifier = Modifier.animateItem()
                     )
@@ -256,15 +276,31 @@ fun ExpensesTab(
         }
     }
 
-    // Quick-Add Log Expense Bottom Sheet with Date Picker, Payment Method, Receipts, & Quick Categories
+    // Quick-Add Log Expense Bottom Sheet
     if (isLogSheetOpen) {
         LogExpenseBottomSheet(
+            initialExpense = null,
             defaultCurrencyCode = tripDestinationCurrencyCode.ifBlank { homeCurrencyCode },
             homeCurrencyCode = homeCurrencyCode,
             onDismiss = { isLogSheetOpen = false },
             onSave = { title, amount, currency, category, notes, date, paymentMethod, receiptPath ->
                 onAddExpense(title, amount, currency, category, notes, date, paymentMethod, receiptPath)
                 isLogSheetOpen = false
+            },
+            onCalculatePreview = onCalculateLivePreview
+        )
+    }
+
+    // Edit Expense Bottom Sheet for Tappable Cards
+    editingExpense?.let { targetExpense ->
+        LogExpenseBottomSheet(
+            initialExpense = targetExpense,
+            defaultCurrencyCode = targetExpense.currencyCode.ifBlank { tripDestinationCurrencyCode.ifBlank { homeCurrencyCode } },
+            homeCurrencyCode = homeCurrencyCode,
+            onDismiss = { editingExpense = null },
+            onSave = { title, amount, currency, category, notes, date, paymentMethod, receiptPath ->
+                onEditExpense(targetExpense.id, title, amount, currency, category, notes, date, paymentMethod, receiptPath)
+                editingExpense = null
             },
             onCalculatePreview = onCalculateLivePreview
         )
@@ -309,66 +345,7 @@ private fun BudgetSummaryCard(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
-            // Header Row: Wallet icon + title + remaining badge
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(38.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Primary.copy(alpha = 0.15f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.AccountBalanceWallet,
-                            contentDescription = null,
-                            tint = Primary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column {
-                        Text(
-                            text = "Budget Insights",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = OnSurface,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "Base Currency ($homeCurrencyCode)",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = OnSurfaceVariant
-                        )
-                    }
-                }
-
-                // Remaining / Over Budget Pill
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(
-                            if (isOverBudget) Color(0xFFEF5350).copy(alpha = 0.15f)
-                            else Primary.copy(alpha = 0.12f)
-                        )
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
-                ) {
-                    Text(
-                        text = if (isOverBudget) "Over by ${formatAmount(totalSpentHome - tripBudgetHome, homeCurrencyCode)}"
-                        else "${formatAmount(remaining, homeCurrencyCode)} left",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = if (isOverBudget) Color(0xFFEF5350) else Primary,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Visual Insights: Circular Progress Ring Chart + Stats Breakdown
+            // Clean visual indicators showing spent, budget, and remaining balances without extra text
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -376,12 +353,12 @@ private fun BudgetSummaryCard(
             ) {
                 // Circular Progress Ring Chart
                 Box(
-                    modifier = Modifier.size(100.dp),
+                    modifier = Modifier.size(96.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     val trackColor = if (isDark) Color(0xFF2C3E37) else Color(0xFFE0EAE6)
                     Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeWidth = 10.dp.toPx()
+                        val strokeWidth = 9.dp.toPx()
                         // Track Arc
                         drawArc(
                             color = trackColor,
@@ -418,14 +395,14 @@ private fun BudgetSummaryCard(
                     }
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(20.dp))
 
-                // Stats Metrics Column
+                // Clean Balance Metrics Column: Spent, Budget, Remaining
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    // Total Spent
+                    // Total Spent Indicator
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -434,14 +411,14 @@ private fun BudgetSummaryCard(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .size(8.dp)
+                                    .size(9.dp)
                                     .clip(CircleShape)
                                     .background(progressRingColor)
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "Spent",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.bodyMedium,
                                 color = OnSurfaceVariant
                             )
                         }
@@ -453,7 +430,7 @@ private fun BudgetSummaryCard(
                         )
                     }
 
-                    // Total Budget
+                    // Total Budget Indicator
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -462,14 +439,14 @@ private fun BudgetSummaryCard(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .size(8.dp)
+                                    .size(9.dp)
                                     .clip(CircleShape)
                                     .background(OnSurfaceVariant.copy(alpha = 0.5f))
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "Budget",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.bodyMedium,
                                 color = OnSurfaceVariant
                             )
                         }
@@ -481,7 +458,7 @@ private fun BudgetSummaryCard(
                         )
                     }
 
-                    // Remaining / Over Budget
+                    // Remaining Balance Indicator
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -490,14 +467,14 @@ private fun BudgetSummaryCard(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .size(8.dp)
+                                    .size(9.dp)
                                     .clip(CircleShape)
                                     .background(if (isOverBudget) Color(0xFFEF5350) else Primary)
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = if (isOverBudget) "Over Budget" else "Remaining",
-                                style = MaterialTheme.typography.bodySmall,
+                                text = "Remaining",
+                                style = MaterialTheme.typography.bodyMedium,
                                 color = OnSurfaceVariant
                             )
                         }
@@ -511,29 +488,27 @@ private fun BudgetSummaryCard(
                 }
             }
 
-            // Unconverted notice if any
             if (hasUnconverted) {
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(6.dp))
                         .background(Color(0xFFFFB74D).copy(alpha = 0.12f))
-                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Warning,
                         contentDescription = null,
                         tint = Color(0xFFFFB74D),
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(12.dp)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Some expenses use 1:1 fallback rate (offline exchange rate unavailable).",
+                        text = "1:1 rate used",
                         style = MaterialTheme.typography.labelSmall,
                         color = Color(0xFFFFB74D),
-                        fontSize = 10.sp
+                        fontSize = 9.sp
                     )
                 }
             }
@@ -545,13 +520,16 @@ private fun BudgetSummaryCard(
 private fun ExpenseLedgerRow(
     expense: Expense,
     homeCurrencyCode: String,
+    onClick: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val (icon, categoryBg, categoryIconColor) = getCategoryStyle(expense.category)
 
     ClayCard(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         cornerRadius = 18.dp,
         backgroundColor = SurfaceContainerLow
     ) {
@@ -715,6 +693,7 @@ private fun ExpenseLedgerRow(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun LogExpenseBottomSheet(
+    initialExpense: Expense? = null,
     defaultCurrencyCode: String,
     homeCurrencyCode: String,
     onDismiss: () -> Unit,
@@ -730,16 +709,17 @@ private fun LogExpenseBottomSheet(
     ) -> Unit,
     onCalculatePreview: (amountLocal: Double, currencyCode: String, callback: (Double, Boolean) -> Unit) -> Unit,
 ) {
+    val isEditing = initialExpense != null
     val context = LocalContext.current
-    var title by remember { mutableStateOf("") }
-    var amountText by remember { mutableStateOf("") }
-    var selectedCurrency by remember { mutableStateOf(defaultCurrencyCode) }
-    var selectedCategory by remember { mutableStateOf(ExpenseCategory.FOOD) }
-    var notes by remember { mutableStateOf("") }
-    var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
-    var selectedPaymentMethod by remember { mutableStateOf("Credit Card") }
-    var attachedReceiptPath by remember { mutableStateOf<String?>(null) }
-    var attachedReceiptName by remember { mutableStateOf<String?>(null) }
+    var title by remember { mutableStateOf(initialExpense?.title ?: "") }
+    var amountText by remember { mutableStateOf(if (initialExpense != null && initialExpense.amountLocal > 0) formatPlainNumber(initialExpense.amountLocal) else "") }
+    var selectedCurrency by remember { mutableStateOf(initialExpense?.currencyCode ?: defaultCurrencyCode) }
+    var selectedCategory by remember { mutableStateOf(initialExpense?.category ?: ExpenseCategory.FOOD) }
+    var notes by remember { mutableStateOf(initialExpense?.notes ?: "") }
+    var selectedDateMillis by remember { mutableLongStateOf(initialExpense?.date ?: System.currentTimeMillis()) }
+    var selectedPaymentMethod by remember { mutableStateOf(initialExpense?.paymentMethod ?: "Credit Card") }
+    var attachedReceiptPath by remember { mutableStateOf<String?>(initialExpense?.receiptPath) }
+    var attachedReceiptName by remember { mutableStateOf<String?>(if (initialExpense?.receiptPath != null) "Receipt Attached" else null) }
 
     var previewAmountHome by remember { mutableStateOf(0.0) }
     var isPreviewUnconverted by remember { mutableStateOf(false) }
@@ -781,58 +761,80 @@ private fun LogExpenseBottomSheet(
         }
     }
 
-    ModalBottomSheet(
+    FrostedGlassDialog(
         onDismissRequest = onDismiss,
-        containerColor = SurfaceContainer,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .width(40.dp)
-                    .height(4.dp)
-                    .clip(CircleShape)
-                    .background(OnSurfaceVariant.copy(alpha = 0.4f))
-            )
-        }
+        modifier = Modifier
+            .fillMaxWidth(0.94f)
+            .fillMaxHeight(0.88f)
+            .padding(vertical = 16.dp),
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Header
-            item {
+        Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
+                // Header with glowing frosted icon badge and close button
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(
-                            text = "Log New Expense",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = OnSurface,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "Record spending & convert instantly to home currency",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = OnSurfaceVariant
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Primary.copy(alpha = 0.15f))
+                                .border(1.dp, Primary.copy(alpha = 0.35f), CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = if (isEditing) Icons.Default.Edit else Icons.Default.ReceiptLong,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = if (isEditing) "Edit Expense" else "Log New Expense",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = OnSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = if (isEditing) "Modify expense details" else "Record spending & convert live",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant
+                            )
+                        }
                     }
 
-                    IconButton(onClick = onDismiss, modifier = Modifier.size(32.dp)) {
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(SurfaceContainerHigh.copy(alpha = 0.6f))
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
-                            tint = OnSurfaceVariant
+                            tint = OnSurfaceVariant,
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                 }
-            }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
 
             // Quick Category Pills
             item {
@@ -1084,7 +1086,12 @@ private fun LogExpenseBottomSheet(
                                         cal.get(Calendar.YEAR),
                                         cal.get(Calendar.MONTH),
                                         cal.get(Calendar.DAY_OF_MONTH)
-                                    ).show()
+                                    ).apply {
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                                            window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                                            window?.attributes = window?.attributes?.apply { blurBehindRadius = 32 }
+                                        }
+                                    }.show()
                                 }
                                 .padding(horizontal = 12.dp),
                             contentAlignment = Alignment.CenterStart
@@ -1354,7 +1361,7 @@ private fun LogExpenseBottomSheet(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "Expense Logged!",
+                                    text = if (isEditing) "Expense Updated!" else "Expense Logged!",
                                     style = MaterialTheme.typography.labelLarge,
                                     color = Color(0xFF4CAF50),
                                     fontWeight = FontWeight.Bold
@@ -1366,14 +1373,14 @@ private fun LogExpenseBottomSheet(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.AddCircle,
+                                    imageVector = if (isEditing) Icons.Default.CheckCircle else Icons.Default.AddCircle,
                                     contentDescription = null,
                                     tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "Save Expense",
+                                    text = if (isEditing) "Save Changes" else "Save Expense",
                                     style = MaterialTheme.typography.labelLarge,
                                     color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                                     fontWeight = FontWeight.Bold
@@ -1386,6 +1393,9 @@ private fun LogExpenseBottomSheet(
         }
     }
 }
+}
+
+
 
 // Helpers
 private fun getCategoryStyle(category: ExpenseCategory): Triple<ImageVector, Color, Color> {
@@ -1421,5 +1431,13 @@ private fun formatDate(timestamp: Long): String {
         sdf.format(Date(timestamp))
     } catch (_: Exception) {
         "Today"
+    }
+}
+
+private fun formatPlainNumber(amount: Double): String {
+    return if (amount % 1.0 == 0.0) {
+        amount.toLong().toString()
+    } else {
+        String.format(Locale.US, "%.2f", amount)
     }
 }

@@ -92,15 +92,13 @@ fun CurrencyConverterModal(
         label = "swap_button_rotation"
     )
 
-    Dialog(onDismissRequest = onDismiss) {
-        ClayCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            cornerRadius = 28.dp,
-            backgroundColor = SurfaceContainer
-        ) {
-            Column(
+    FrostedGlassDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .padding(16.dp),
+    ) {
+        Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(24.dp),
@@ -385,6 +383,5 @@ fun CurrencyConverterModal(
                     )
                 }
             }
-        }
     }
 }

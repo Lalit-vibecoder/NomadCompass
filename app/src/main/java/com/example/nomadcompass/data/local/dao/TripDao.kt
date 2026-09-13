@@ -18,4 +18,7 @@ interface TripDao {
 
     @Query("DELETE FROM trips WHERE id = :tripId")
     suspend fun deleteTrip(tripId: Int)
+
+    @Query("SELECT * FROM trips ORDER BY id DESC LIMIT 1")
+    suspend fun getLatestTrip(): TripEntity?
 }

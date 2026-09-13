@@ -289,6 +289,44 @@ class PlannerViewModel @Inject constructor(
         }
     }
 
+    fun updateExpense(
+        id: Long,
+        title: String,
+        amountLocal: Double,
+        currencyCode: String,
+        category: ExpenseCategory,
+        notes: String,
+        date: Long,
+        paymentMethod: String,
+        receiptPath: String?,
+    ) {
+        val currentTrip = uiState.value.activeWorkspaceTrip ?: return
+        viewModelScope.launch {
+            val conversionResult = calculateExpenseUseCase.calculateHomeAmount(
+                amountLocal = amountLocal,
+                currencyCode = currencyCode,
+                homeCurrencyCode = uiState.value.userCurrencyCode
+            )
+
+            val expense = Expense(
+                id = id,
+                tripId = currentTrip.id,
+                title = title.ifBlank { "Expense" },
+                amountLocal = amountLocal,
+                currencyCode = currencyCode.uppercase().trim(),
+                amountHome = conversionResult.amountHome,
+                isUnconverted = conversionResult.isUnconverted,
+                category = category,
+                date = date,
+                notes = notes,
+                paymentMethod = paymentMethod,
+                receiptPath = receiptPath,
+            )
+
+            expenseRepository.updateExpense(expense)
+        }
+    }
+
     fun deleteExpense(id: Long) {
         viewModelScope.launch {
             expenseRepository.deleteExpense(id)

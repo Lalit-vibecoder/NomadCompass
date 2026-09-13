@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -30,11 +31,23 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -49,6 +62,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
@@ -63,6 +83,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.domain.model.Trip
+import com.example.nomadcompass.ui.components.ClayCard
+import com.example.nomadcompass.ui.components.FrostedGlassDialog
 import com.example.nomadcompass.ui.components.GlassPillButton
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
@@ -77,6 +99,7 @@ import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
 import com.example.nomadcompass.ui.theme.Secondary
 import com.example.nomadcompass.ui.theme.SurfaceContainer
+import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 import java.io.File
 
@@ -413,6 +436,7 @@ fun PlannerScreen(
             bgBlurRadius = uiState.userProfile?.bgBlurRadius ?: 24f,
             onSelectTab = viewModel::selectWorkspaceTab,
             onAddExpense = viewModel::addExpense,
+            onEditExpense = viewModel::updateExpense,
             onDeleteExpense = viewModel::deleteExpense,
             onCalculateLivePreview = viewModel::calculateLiveConversion,
             onTogglePackingItem = viewModel::togglePackingItem,
@@ -768,24 +792,96 @@ private fun AddTripDialog(
     onNotesChanged: (String) -> Unit,
     onSave: () -> Unit,
 ) {
-    var countryDropdownExpanded by remember { mutableStateOf(false) }
+    val selectedCountry = remember(uiState.selectedCca3, uiState.availableCountries) {
+        uiState.availableCountries.find { it.cca3 == uiState.selectedCca3 }
+    }
+    var isDestinationEditing by remember { mutableStateOf(false) }
+    var destinationSearchText by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
-    AlertDialog(
+    val matchingSuggestions = remember(destinationSearchText, uiState.availableCountries, isDestinationEditing) {
+        if (!isDestinationEditing || destinationSearchText.isBlank()) {
+            emptyList()
+        } else {
+            val q = destinationSearchText.trim()
+            uiState.availableCountries.filter {
+                it.commonName.contains(q, ignoreCase = true) ||
+                it.cca3.contains(q, ignoreCase = true) ||
+                it.region.contains(q, ignoreCase = true)
+            }.take(5)
+        }
+    }
+
+    FrostedGlassDialog(
         onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = "Plan New Trip",
-                style = MaterialTheme.typography.titleLarge,
-                color = OnSurface,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        text = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Destination Picker Dropdown
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .wrapContentHeight()
+            .padding(vertical = 16.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
+                // Header with frosted icon and close button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(CircleShape)
+                                .background(Primary.copy(alpha = 0.15f))
+                                .border(1.dp, Primary.copy(alpha = 0.35f), CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Public,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "Plan New Trip",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = OnSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Set up your destination & workspace",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant
+                            )
+                        }
+                    }
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(SurfaceContainerHigh.copy(alpha = 0.6f))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = OnSurfaceVariant,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+
+                // Destination Search & Autocomplete
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         text = "DESTINATION",
@@ -793,108 +889,233 @@ private fun AddTripDialog(
                         color = OnSurfaceVariant,
                         letterSpacing = 1.sp
                     )
-                    Box {
-                        val selectedCountry = uiState.availableCountries.find { it.cca3 == uiState.selectedCca3 }
-                        val displayLabel = if (selectedCountry != null) {
-                            "${selectedCountry.flagEmoji}  ${selectedCountry.commonName}"
-                        } else "Select destination"
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(SurfaceContainerLow)
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                                .clickable { countryDropdownExpanded = true }
-                                .padding(horizontal = 16.dp, vertical = 14.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = if (isDestinationEditing) {
+                            destinationSearchText
+                        } else {
+                            selectedCountry?.let { "${it.flagEmoji}  ${it.commonName}" } ?: ""
+                        },
+                        onValueChange = { newText ->
+                            isDestinationEditing = true
+                            destinationSearchText = newText
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Search country (e.g. Japan, Spain)...",
+                                color = OnSurfaceVariant.copy(alpha = 0.5f),
+                                fontSize = 14.sp
+                            )
+                        },
+                        leadingIcon = {
+                            if (!isDestinationEditing && selectedCountry != null) {
+                                Text(
+                                    text = selectedCountry.flagEmoji,
+                                    fontSize = 20.sp,
+                                    modifier = Modifier.padding(start = 12.dp)
+                                )
+                            } else {
                                 Icon(
                                     imageVector = Icons.Default.Public,
                                     contentDescription = null,
                                     tint = Primary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Text(
-                                    text = displayLabel,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = OnSurface,
-                                    fontWeight = FontWeight.Medium
+                                    modifier = Modifier
+                                        .padding(start = 12.dp)
+                                        .size(20.dp)
                                 )
                             }
-                            Icon(
-                                imageVector = Icons.Default.ExpandMore,
-                                contentDescription = null,
-                                tint = OnSurfaceVariant,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        DropdownMenu(
-                            expanded = countryDropdownExpanded,
-                            onDismissRequest = { countryDropdownExpanded = false }
-                        ) {
-                            val favs = uiState.availableCountries.filter { it.isFavorite }
-                            val others = uiState.availableCountries.filter { !it.isFavorite }
+                        },
+                        trailingIcon = {
+                            if (isDestinationEditing && destinationSearchText.isNotEmpty()) {
+                                IconButton(onClick = {
+                                    destinationSearchText = ""
+                                    focusRequester.requestFocus()
+                                    keyboardController?.show()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = "Clear input",
+                                        tint = OnSurfaceVariant,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = {
+                                    isDestinationEditing = true
+                                    destinationSearchText = ""
+                                    focusRequester.requestFocus()
+                                    keyboardController?.show()
+                                }) {
+                                    Icon(
+                                        imageVector = if (isDestinationEditing) Icons.Default.Search else Icons.Default.ExpandMore,
+                                        contentDescription = "Search destination",
+                                        tint = Primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused) {
+                                    if (!isDestinationEditing) {
+                                        isDestinationEditing = true
+                                        destinationSearchText = ""
+                                    }
+                                    keyboardController?.show()
+                                }
+                            },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            focusedTextColor = OnSurface,
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
+                        )
+                    )
 
-                            if (favs.isNotEmpty()) {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = "MY FAVS",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = Secondary,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    },
-                                    onClick = {},
-                                    enabled = false
+                    // Autocomplete Suggestions List (Frosted Glass Container)
+                    AnimatedVisibility(
+                        visible = isDestinationEditing,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(SurfaceContainerHigh.copy(alpha = 0.95f))
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            if (destinationSearchText.isBlank()) {
+                                val favs = remember(uiState.availableCountries) {
+                                    uiState.availableCountries.filter { it.isFavorite }.take(3)
+                                }
+                                Text(
+                                    text = if (favs.isNotEmpty()) "FAVORITE DESTINATIONS (TYPE TO SEARCH)" else "TYPE COUNTRY NAME TO SEARCH",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = OnSurfaceVariant,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 10.sp,
+                                    letterSpacing = 1.sp,
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                                 )
                                 favs.forEach { country ->
-                                    DropdownMenuItem(
-                                        text = { Text("❤️  ${country.flagEmoji}  ${country.commonName}") },
-                                        onClick = {
-                                            onCountryChanged(country.cca3)
-                                            countryDropdownExpanded = false
-                                        }
-                                    )
-                                }
-                                if (others.isNotEmpty()) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = 4.dp),
-                                        color = OnSurface.copy(alpha = 0.1f)
-                                    )
-                                    DropdownMenuItem(
-                                        text = {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .clickable {
+                                                onCountryChanged(country.cca3)
+                                                destinationSearchText = country.commonName
+                                                isDestinationEditing = false
+                                                keyboardController?.hide()
+                                                focusManager.clearFocus()
+                                            }
+                                            .padding(horizontal = 10.dp, vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text(text = country.flagEmoji, fontSize = 18.sp)
+                                            Spacer(modifier = Modifier.width(10.dp))
                                             Text(
-                                                text = "ALL DESTINATIONS",
-                                                style = MaterialTheme.typography.labelSmall,
-                                                color = OnSurfaceVariant,
-                                                fontWeight = FontWeight.Bold
+                                                text = country.commonName,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = OnSurface,
+                                                fontWeight = FontWeight.Medium
                                             )
-                                        },
-                                        onClick = {},
-                                        enabled = false
+                                        }
+                                        Text("❤️", fontSize = 12.sp)
+                                    }
+                                }
+                            } else if (matchingSuggestions.isEmpty()) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = null,
+                                        tint = OnSurfaceVariant,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "No destinations matching \"$destinationSearchText\"",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = OnSurfaceVariant
                                     )
                                 }
-                            }
-
-                            others.forEach { country ->
-                                DropdownMenuItem(
-                                    text = { Text("${country.flagEmoji}  ${country.commonName}") },
-                                    onClick = {
-                                        onCountryChanged(country.cca3)
-                                        countryDropdownExpanded = false
-                                    }
+                            } else {
+                                Text(
+                                    text = "SUGGESTIONS",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Primary,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 10.sp,
+                                    letterSpacing = 1.sp,
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                                 )
+                                matchingSuggestions.forEach { country ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .clickable {
+                                                onCountryChanged(country.cca3)
+                                                destinationSearchText = country.commonName
+                                                isDestinationEditing = false
+                                                keyboardController?.hide()
+                                                focusManager.clearFocus()
+                                            }
+                                            .padding(horizontal = 10.dp, vertical = 10.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text(text = country.flagEmoji, fontSize = 20.sp)
+                                            Spacer(modifier = Modifier.width(10.dp))
+                                            Column {
+                                                Text(
+                                                    text = country.commonName,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = OnSurface,
+                                                    fontWeight = FontWeight.SemiBold
+                                                )
+                                                Text(
+                                                    text = "${country.region} • ${country.cca3}",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = OnSurfaceVariant,
+                                                    fontSize = 11.sp
+                                                )
+                                            }
+                                        }
+                                        if (country.isFavorite) {
+                                            Text("❤️", fontSize = 14.sp)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
 
-                // Dates Row (Start & End) - Clean RoundedCornerShape(14.dp)
+                // Dates Row (Start & End)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -915,8 +1136,8 @@ private fun AddTripDialog(
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Primary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                                focusedContainerColor = SurfaceContainerLow,
-                                unfocusedContainerColor = SurfaceContainerLow,
+                                focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                                unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
                                 focusedTextColor = OnSurface,
                                 unfocusedTextColor = OnSurface,
                                 cursorColor = Primary,
@@ -938,8 +1159,8 @@ private fun AddTripDialog(
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Primary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                                focusedContainerColor = SurfaceContainerLow,
-                                unfocusedContainerColor = SurfaceContainerLow,
+                                focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                                unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
                                 focusedTextColor = OnSurface,
                                 unfocusedTextColor = OnSurface,
                                 cursorColor = Primary,
@@ -975,8 +1196,8 @@ private fun AddTripDialog(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Primary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            focusedContainerColor = SurfaceContainerLow,
-                            unfocusedContainerColor = SurfaceContainerLow,
+                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
                             focusedTextColor = OnSurface,
                             unfocusedTextColor = OnSurface,
                             cursorColor = Primary,
@@ -997,34 +1218,44 @@ private fun AddTripDialog(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Primary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            focusedContainerColor = SurfaceContainerLow,
-                            unfocusedContainerColor = SurfaceContainerLow,
+                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
                             focusedTextColor = OnSurface,
                             unfocusedTextColor = OnSurface,
                             cursorColor = Primary,
                         )
                     )
                 }
+
+                // Action Buttons Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text(text = "Cancel", color = OnSurfaceVariant, fontWeight = FontWeight.Medium)
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    GlassPillButton(
+                        onClick = onSave,
+                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Save Trip",
+                            color = Primary,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
-        },
-        confirmButton = {
-            GlassPillButton(
-                onClick = onSave,
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
-            ) {
-                Text(
-                    text = "Save Trip",
-                    color = Primary,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = "Cancel", color = OnSurfaceVariant)
-            }
-        },
-        containerColor = SurfaceContainer
-    )
+    }
 }

@@ -81,6 +81,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -167,6 +168,17 @@ fun TripWorkspaceModal(
         paymentMethod: String,
         receiptPath: String?
     ) -> Unit = { _, _, _, _, _, _, _, _ -> },
+    onEditExpense: (
+        id: Long,
+        title: String,
+        amountLocal: Double,
+        currencyCode: String,
+        category: ExpenseCategory,
+        notes: String,
+        date: Long,
+        paymentMethod: String,
+        receiptPath: String?
+    ) -> Unit = { _, _, _, _, _, _, _, _, _ -> },
     onDeleteExpense: (Long) -> Unit = {},
     onCalculateLivePreview: (amountLocal: Double, currencyCode: String, callback: (Double, Boolean) -> Unit) -> Unit = { _, _, _ -> },
     onTogglePackingItem: (PackingItem) -> Unit = {},
@@ -235,6 +247,7 @@ fun TripWorkspaceModal(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
+        DialogBlurBehind(blurRadius = 32)
         AppBackground(
             bgPhotoUri = bgPhotoUri,
             blurRadius = bgBlurRadius
@@ -343,6 +356,7 @@ fun TripWorkspaceModal(
                                     homeCurrencyCode = currencyCode,
                                     tripDestinationCurrencyCode = tripDestinationCurrencyCode,
                                     onAddExpense = onAddExpense,
+                                    onEditExpense = onEditExpense,
                                     onDeleteExpense = onDeleteExpense,
                                     onCalculateLivePreview = onCalculateLivePreview
                                 )
@@ -397,7 +411,7 @@ fun TripWorkspaceModal(
 
     // Delete Trip Confirmation Dialog
     if (isDeleteTripConfirmOpen) {
-        AlertDialog(
+        FrostedGlassAlertDialog(
             onDismissRequest = { isDeleteTripConfirmOpen = false },
             title = {
                 Text(
@@ -618,41 +632,61 @@ private fun DocsTabContent(
             contentPadding = PaddingValues(bottom = 100.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Section 1: Trip Meta Overview
+            // Section 1: Trip Meta Overview with clean modern visual hierarchy
             item(key = "overview_meta_card") {
                 ClayCard(
                     modifier = Modifier.fillMaxWidth(),
                     cornerRadius = 20.dp,
                     backgroundColor = SurfaceContainerLow
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            // Date range combined with calendar icon
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(SurfaceContainerHigh.copy(alpha = 0.6f))
+                                    .border(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                        RoundedCornerShape(12.dp)
+                                    )
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            ) {
                                 Icon(
                                     imageVector = Icons.Default.CalendarMonth,
                                     contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier.size(18.dp)
                                 )
-                                Spacer(modifier = Modifier.width(6.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "${trip.startDate} to ${trip.endDate}",
+                                    text = "${trip.startDate} – ${trip.endDate}",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = OnSurface
+                                    color = OnSurface,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.AttachMoney,
-                                    contentDescription = null,
-                                    tint = Primary,
-                                    modifier = Modifier.size(18.dp)
+
+                            // Monthly Budget with clear label and amount
+                            Column(horizontalAlignment = Alignment.End) {
+                                Text(
+                                    text = "Monthly Budget",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = OnSurfaceVariant,
+                                    fontSize = 11.sp,
+                                    letterSpacing = 0.5.sp
                                 )
-                                Spacer(modifier = Modifier.width(2.dp))
                                 Text(
                                     text = "${formatCurrencyAmount(trip.budgetUsd, currencyCode)} / mo",
                                     style = MaterialTheme.typography.titleMedium,
@@ -663,19 +697,25 @@ private fun DocsTabContent(
                         }
 
                         if (trip.notes.isNotBlank()) {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = "Workspace Arrangement / Notes:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = OnSurfaceVariant,
-                                fontWeight = FontWeight.Bold
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                                thickness = 0.8.dp
                             )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = trip.notes,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = OnSurface
-                            )
+                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Text(
+                                    text = "WORKSPACE ARRANGEMENT / NOTES",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = OnSurfaceVariant,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 10.sp,
+                                    letterSpacing = 0.8.sp
+                                )
+                                Text(
+                                    text = trip.notes,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = OnSurface.copy(alpha = 0.9f)
+                                )
+                            }
                         }
                     }
                 }
@@ -722,57 +762,38 @@ private fun DocsTabContent(
                 )
             }
 
-            // Section 3: Category Filter Pills Row with Animated Sliding Background
+            // Section 3: Category Filter Pills Row with direct item counts
             item(key = "category_filter_pills") {
-                ScrollableClaySlidingTabRow(
-                    tabs = categories,
-                    selectedTab = selectedCategory,
-                    onTabSelected = { selectedCategory = it },
-                    contentPadding = PaddingValues(horizontal = 0.dp),
-                    height = 36.dp,
-                    spacing = 8.dp,
-                    fontSize = 12.sp,
-                    labelProvider = { cat ->
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(categories) { cat ->
                         val count = if (cat == "All") attachments.size else {
                             if (cat == "Notes") attachments.count { it.type == AttachmentType.NOTE || it.category.equals("Notes", true) }
                             else attachments.count { it.category.equals(cat, true) }
                         }
-                        "$cat ($count)"
+                        val isSelected = cat == selectedCategory
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(if (isSelected) Primary else SurfaceContainerLow)
+                                .border(
+                                    width = 1.dp,
+                                    color = if (isSelected) Primary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                    shape = RoundedCornerShape(20.dp)
+                                )
+                                .clickable { selectedCategory = cat }
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "$cat ($count)",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = if (isSelected) OnPrimary else OnSurface,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                            )
+                        }
                     }
-                )
-            }
-
-            // Section 4: Summary Stats Row
-            item(key = "stats_row") {
-                val pdfCount = attachments.count { it.type == AttachmentType.PDF }
-                val imageCount = attachments.count { it.type == AttachmentType.IMAGE }
-                val noteCount = attachments.count { it.type == AttachmentType.NOTE }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    AttachmentStatBox(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Default.PictureAsPdf,
-                        count = pdfCount,
-                        label = "PDF Docs",
-                        tint = Color(0xFFEF5350)
-                    )
-                    AttachmentStatBox(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Default.Image,
-                        count = imageCount,
-                        label = "Images",
-                        tint = Color(0xFF42A5F5)
-                    )
-                    AttachmentStatBox(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.AutoMirrored.Filled.Notes,
-                        count = noteCount,
-                        label = "Trip Notes",
-                        tint = Color(0xFFFFCA28)
-                    )
                 }
             }
 
@@ -1309,7 +1330,7 @@ private fun AddEditItineraryEventDialog(
     var confirmationCode by remember { mutableStateOf(existingEvent?.confirmationCode ?: "") }
     var notes by remember { mutableStateOf(existingEvent?.notes ?: "") }
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -1640,7 +1661,7 @@ private fun AddPackingItemDialog(
 ) {
     var itemName by remember { mutableStateOf("") }
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -2055,30 +2076,20 @@ private fun InAppAttachmentPreviewDialog(
         }
     }
 
-    Dialog(
+    FrostedGlassDialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        modifier = Modifier
+            .fillMaxWidth(0.94f)
+            .fillMaxHeight(0.92f)
+            .statusBarsPadding()
+            .padding(vertical = 12.dp),
+        cornerRadius = 24.dp
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Background.copy(alpha = 0.95f))
-                .statusBarsPadding()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
+                .padding(18.dp)
         ) {
-            ClayCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.92f),
-                cornerRadius = 24.dp,
-                backgroundColor = SurfaceContainer
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(18.dp)
-                ) {
                     // Header Bar with Details & Actions
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -2306,8 +2317,6 @@ private fun InAppAttachmentPreviewDialog(
                 }
             }
         }
-    }
-}
 
 @Composable
 private fun AttachmentStatBox(
@@ -2356,7 +2365,7 @@ private fun AddOptionsChoiceDialog(
     onSelectImage: () -> Unit,
     onSelectNote: () -> Unit,
 ) {
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -2472,7 +2481,7 @@ private fun AddFileTitleDialog(
     var selectedCategory by remember { mutableStateOf("Visas") }
     val categories = listOf("Visas", "Tickets", "Lodging", "IDs", "General")
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -2567,7 +2576,7 @@ private fun AddNoteDialog(
     var selectedCategory by remember { mutableStateOf("Notes") }
     val categories = listOf("Notes", "Visas", "Tickets", "Lodging", "IDs", "General")
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -2677,7 +2686,7 @@ private fun EditNoteDialog(
     var title by remember { mutableStateOf(initialTitle) }
     var content by remember { mutableStateOf(initialContent) }
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(

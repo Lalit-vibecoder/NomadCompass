@@ -136,6 +136,8 @@ fun ProfileSetupScreen(
     var countryDropdownExpanded by remember { mutableStateOf(false) }
     var currencyDropdownExpanded by remember { mutableStateOf(false) }
 
+    var activeTab by remember { mutableStateOf("Preferences") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -159,25 +161,38 @@ fun ProfileSetupScreen(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Nomad Profile",
+                    text = "Nomad Settings",
                     style = MaterialTheme.typography.headlineLarge,
                     color = OnSurface,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Customize your passport, appearance, and security",
+                    text = "Profile preferences, security, FAQs, and support",
                     style = MaterialTheme.typography.bodyMedium,
                     color = OnSurfaceVariant
                 )
             }
 
-            // Avatar Photo Upload Section
-            val photoFile = if (!uiState.photoUri.isNullOrBlank()) File(uiState.photoUri!!) else null
+            // Tab Selector: Preferences vs Help & Support
+            ClaySlidingTabRow(
+                tabs = listOf("Preferences", "Help & Support"),
+                selectedTab = activeTab,
+                onTabSelected = { activeTab = it },
+                labelProvider = { it }
+            )
 
-            Box(
-                modifier = Modifier
-                    .size(108.dp)
+            if (activeTab == "Help & Support") {
+                HelpSupportSection(
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+            } else {
+                // Avatar Photo Upload Section
+                val photoFile = if (!uiState.photoUri.isNullOrBlank()) File(uiState.photoUri!!) else null
+
+                Box(
+                    modifier = Modifier
+                        .size(108.dp)
                     .bounceClick(scaleDown = 0.94f) {
                         photoPickerLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -778,3 +793,5 @@ fun ProfileSetupScreen(
         }
     }
 }
+}
+

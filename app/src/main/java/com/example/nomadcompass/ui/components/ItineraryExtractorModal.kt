@@ -225,6 +225,7 @@ fun ItineraryExtractorModal(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
+        DialogBlurBehind(blurRadius = 32)
         AppBackground(
             bgPhotoUri = bgPhotoUri,
             blurRadius = bgBlurRadius

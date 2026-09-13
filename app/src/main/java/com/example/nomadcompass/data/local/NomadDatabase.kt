@@ -48,5 +48,22 @@ abstract class NomadDatabase : RoomDatabase() {
     abstract fun expenseDao(): ExpenseDao
     abstract fun packingItemDao(): PackingItemDao
     abstract fun itineraryEventDao(): ItineraryEventDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: NomadDatabase? = null
+
+        fun getInstance(context: android.content.Context): NomadDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = androidx.room.Room.databaseBuilder(
+                    context.applicationContext,
+                    NomadDatabase::class.java,
+                    "nomad_compass.db"
+                ).fallbackToDestructiveMigration().build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }
 

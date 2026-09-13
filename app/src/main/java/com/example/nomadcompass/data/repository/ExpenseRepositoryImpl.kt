@@ -29,6 +29,10 @@ class ExpenseRepositoryImpl @Inject constructor(
         return expenseDao.insertExpense(expense.toEntity())
     }
 
+    override suspend fun updateExpense(expense: Expense) {
+        expenseDao.insertExpense(expense.toEntity())
+    }
+
     override suspend fun deleteExpense(id: Long) {
         expenseDao.deleteExpense(id)
     }

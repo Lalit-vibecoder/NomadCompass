@@ -75,11 +75,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): NomadDatabase =
-        Room.databaseBuilder(
-            context,
-            NomadDatabase::class.java,
-            "nomad_compass.db"
-        ).fallbackToDestructiveMigration().build()
+        NomadDatabase.getInstance(context)
 
     @Provides
     fun provideCountryDao(db: NomadDatabase): CountryDao = db.countryDao()

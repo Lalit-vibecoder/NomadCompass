@@ -27,12 +27,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.CurrencyExchange
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.SwapVert
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -122,7 +117,7 @@ fun CurrencyConverterModal(
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.CheckCircle,
+                                    imageVector = PhosphorIcons.CheckCircle,
                                     contentDescription = null,
                                     tint = SafetyGreen,
                                     modifier = Modifier.size(16.dp)
@@ -149,7 +144,7 @@ fun CurrencyConverterModal(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.CurrencyExchange,
+                            imageVector = PhosphorIcons.CurrencyCircleDollar,
                             contentDescription = null,
                             tint = Primary,
                             modifier = Modifier.size(22.dp)
@@ -178,7 +173,7 @@ fun CurrencyConverterModal(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = Icons.Default.Refresh,
+                                    imageVector = PhosphorIcons.ArrowsClockwise,
                                     contentDescription = "Refresh Rate",
                                     tint = Primary,
                                     modifier = Modifier.size(16.dp)
@@ -188,7 +183,7 @@ fun CurrencyConverterModal(
                     }
                     IconButton(onClick = onDismiss) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = PhosphorIcons.X,
                             contentDescription = "Close",
                             tint = OnSurfaceVariant
                         )
@@ -306,7 +301,7 @@ fun CurrencyConverterModal(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.SwapVert,
+                        imageVector = PhosphorIcons.ArrowsDownUp,
                         contentDescription = "Swap currencies",
                         tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                         modifier = Modifier

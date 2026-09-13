@@ -457,6 +457,20 @@ class PlannerViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(notes = notes)
     }
 
+    fun updateTripDetails(trip: Trip, startDate: String, endDate: String, budgetUsd: Double) {
+        viewModelScope.launch {
+            val updatedTrip = trip.copy(
+                startDate = startDate,
+                endDate = endDate,
+                budgetUsd = budgetUsd
+            )
+            tripRepository.addTrip(updatedTrip)
+            if (_uiState.value.activeWorkspaceTrip?.id == trip.id) {
+                _uiState.value = _uiState.value.copy(activeWorkspaceTrip = updatedTrip)
+            }
+        }
+    }
+
     fun saveTrip() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isSaving = true)
@@ -470,7 +484,7 @@ class PlannerViewModel @Inject constructor(
                 endDate = _uiState.value.endDate,
                 budgetUsd = _uiState.value.budgetUsd.toDoubleOrNull() ?: 2000.0,
                 notes = _uiState.value.notes,
-                status = "Upcoming"
+                status = "Planned"
             )
             tripRepository.addTrip(trip)
             _uiState.value = _uiState.value.copy(isSaving = false, isAddDialogOpen = false)

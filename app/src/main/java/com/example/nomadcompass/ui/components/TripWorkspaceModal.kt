@@ -39,44 +39,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.NoteAdd
-import androidx.compose.material.icons.automirrored.filled.Notes
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.automirrored.filled.ReceiptLong
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddPhotoAlternate
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DirectionsBus
-import androidx.compose.material.icons.filled.DragHandle
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material.icons.filled.FolderZip
-import androidx.compose.material.icons.filled.Hotel
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Luggage
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.RadioButtonUnchecked
-import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Visibility
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -321,14 +284,14 @@ fun TripWorkspaceModal(
                             ) {
                                 IconButton(onClick = { isDeleteTripConfirmOpen = true }) {
                                     Icon(
-                                        imageVector = Icons.Default.Delete,
+                                        imageVector = PhosphorIcons.Trash,
                                         contentDescription = "Delete Trip",
                                         tint = Color(0xFFEF5350)
                                     )
                                 }
                                 IconButton(onClick = onDismiss) {
                                     Icon(
-                                        imageVector = Icons.Default.Close,
+                                        imageVector = PhosphorIcons.X,
                                         contentDescription = "Close workspace",
                                         tint = OnSurfaceVariant
                                     )
@@ -664,7 +627,7 @@ private fun DocsTabContent(
                                     .padding(horizontal = 12.dp, vertical = 8.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.CalendarMonth,
+                                    imageVector = PhosphorIcons.CalendarBlank,
                                     contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier.size(18.dp)
@@ -730,7 +693,7 @@ private fun DocsTabContent(
                     placeholder = { Text("Search docs, visas, tickets, notes...") },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Search,
+                            imageVector = PhosphorIcons.MagnifyingGlass,
                             contentDescription = "Search",
                             tint = Primary,
                             modifier = Modifier.size(20.dp)
@@ -740,7 +703,7 @@ private fun DocsTabContent(
                         if (searchQuery.isNotEmpty()) {
                             IconButton(onClick = { searchQuery = "" }) {
                                 Icon(
-                                    imageVector = Icons.Default.Clear,
+                                    imageVector = PhosphorIcons.XCircle,
                                     contentDescription = "Clear search",
                                     tint = OnSurfaceVariant,
                                     modifier = Modifier.size(18.dp)
@@ -834,7 +797,7 @@ private fun DocsTabContent(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                imageVector = Icons.Default.FolderZip,
+                                imageVector = PhosphorIcons.FolderSimpleDashed,
                                 contentDescription = null,
                                 tint = OnSurfaceVariant.copy(alpha = 0.5f),
                                 modifier = Modifier.size(52.dp)
@@ -887,7 +850,7 @@ private fun DocsTabContent(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                imageVector = PhosphorIcons.Plus,
                 contentDescription = "Add Item to Workspace",
                 tint = OnPrimary,
                 modifier = Modifier.size(30.dp)
@@ -1002,7 +965,7 @@ private fun ItineraryTabContent(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.AutoAwesome,
+                                        imageVector = PhosphorIcons.Sparkle,
                                         contentDescription = null,
                                         tint = OnPrimary,
                                         modifier = Modifier.size(16.dp)
@@ -1033,7 +996,7 @@ private fun ItineraryTabContent(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Add,
+                                        imageVector = PhosphorIcons.Plus,
                                         contentDescription = null,
                                         tint = OnSurface,
                                         modifier = Modifier.size(16.dp)
@@ -1076,7 +1039,7 @@ private fun ItineraryTabContent(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.AutoAwesome,
+                                    imageVector = PhosphorIcons.Sparkle,
                                     contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier.size(28.dp)
@@ -1104,7 +1067,7 @@ private fun ItineraryTabContent(
                                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.AutoAwesome,
+                                    imageVector = PhosphorIcons.Sparkle,
                                     contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier.size(16.dp)
@@ -1201,7 +1164,7 @@ private fun ItineraryTimelineCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onEdit, modifier = Modifier.size(28.dp)) {
                         Icon(
-                            imageVector = Icons.Default.Edit,
+                            imageVector = PhosphorIcons.PencilSimple,
                             contentDescription = "Edit",
                             tint = OnSurfaceVariant.copy(alpha = 0.7f),
                             modifier = Modifier.size(16.dp)
@@ -1210,7 +1173,7 @@ private fun ItineraryTimelineCard(
                     Spacer(modifier = Modifier.width(2.dp))
                     IconButton(onClick = onDelete, modifier = Modifier.size(28.dp)) {
                         Icon(
-                            imageVector = Icons.Default.Delete,
+                            imageVector = PhosphorIcons.Trash,
                             contentDescription = "Delete",
                             tint = OnSurfaceVariant.copy(alpha = 0.6f),
                             modifier = Modifier.size(16.dp)
@@ -1228,7 +1191,7 @@ private fun ItineraryTimelineCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Default.CalendarToday,
+                        imageVector = PhosphorIcons.CalendarBlank,
                         contentDescription = null,
                         tint = Primary,
                         modifier = Modifier.size(14.dp)
@@ -1251,7 +1214,7 @@ private fun ItineraryTimelineCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Default.LocationOn,
+                        imageVector = PhosphorIcons.MapPin,
                         contentDescription = null,
                         tint = Color(0xFFFF5252),
                         modifier = Modifier.size(14.dp)
@@ -1290,7 +1253,7 @@ private fun ItineraryTimelineCard(
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Icon(
-                                imageVector = Icons.Default.ContentCopy,
+                                imageVector = PhosphorIcons.CopySimple,
                                 contentDescription = "Copy code",
                                 tint = Primary,
                                 modifier = Modifier.size(12.dp)
@@ -1554,7 +1517,7 @@ private fun PackingTabContent(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                imageVector = Icons.Default.Luggage,
+                                imageVector = PhosphorIcons.SuitcaseRolling,
                                 contentDescription = null,
                                 tint = OnSurfaceVariant.copy(alpha = 0.5f),
                                 modifier = Modifier.size(52.dp)
@@ -1597,7 +1560,7 @@ private fun PackingTabContent(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Icon(
-                                    imageVector = if (item.isPacked) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
+                                    imageVector = if (item.isPacked) PhosphorIcons.CheckCircle else PhosphorIcons.Circle,
                                     contentDescription = if (item.isPacked) "Packed" else "Not Packed",
                                     tint = if (item.isPacked) Primary else OnSurfaceVariant.copy(alpha = 0.5f),
                                     modifier = Modifier
@@ -1620,7 +1583,7 @@ private fun PackingTabContent(
                                     .bounceClick(scaleDown = 0.82f)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Close,
+                                    imageVector = PhosphorIcons.X,
                                     contentDescription = "Remove Item",
                                     tint = OnSurfaceVariant.copy(alpha = 0.5f),
                                     modifier = Modifier.size(16.dp)
@@ -1645,7 +1608,7 @@ private fun PackingTabContent(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                imageVector = PhosphorIcons.Plus,
                 contentDescription = "Add Custom Packing Item",
                 tint = OnPrimary,
                 modifier = Modifier.size(28.dp)
@@ -1773,14 +1736,14 @@ private fun UnifiedAttachmentCard(
                         modifier = Modifier.size(22.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
+                            imageVector = PhosphorIcons.CaretUp,
                             contentDescription = "Move Up",
                             tint = if (index > 0) Primary else OnSurfaceVariant.copy(alpha = 0.2f)
                         )
                     }
 
                     Icon(
-                        imageVector = Icons.Default.DragHandle,
+                        imageVector = PhosphorIcons.DotsSixVertical,
                         contentDescription = "Reorder handle",
                         tint = OnSurfaceVariant.copy(alpha = 0.4f),
                         modifier = Modifier.size(14.dp)
@@ -1792,7 +1755,7 @@ private fun UnifiedAttachmentCard(
                         modifier = Modifier.size(22.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
+                            imageVector = PhosphorIcons.CaretDown,
                             contentDescription = "Move Down",
                             tint = if (index < totalCount - 1) Primary else OnSurfaceVariant.copy(alpha = 0.2f)
                         )
@@ -1827,7 +1790,7 @@ private fun UnifiedAttachmentCard(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = Icons.Default.PictureAsPdf,
+                                    imageVector = PhosphorIcons.FilePdf,
                                     contentDescription = null,
                                     tint = Color(0xFFEF5350),
                                     modifier = Modifier.size(24.dp)
@@ -1844,7 +1807,7 @@ private fun UnifiedAttachmentCard(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = Icons.Default.Image,
+                                    imageVector = PhosphorIcons.FileImage,
                                     contentDescription = null,
                                     tint = Color(0xFF42A5F5),
                                     modifier = Modifier.size(24.dp)
@@ -1853,7 +1816,7 @@ private fun UnifiedAttachmentCard(
                         }
                         AttachmentType.NOTE -> {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.Notes,
+                                imageVector = PhosphorIcons.FileText,
                                 contentDescription = null,
                                 tint = Color(0xFFFFB300),
                                 modifier = Modifier.size(24.dp)
@@ -1950,7 +1913,7 @@ private fun UnifiedAttachmentCard(
                             modifier = Modifier.size(30.dp)
                         ) {
                             Icon(
-                                imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                imageVector = if (isExpanded) PhosphorIcons.CaretUp else PhosphorIcons.CaretDown,
                                 contentDescription = if (isExpanded) "Collapse Note" else "Expand Note",
                                 tint = OnSurfaceVariant,
                                 modifier = Modifier.size(18.dp)
@@ -1961,7 +1924,7 @@ private fun UnifiedAttachmentCard(
                             modifier = Modifier.size(30.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Edit,
+                                imageVector = PhosphorIcons.PencilSimple,
                                 contentDescription = "Edit Note",
                                 tint = Primary,
                                 modifier = Modifier.size(16.dp)
@@ -1979,7 +1942,7 @@ private fun UnifiedAttachmentCard(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Default.Visibility,
+                                    imageVector = PhosphorIcons.Eye,
                                     contentDescription = null,
                                     tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                                     modifier = Modifier.size(12.dp)
@@ -2002,7 +1965,7 @@ private fun UnifiedAttachmentCard(
                         modifier = Modifier.size(30.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Delete,
+                            imageVector = PhosphorIcons.Trash,
                             contentDescription = "Delete",
                             tint = OnSurfaceVariant.copy(alpha = 0.6f),
                             modifier = Modifier.size(16.dp)
@@ -2132,7 +2095,7 @@ private fun InAppAttachmentPreviewDialog(
                                     modifier = Modifier.size(36.dp)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                                        imageVector = PhosphorIcons.ArrowSquareOut,
                                         contentDescription = "Open Externally",
                                         tint = Primary
                                     )
@@ -2143,7 +2106,7 @@ private fun InAppAttachmentPreviewDialog(
                                     modifier = Modifier.size(36.dp)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Edit,
+                                        imageVector = PhosphorIcons.PencilSimple,
                                         contentDescription = "Edit Note",
                                         tint = Primary
                                     )
@@ -2155,7 +2118,7 @@ private fun InAppAttachmentPreviewDialog(
                                 modifier = Modifier.size(36.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Close,
+                                    imageVector = PhosphorIcons.X,
                                     contentDescription = "Close preview",
                                     tint = OnSurfaceVariant
                                 )
@@ -2189,7 +2152,7 @@ private fun InAppAttachmentPreviewDialog(
                                 } else if (pdfPages.isEmpty()) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(
-                                            imageVector = Icons.Default.PictureAsPdf,
+                                            imageVector = PhosphorIcons.FilePdf,
                                             contentDescription = null,
                                             tint = Color(0xFFEF5350),
                                             modifier = Modifier.size(48.dp)
@@ -2287,7 +2250,7 @@ private fun InAppAttachmentPreviewDialog(
                                         }) {
                                             Row(verticalAlignment = Alignment.CenterVertically) {
                                                 Icon(
-                                                    imageVector = Icons.Default.ContentCopy,
+                                                    imageVector = PhosphorIcons.CopySimple,
                                                     contentDescription = null,
                                                     tint = Primary,
                                                     modifier = Modifier.size(16.dp)
@@ -2318,45 +2281,6 @@ private fun InAppAttachmentPreviewDialog(
             }
         }
 
-@Composable
-private fun AttachmentStatBox(
-    modifier: Modifier = Modifier,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    count: Int,
-    label: String,
-    tint: Color,
-) {
-    ClayCard(
-        modifier = modifier,
-        cornerRadius = 14.dp,
-        backgroundColor = SurfaceContainerLow
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = tint,
-                modifier = Modifier.size(22.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = count.toString(),
-                style = MaterialTheme.typography.titleMedium,
-                color = OnSurface,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = OnSurfaceVariant,
-                fontSize = 10.sp
-            )
-        }
-    }
-}
 
 @Composable
 private fun AddOptionsChoiceDialog(
@@ -2388,21 +2312,21 @@ private fun AddOptionsChoiceDialog(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 ChoiceRowItem(
-                    icon = Icons.Default.PictureAsPdf,
+                    icon = PhosphorIcons.FilePdf,
                     title = "Attach PDF Document",
                     subtitle = "Boarding passes, hotel vouchers, visas",
                     tint = Color(0xFFEF5350),
                     onClick = onSelectPdf
                 )
                 ChoiceRowItem(
-                    icon = Icons.Default.Image,
+                    icon = PhosphorIcons.FileImage,
                     title = "Save Photo / Image",
                     subtitle = "Maps, receipts, location photos",
                     tint = Color(0xFF42A5F5),
                     onClick = onSelectImage
                 )
                 ChoiceRowItem(
-                    icon = Icons.AutoMirrored.Filled.NoteAdd,
+                    icon = PhosphorIcons.FileText,
                     title = "Write Trip Note",
                     subtitle = "Co-working passwords, places to visit, plans",
                     tint = Color(0xFFFFCA28),

@@ -29,16 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Fingerprint
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Payments
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Security
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -87,9 +78,7 @@ import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Upload
+
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.ui.draw.blur
@@ -174,20 +163,28 @@ fun ProfileSetupScreen(
                 )
             }
 
-            // Tab Selector: Preferences vs Help & Support
+            // Tab Selector: Preferences vs Help & Support vs About & Licenses
             ClaySlidingTabRow(
-                tabs = listOf("Preferences", "Help & Support"),
+                tabs = listOf("Preferences", "Help & Support", "About & Licenses"),
                 selectedTab = activeTab,
                 onTabSelected = { activeTab = it },
+                fontSize = 11.5.sp,
                 labelProvider = { it }
             )
 
-            if (activeTab == "Help & Support") {
-                HelpSupportSection(
-                    modifier = Modifier.padding(bottom = 32.dp)
-                )
-            } else {
-                // Avatar Photo Upload Section
+            when (activeTab) {
+                "Help & Support" -> {
+                    HelpSupportSection(
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
+                }
+                "About & Licenses" -> {
+                    AboutLicensesSection(
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
+                }
+                else -> {
+                    // Avatar Photo Upload Section
                 val photoFile = if (!uiState.photoUri.isNullOrBlank()) File(uiState.photoUri!!) else null
 
                 Box(
@@ -217,7 +214,7 @@ fun ProfileSetupScreen(
                         )
                     } else {
                         Icon(
-                            imageVector = Icons.Default.Person,
+                            imageVector = PhosphorIcons.UserCircle,
                             contentDescription = "Add Avatar",
                             tint = Secondary,
                             modifier = Modifier.size(52.dp)
@@ -236,7 +233,7 @@ fun ProfileSetupScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.CameraAlt,
+                        imageVector = PhosphorIcons.Camera,
                         contentDescription = "Upload Photo",
                         tint = Color.White,
                         modifier = Modifier.size(18.dp)
@@ -270,7 +267,7 @@ fun ProfileSetupScreen(
                             placeholder = { Text("e.g. Alex Rivera", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
                             leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Default.Person,
+                                    imageVector = PhosphorIcons.UserCircle,
                                     contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier.size(22.dp)
@@ -318,7 +315,7 @@ fun ProfileSetupScreen(
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
-                                        imageVector = Icons.Default.Public,
+                                        imageVector = PhosphorIcons.GlobeSimple,
                                         contentDescription = null,
                                         tint = Secondary,
                                         modifier = Modifier.size(22.dp)
@@ -332,7 +329,7 @@ fun ProfileSetupScreen(
                                     )
                                 }
                                 Icon(
-                                    imageVector = Icons.Default.ExpandMore,
+                                    imageVector = PhosphorIcons.CaretDown,
                                     contentDescription = null,
                                     tint = OnSurfaceVariant
                                 )
@@ -379,7 +376,7 @@ fun ProfileSetupScreen(
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
-                                        imageVector = Icons.Default.Payments,
+                                        imageVector = PhosphorIcons.Coins,
                                         contentDescription = null,
                                         tint = Primary,
                                         modifier = Modifier.size(22.dp)
@@ -393,7 +390,7 @@ fun ProfileSetupScreen(
                                     )
                                 }
                                 Icon(
-                                    imageVector = Icons.Default.ExpandMore,
+                                    imageVector = PhosphorIcons.CaretDown,
                                     contentDescription = null,
                                     tint = OnSurfaceVariant
                                 )
@@ -452,7 +449,7 @@ fun ProfileSetupScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Image,
+                            imageVector = PhosphorIcons.FileImage,
                             contentDescription = null,
                             tint = Primary,
                             modifier = Modifier.size(24.dp)
@@ -544,7 +541,7 @@ fun ProfileSetupScreen(
                             modifier = Modifier.weight(1.2f),
                             contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp)
                         ) {
-                            Icon(imageVector = Icons.Default.Upload, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
+                            Icon(imageVector = PhosphorIcons.UploadSimple, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(6.dp))
                             Text("Upload Photo", style = MaterialTheme.typography.labelMedium, color = Primary, fontWeight = FontWeight.Bold)
                         }
@@ -555,7 +552,7 @@ fun ProfileSetupScreen(
                                 modifier = Modifier.weight(0.9f),
                                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Refresh, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(16.dp))
+                                Icon(imageVector = PhosphorIcons.ArrowsClockwise, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text("Reset Default", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                             }
@@ -629,7 +626,7 @@ fun ProfileSetupScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                imageVector = Icons.Default.Security,
+                                imageVector = PhosphorIcons.ShieldCheck,
                                 contentDescription = null,
                                 tint = Primary,
                                 modifier = Modifier.size(24.dp)
@@ -711,7 +708,7 @@ fun ProfileSetupScreen(
                                         placeholder = { Text("4-digit PIN (e.g. 1234)", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
                                         leadingIcon = {
                                             Icon(
-                                                imageVector = Icons.Default.Lock,
+                                                imageVector = PhosphorIcons.LockKey,
                                                 contentDescription = null,
                                                 tint = Primary,
                                                 modifier = Modifier.size(22.dp)
@@ -747,7 +744,7 @@ fun ProfileSetupScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Fingerprint,
+                                        imageVector = PhosphorIcons.Fingerprint,
                                         contentDescription = null,
                                         tint = Secondary,
                                         modifier = Modifier.size(28.dp)
@@ -792,6 +789,7 @@ fun ProfileSetupScreen(
             }
         }
     }
+}
 }
 }
 

@@ -1,8 +1,15 @@
 package com.example.nomadcompass.ui.screens.planner
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,25 +30,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.EventNote
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.FlightTakeoff
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -52,14 +41,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlin.math.roundToInt
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -112,7 +105,8 @@ fun PlannerScreen(
     val uiState by viewModel.uiState.collectAsState()
     val isDark = LocalThemeController.current.isDarkMode
 
-    val isModalOpen = uiState.activeWorkspaceTrip != null || uiState.isAddDialogOpen
+    var editingTripDetails by remember { mutableStateOf<Trip?>(null) }
+    val isModalOpen = uiState.activeWorkspaceTrip != null || uiState.isAddDialogOpen || editingTripDetails != null
     val backgroundBlur by animateDpAsState(
         targetValue = if (isModalOpen) 20.dp else 0.dp,
         label = "planner_bg_blur"
@@ -165,7 +159,7 @@ fun PlannerScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.EventNote,
+                            imageVector = PhosphorIcons.Notebook,
                             contentDescription = null,
                             tint = Primary,
                             modifier = Modifier.size(22.dp)
@@ -207,7 +201,7 @@ fun PlannerScreen(
                         )
                     } else {
                         Icon(
-                            imageVector = Icons.Default.Person,
+                            imageVector = PhosphorIcons.UserCircle,
                             contentDescription = "Profile",
                             tint = OnSurface,
                             modifier = Modifier.size(24.dp)
@@ -234,7 +228,7 @@ fun PlannerScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = PhosphorIcons.Plus,
                         contentDescription = null,
                         tint = Primary,
                         modifier = Modifier.size(16.dp)
@@ -331,7 +325,7 @@ fun PlannerScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.FlightTakeoff,
+                                imageVector = PhosphorIcons.AirplaneTilt,
                                 contentDescription = null,
                                 tint = OnSurfaceVariant,
                                 modifier = Modifier.size(48.dp)
@@ -367,7 +361,7 @@ fun PlannerScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Add,
+                                        imageVector = PhosphorIcons.Plus,
                                         contentDescription = null,
                                         tint = Primary,
                                         modifier = Modifier.size(16.dp)
@@ -397,12 +391,26 @@ fun PlannerScreen(
                         SageTripCard(
                             trip = trip,
                             currencyCode = uiState.userCurrencyCode,
-                            onClick = { viewModel.openTripWorkspace(trip) }
+                            onClick = { viewModel.openTripWorkspace(trip) },
+                            onEditTrip = { editingTripDetails = trip }
                         )
                     }
                 }
             }
         }
+    }
+
+    // Edit Trip Details Dialog Modal (Dates & Budget)
+    if (editingTripDetails != null) {
+        EditTripDetailsDialog(
+            trip = editingTripDetails!!,
+            currencyCode = uiState.userCurrencyCode,
+            onDismiss = { editingTripDetails = null },
+            onSave = { startDate, endDate, budgetUsd ->
+                viewModel.updateTripDetails(editingTripDetails!!, startDate, endDate, budgetUsd)
+                editingTripDetails = null
+            }
+        )
     }
 
     // Add Trip Dialog Modal
@@ -464,11 +472,36 @@ fun PlannerScreen(
  */
 private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
+private fun getStatusInfo(status: String): Quadruple<String, Color, Color, Color> {
+    val lower = status.lowercase().trim()
+    return when {
+        lower.contains("completed") || lower.contains("ready") -> Quadruple(
+            "Completed",
+            Color(0xFF81C784),
+            Color(0xFF1B5E20).copy(alpha = 0.55f),
+            Color(0xFF81C784).copy(alpha = 0.60f)
+        )
+        lower.contains("progress") -> Quadruple(
+            "In Progress",
+            Color(0xFFFFB74D),
+            Color(0xFFE65100).copy(alpha = 0.55f),
+            Color(0xFFFFB74D).copy(alpha = 0.60f)
+        )
+        else -> Quadruple(
+            "Planned",
+            Color(0xFF90CAF9),
+            Color(0xFF0D47A1).copy(alpha = 0.55f),
+            Color(0xFF90CAF9).copy(alpha = 0.60f)
+        )
+    }
+}
+
 @Composable
 private fun SageTripCard(
     trip: Trip,
     currencyCode: String,
     onClick: () -> Unit,
+    onEditTrip: () -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
     val cardShape = remember { RoundedCornerShape(24.dp) }
@@ -510,44 +543,9 @@ private fun SageTripCard(
             )
         )
     }
-    val primaryColor = Primary
-    val readinessBrush = remember(primaryColor) {
-        Brush.horizontalGradient(
-            colors = listOf(
-                primaryColor,
-                primaryColor.copy(alpha = 0.85f)
-            )
-        )
-    }
 
     // High-contrast vibrant status styling for dark/sage card surfaces
-    val (statusLabel, statusTextColor, statusBg, statusBorder) = when (trip.status.lowercase()) {
-        "upcoming" -> Quadruple(
-            "Upcoming",
-            Color(0xFF81C784),
-            Color(0xFF1B5E20).copy(alpha = 0.55f),
-            Color(0xFF81C784).copy(alpha = 0.60f)
-        )
-        "completed" -> Quadruple(
-            "Completed",
-            Color(0xFF90CAF9),
-            Color(0xFF0D47A1).copy(alpha = 0.55f),
-            Color(0xFF90CAF9).copy(alpha = 0.60f)
-        )
-        else -> Quadruple(
-            "In Progress",
-            Color(0xFFFFB74D),
-            Color(0xFFE65100).copy(alpha = 0.55f),
-            Color(0xFFFFB74D).copy(alpha = 0.60f)
-        )
-    }
-
-    val readinessPercent = when (trip.status.lowercase()) {
-        "completed" -> 100
-        "in progress", "active" -> 90
-        else -> 75
-    }
-    val readinessFraction = readinessPercent / 100f
+    val (statusLabel, statusTextColor, statusBg, statusBorder) = getStatusInfo(trip.status)
 
     // Compact Sage Card Frame matching Explore Visuals with standard padding
     Box(
@@ -669,12 +667,13 @@ private fun SageTripCard(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Dates Pill
+                // Dates Pill (Editable)
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(9999.dp))
                         .background(Color.Black.copy(alpha = if (isDark) 0.30f else 0.18f))
                         .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
+                        .clickable(onClick = onEditTrip)
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Row(
@@ -682,7 +681,7 @@ private fun SageTripCard(
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.CalendarMonth,
+                            imageVector = PhosphorIcons.CalendarBlank,
                             contentDescription = null,
                             tint = Color.White.copy(alpha = 0.9f),
                             modifier = Modifier.size(14.dp)
@@ -695,15 +694,22 @@ private fun SageTripCard(
                             ),
                             color = Color.White
                         )
+                        Icon(
+                            imageVector = PhosphorIcons.PencilSimple,
+                            contentDescription = "Edit Dates",
+                            tint = Color.White.copy(alpha = 0.65f),
+                            modifier = Modifier.size(11.dp)
+                        )
                     }
                 }
 
-                // Budget Pill
+                // Budget Pill (Editable)
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(9999.dp))
                         .background(Color.Black.copy(alpha = if (isDark) 0.30f else 0.18f))
                         .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
+                        .clickable(onClick = onEditTrip)
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Row(
@@ -725,55 +731,247 @@ private fun SageTripCard(
                             ),
                             color = Color.White.copy(alpha = 0.92f)
                         )
+                        Icon(
+                            imageVector = PhosphorIcons.PencilSimple,
+                            contentDescription = "Edit Budget",
+                            tint = Color.White.copy(alpha = 0.65f),
+                            modifier = Modifier.size(11.dp)
+                        )
                     }
                 }
             }
+        }
+    }
+}
 
-            // Readiness Indicator with Progress Bar
-            Column(
+@Composable
+private fun EditTripDetailsDialog(
+    trip: Trip,
+    currencyCode: String,
+    onDismiss: () -> Unit,
+    onSave: (startDate: String, endDate: String, budgetUsd: Double) -> Unit,
+) {
+    var startDate by remember { mutableStateOf(trip.startDate) }
+    var endDate by remember { mutableStateOf(trip.endDate) }
+    var budgetText by remember { mutableStateOf(trip.budgetUsd.toString().removeSuffix(".0")) }
+
+    FrostedGlassDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .wrapContentHeight()
+            .padding(vertical = 16.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Header
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Trip Preparation",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = Color.White.copy(alpha = 0.85f)
-                    )
-                    Text(
-                        text = "$readinessPercent% Ready",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 11.sp,
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(CircleShape)
+                            .background(Primary.copy(alpha = 0.15f))
+                            .border(1.dp, Primary.copy(alpha = 0.35f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = PhosphorIcons.PencilSimple,
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Edit Trip Details",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = OnSurface,
                             fontWeight = FontWeight.Bold
-                        ),
-                        color = Color.White
+                        )
+                        Text(
+                            text = "${trip.flagEmoji} ${trip.countryName.ifBlank { trip.destinationCca3 }}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = OnSurfaceVariant
+                        )
+                    }
+                }
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(SurfaceContainerHigh.copy(alpha = 0.6f))
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.X,
+                        contentDescription = "Close",
+                        tint = OnSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                thickness = 0.8.dp
+            )
+
+            // Dates Row (Start Date & End Date)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Start Date
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        text = "START DATE",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnSurfaceVariant,
+                        letterSpacing = 1.sp
+                    )
+                    OutlinedTextField(
+                        value = startDate,
+                        onValueChange = { startDate = it },
+                        placeholder = { Text("YYYY-MM-DD", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(14.dp),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = PhosphorIcons.CalendarBlank,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            focusedTextColor = OnSurface,
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
+                        )
                     )
                 }
 
-                // Sleek progress bar
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.30f))
-                        .border(0.5.dp, Color.White.copy(alpha = 0.20f), CircleShape)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(readinessFraction)
-                            .clip(CircleShape)
-                            .background(
-                                brush = readinessBrush
+                // End Date
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        text = "END DATE",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnSurfaceVariant,
+                        letterSpacing = 1.sp
+                    )
+                    OutlinedTextField(
+                        value = endDate,
+                        onValueChange = { endDate = it },
+                        placeholder = { Text("YYYY-MM-DD", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(14.dp),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = PhosphorIcons.CalendarBlank,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(18.dp)
                             )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                            focusedTextColor = OnSurface,
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
+                        )
+                    )
+                }
+            }
+
+            // Monthly Budget Field
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = "MONTHLY BUDGET",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = OnSurfaceVariant,
+                    letterSpacing = 1.sp
+                )
+                OutlinedTextField(
+                    value = budgetText,
+                    onValueChange = { budgetText = it },
+                    placeholder = { Text("e.g. 2500", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(14.dp),
+                    leadingIcon = {
+                        Text(
+                            text = currencyCode,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Primary,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 12.dp)
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                        unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary,
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // Action Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = "Cancel", color = OnSurfaceVariant)
+                }
+
+                GlassPillButton(
+                    onClick = {
+                        val budgetVal = budgetText.toDoubleOrNull() ?: trip.budgetUsd
+                        onSave(startDate.trim(), endDate.trim(), budgetVal)
+                    },
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.Check,
+                        contentDescription = null,
+                        tint = Primary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Save",
+                        color = Primary,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -844,7 +1042,7 @@ private fun AddTripDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Public,
+                                imageVector = PhosphorIcons.GlobeSimple,
                                 contentDescription = null,
                                 tint = Primary,
                                 modifier = Modifier.size(22.dp)
@@ -873,7 +1071,7 @@ private fun AddTripDialog(
                             .background(SurfaceContainerHigh.copy(alpha = 0.6f))
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = PhosphorIcons.X,
                             contentDescription = "Close",
                             tint = OnSurfaceVariant,
                             modifier = Modifier.size(16.dp)
@@ -916,7 +1114,7 @@ private fun AddTripDialog(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = Icons.Default.Public,
+                                    imageVector = PhosphorIcons.GlobeSimple,
                                     contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier
@@ -933,7 +1131,7 @@ private fun AddTripDialog(
                                     keyboardController?.show()
                                 }) {
                                     Icon(
-                                        imageVector = Icons.Default.Clear,
+                                        imageVector = PhosphorIcons.XCircle,
                                         contentDescription = "Clear input",
                                         tint = OnSurfaceVariant,
                                         modifier = Modifier.size(18.dp)
@@ -947,7 +1145,7 @@ private fun AddTripDialog(
                                     keyboardController?.show()
                                 }) {
                                     Icon(
-                                        imageVector = if (isDestinationEditing) Icons.Default.Search else Icons.Default.ExpandMore,
+                                        imageVector = if (isDestinationEditing) PhosphorIcons.MagnifyingGlass else PhosphorIcons.CaretDown,
                                         contentDescription = "Search destination",
                                         tint = Primary,
                                         modifier = Modifier.size(20.dp)
@@ -1049,7 +1247,7 @@ private fun AddTripDialog(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Search,
+                                        imageVector = PhosphorIcons.MagnifyingGlass,
                                         contentDescription = null,
                                         tint = OnSurfaceVariant,
                                         modifier = Modifier.size(16.dp)
@@ -1242,7 +1440,7 @@ private fun AddTripDialog(
                         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Check,
+                            imageVector = PhosphorIcons.Check,
                             contentDescription = null,
                             tint = Primary,
                             modifier = Modifier.size(18.dp)

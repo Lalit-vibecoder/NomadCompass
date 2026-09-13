@@ -26,18 +26,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.CurrencyExchange
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.WbSunny
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.CircularProgressIndicator
 import java.io.File
 import androidx.compose.material3.Icon
@@ -153,7 +142,7 @@ fun CountryProfileScreen(
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Primary, modifier = Modifier.size(22.dp))
+                        Icon(imageVector = PhosphorIcons.MagnifyingGlass, contentDescription = null, tint = Primary, modifier = Modifier.size(22.dp))
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Search destinations...", style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
                     }
@@ -182,7 +171,7 @@ fun CountryProfileScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings", tint = OnSurface, modifier = Modifier.size(22.dp))
+                        Icon(imageVector = PhosphorIcons.GearSix, contentDescription = "Settings", tint = OnSurface, modifier = Modifier.size(22.dp))
                     }
                 }
             }
@@ -213,7 +202,7 @@ fun CountryProfileScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = PhosphorIcons.Plus,
                         contentDescription = null,
                         tint = Primary,
                         modifier = Modifier.size(16.dp)
@@ -303,7 +292,7 @@ fun CountryProfileScreen(
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
-                                        imageVector = Icons.Default.CheckCircle,
+                                        imageVector = PhosphorIcons.SealCheck,
                                         contentDescription = shieldText,
                                         tint = shieldColor,
                                         modifier = Modifier.size(16.dp)
@@ -411,7 +400,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.WbSunny, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.SunDim, contentDescription = null, tint = Primary)
                                         Text(text = "WEATHER", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -450,13 +439,13 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.CurrencyExchange, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.CurrencyCircleDollar, contentDescription = null, tint = Primary)
                                         Text(text = "CURRENCY", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(text = "1 ${uiState.baseCurrencyCode}", style = MaterialTheme.typography.titleMedium, color = OnSurface)
-                                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(14.dp))
+                                        Icon(imageVector = PhosphorIcons.ArrowRight, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(14.dp))
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
                                             text = "$formattedRate ${country.currencyCode}",
@@ -500,7 +489,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.Schedule, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.Clock, contentDescription = null, tint = Primary)
                                         Text(text = "TIMEZONE", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -546,7 +535,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.Event, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.CalendarCheck, contentDescription = null, tint = Primary)
                                         Text(text = "NEXT HOLIDAY", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -579,7 +568,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.Compass, contentDescription = null, tint = Primary)
                                         Text(text = "DESTINATION HIGHLIGHTS & OCCASIONS", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))

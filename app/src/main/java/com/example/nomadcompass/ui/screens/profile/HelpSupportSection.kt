@@ -25,19 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Feedback
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material.icons.filled.HelpOutline
-import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material.icons.filled.Payments
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.Widgets
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -112,7 +100,7 @@ private fun QuickStartGuideCard() {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Lightbulb,
+                        imageVector = PhosphorIcons.Lightbulb,
                         contentDescription = null,
                         tint = Primary,
                         modifier = Modifier.size(22.dp)
@@ -135,31 +123,31 @@ private fun QuickStartGuideCard() {
             }
 
             QuickStartItem(
-                icon = Icons.Default.Public,
+                icon = PhosphorIcons.GlobeSimple,
                 title = "1. Explore Destinations Offline",
                 description = "Browse 250+ countries with visa advice, currency rates, emergency numbers, and plug sockets available offline."
             )
 
             QuickStartItem(
-                icon = Icons.Default.Flight,
+                icon = PhosphorIcons.AirplaneTilt,
                 title = "2. Smart Itinerary Extractor",
                 description = "Paste booking confirmation text or import travel PDFs to automatically detect flights, hotels, and activities with on-device OCR."
             )
 
             QuickStartItem(
-                icon = Icons.Default.Payments,
+                icon = PhosphorIcons.Coins,
                 title = "3. Dual-Currency Expenses",
                 description = "Log expenses in destination currency with instant conversion to your home currency. View clean balance indicators and tap any card to view or edit."
             )
 
             QuickStartItem(
-                icon = Icons.Default.Widgets,
+                icon = PhosphorIcons.SquaresFour,
                 title = "4. Home Screen Packing Widget",
                 description = "Add the NomadCompass widget to your phone's home screen to check and uncheck luggage items on the go without launching the app."
             )
 
             QuickStartItem(
-                icon = Icons.Default.Security,
+                icon = PhosphorIcons.ShieldCheck,
                 title = "5. Biometric Privacy",
                 description = "Enable fingerprint or face unlock under Security settings to keep your bookings, passports, and notes securely protected."
             )
@@ -235,7 +223,7 @@ private fun FaqSectionCard() {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.HelpOutline,
+                        imageVector = PhosphorIcons.Question,
                         contentDescription = null,
                         tint = Secondary,
                         modifier = Modifier.size(22.dp)
@@ -320,7 +308,7 @@ private fun FaqItem(
                 modifier = Modifier.weight(1f)
             )
             Icon(
-                imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                imageVector = if (expanded) PhosphorIcons.CaretUp else PhosphorIcons.CaretDown,
                 contentDescription = if (expanded) "Collapse" else "Expand",
                 tint = if (expanded) Primary else OnSurfaceVariant,
                 modifier = Modifier.size(20.dp)
@@ -372,7 +360,7 @@ private fun ContactOptionsCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Email,
+                        imageVector = PhosphorIcons.EnvelopeSimple,
                         contentDescription = null,
                         tint = Primary,
                         modifier = Modifier.size(22.dp)
@@ -398,7 +386,7 @@ private fun ContactOptionsCard(
 
             // Contact Action: Email Support
             ContactActionRow(
-                icon = Icons.Default.Email,
+                icon = PhosphorIcons.EnvelopeSimple,
                 title = "Email Support",
                 subtitle = "support@nomadcompass.app",
                 onClick = {
@@ -415,7 +403,7 @@ private fun ContactOptionsCard(
 
             // Contact Action: Bug Report
             ContactActionRow(
-                icon = Icons.Default.BugReport,
+                icon = PhosphorIcons.Bug,
                 title = "Report an Issue",
                 subtitle = "Share logs or glitches encountered",
                 onClick = {
@@ -433,7 +421,7 @@ private fun ContactOptionsCard(
 
             // Contact Action: Feedback
             ContactActionRow(
-                icon = Icons.Default.Feedback,
+                icon = PhosphorIcons.ChatTeardropText,
                 title = "Feature Suggestions",
                 subtitle = "Tell us what feature you want next",
                 onClick = {

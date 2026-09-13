@@ -35,14 +35,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.DropdownMenu
@@ -177,7 +170,7 @@ fun ExploreScreen(
                             )
                         } else {
                             Icon(
-                                imageVector = Icons.Default.Person,
+                                imageVector = PhosphorIcons.UserCircle,
                                 contentDescription = "Profile",
                                 tint = OnSurface,
                                 modifier = Modifier.size(24.dp)
@@ -248,7 +241,7 @@ fun ExploreScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = PhosphorIcons.MagnifyingGlass,
                                 contentDescription = "Search",
                                 tint = if (searchVisible || searchInput.isNotEmpty()) Primary else OnSurface,
                                 modifier = Modifier.size(20.dp)
@@ -276,7 +269,7 @@ fun ExploreScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Settings,
+                                imageVector = PhosphorIcons.GearSix,
                                 contentDescription = "Settings",
                                 tint = OnSurface,
                                 modifier = Modifier.size(20.dp)
@@ -306,7 +299,7 @@ fun ExploreScreen(
                         },
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = PhosphorIcons.MagnifyingGlass,
                                 contentDescription = null,
                                 tint = Primary,
                                 modifier = Modifier.size(20.dp)
@@ -315,7 +308,7 @@ fun ExploreScreen(
                         trailingIcon = {
                             if (searchInput.isNotEmpty()) {
                                 Icon(
-                                    imageVector = Icons.Default.Close,
+                                    imageVector = PhosphorIcons.XCircle,
                                     contentDescription = "Clear",
                                     tint = OnSurfaceVariant,
                                     modifier = Modifier
@@ -435,7 +428,7 @@ fun ExploreScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = PhosphorIcons.MagnifyingGlass,
                                 contentDescription = null,
                                 tint = OnSurfaceVariant,
                                 modifier = Modifier.size(48.dp)
@@ -710,7 +703,7 @@ private fun SageDestinationCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = if (country.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    imageVector = if (country.isFavorite) PhosphorIcons.HeartFill else PhosphorIcons.Heart,
                     contentDescription = "Favorite",
                     tint = heartColor,
                     modifier = Modifier
@@ -762,7 +755,7 @@ private fun SageDestinationCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Default.LocationOn,
+                            imageVector = PhosphorIcons.MapPin,
                             contentDescription = null,
                             tint = Color(0xFFFF5252),
                             modifier = Modifier.size(14.dp)

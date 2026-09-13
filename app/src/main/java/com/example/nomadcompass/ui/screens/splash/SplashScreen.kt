@@ -21,11 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CompassCalibration
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.WifiOff
+import com.example.nomadcompass.ui.theme.icons.GlassIconBadge
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -160,26 +157,29 @@ fun SplashScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.WifiOff,
+                GlassIconBadge(
+                    icon = PhosphorIcons.WifiSlash,
                     contentDescription = "Offline Mode",
-                    tint = OnSurfaceVariant.copy(alpha = 0.3f),
-                    modifier = Modifier.size(20.dp)
+                    size = 36.dp,
+                    iconSize = 18.dp,
+                    tint = Color.White.copy(alpha = 0.70f)
                 )
-                Icon(
-                    imageVector = Icons.Default.Public,
+                GlassIconBadge(
+                    icon = PhosphorIcons.GlobeSimple,
                     contentDescription = "Global Data",
-                    tint = OnSurfaceVariant.copy(alpha = 0.3f),
-                    modifier = Modifier.size(20.dp)
+                    size = 36.dp,
+                    iconSize = 18.dp,
+                    tint = Color.White.copy(alpha = 0.70f)
                 )
-                Icon(
-                    imageVector = Icons.Default.Security,
+                GlassIconBadge(
+                    icon = PhosphorIcons.ShieldCheck,
                     contentDescription = "Secure",
-                    tint = OnSurfaceVariant.copy(alpha = 0.3f),
-                    modifier = Modifier.size(20.dp)
+                    size = 36.dp,
+                    iconSize = 18.dp,
+                    tint = Color.White.copy(alpha = 0.70f)
                 )
             }
 

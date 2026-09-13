@@ -1,14 +1,8 @@
 package com.example.nomadcompass.domain.model
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsBus
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material.icons.filled.Hotel
-import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 
 /**
  * Supported categories for structured itinerary events.
@@ -19,12 +13,12 @@ enum class ItineraryCategory(
     val icon: ImageVector,
     val defaultColor: Color,
 ) {
-    FLIGHT("Flight", "✈️", Icons.Default.Flight, Color(0xFF6EAD91)),
-    ACCOMMODATION("Accommodation", "🏨", Icons.Default.Hotel, Color(0xFF5D8877)),
-    ACTIVITY("Activity & Tour", "🎯", Icons.Default.Event, Color(0xFFE5A65D)),
-    TRANSPORT("Ground Transport", "🚆", Icons.Default.DirectionsBus, Color(0xFF5A9FD4)),
-    RESTAURANT("Dining & Food", "🍽️", Icons.Default.Restaurant, Color(0xFFE06D53)),
-    OTHER("Other Event", "📌", Icons.Default.MoreHoriz, Color(0xFFA1BEB2));
+    FLIGHT("Flight", "✈️", PhosphorIcons.AirplaneTilt, Color(0xFF6EAD91)),
+    ACCOMMODATION("Accommodation", "🏨", PhosphorIcons.Bed, Color(0xFF5D8877)),
+    ACTIVITY("Activity & Tour", "🎯", PhosphorIcons.Target, Color(0xFFE5A65D)),
+    TRANSPORT("Ground Transport", "🚆", PhosphorIcons.Bus, Color(0xFF5A9FD4)),
+    RESTAURANT("Dining & Food", "🍽️", PhosphorIcons.ForkKnife, Color(0xFFE06D53)),
+    OTHER("Other Event", "📌", PhosphorIcons.DotsThreeOutline, Color(0xFFA1BEB2));
 
     companion object {
         fun fromString(value: String?): ItineraryCategory {

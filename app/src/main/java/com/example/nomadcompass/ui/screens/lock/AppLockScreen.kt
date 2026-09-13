@@ -25,11 +25,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Backspace
-import androidx.compose.material.icons.filled.Fingerprint
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -153,7 +149,7 @@ fun AppLockScreen(
                     )
                 } else {
                     Icon(
-                        imageVector = if (isBioMode) Icons.Default.Fingerprint else Icons.Default.Lock,
+                        imageVector = if (isBioMode) PhosphorIcons.Fingerprint else PhosphorIcons.LockKey,
                         contentDescription = null,
                         tint = Primary,
                         modifier = Modifier.size(44.dp)
@@ -220,7 +216,7 @@ fun AppLockScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Fingerprint,
+                        imageVector = PhosphorIcons.Fingerprint,
                         contentDescription = "Authenticate",
                         tint = Secondary,
                         modifier = Modifier.size(56.dp)
@@ -242,7 +238,7 @@ fun AppLockScreen(
                     modifier = Modifier.fillMaxWidth(0.8f)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Fingerprint, contentDescription = null, tint = OnPrimaryContainer)
+                        Icon(imageVector = PhosphorIcons.Fingerprint, contentDescription = null, tint = OnPrimaryContainer)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Authenticate with Biometrics",
@@ -363,7 +359,7 @@ fun AppLockScreen(
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Icon(
-                                                imageVector = Icons.AutoMirrored.Filled.Backspace,
+                                                imageVector = PhosphorIcons.Backspace,
                                                 contentDescription = "Delete Digit",
                                                 tint = OnSurface,
                                                 modifier = Modifier.size(24.dp)

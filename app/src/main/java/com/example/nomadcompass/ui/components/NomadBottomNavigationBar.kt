@@ -42,11 +42,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nomadcompass.R
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.OutlineVariant
@@ -211,7 +213,7 @@ fun NomadBottomNavigationBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 NomadNavTabItem(
-                    iconRes = R.drawable.ic_travel_explore,
+                    icon = PhosphorIcons.Compass,
                     label = "Explore",
                     isSelected = activeTab == NomadNavTab.EXPLORE,
                     onClick = {
@@ -226,7 +228,7 @@ fun NomadBottomNavigationBar(
                 )
 
                 NomadNavTabItem(
-                    iconRes = R.drawable.ic_planner_custom,
+                    icon = PhosphorIcons.CalendarDots,
                     label = "Planner",
                     isSelected = activeTab == NomadNavTab.PLANNER,
                     onClick = {
@@ -247,7 +249,7 @@ fun NomadBottomNavigationBar(
 
 @Composable
 private fun NomadNavTabItem(
-    iconRes: Int,
+    icon: ImageVector,
     label: String,
     isSelected: Boolean,
     onClick: () -> Unit,
@@ -284,7 +286,7 @@ private fun NomadNavTabItem(
             horizontalArrangement = Arrangement.Center
         ) {
             Icon(
-                painter = painterResource(id = iconRes),
+                imageVector = icon,
                 contentDescription = label,
                 tint = contentColor,
                 modifier = Modifier

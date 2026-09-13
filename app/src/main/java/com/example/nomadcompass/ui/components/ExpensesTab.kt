@@ -43,27 +43,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.AttachFile
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Hotel
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.Receipt
-import androidx.compose.material.icons.filled.ReceiptLong
-import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.ShoppingBag
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.filled.Work
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.DropdownMenu
@@ -228,7 +208,7 @@ fun ExpensesTab(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Add,
+                                    imageVector = PhosphorIcons.Plus,
                                     contentDescription = null,
                                     modifier = Modifier.size(18.dp)
                                 )
@@ -268,7 +248,7 @@ fun ExpensesTab(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                imageVector = PhosphorIcons.Plus,
                 contentDescription = "Log Expense",
                 tint = OnPrimary,
                 modifier = Modifier.size(30.dp)
@@ -498,7 +478,7 @@ private fun BudgetSummaryCard(
                         .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Warning,
+                        imageVector = PhosphorIcons.WarningCircle,
                         contentDescription = null,
                         tint = Color(0xFFFFB74D),
                         modifier = Modifier.size(12.dp)
@@ -632,7 +612,7 @@ private fun ExpenseLedgerRow(
                                 color = OnSurfaceVariant
                             )
                             Icon(
-                                imageVector = Icons.Default.AttachFile,
+                                imageVector = PhosphorIcons.Paperclip,
                                 contentDescription = "Receipt attached",
                                 tint = Primary,
                                 modifier = Modifier.size(13.dp)
@@ -679,7 +659,7 @@ private fun ExpenseLedgerRow(
                     modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Delete,
+                        imageVector = PhosphorIcons.Trash,
                         contentDescription = "Delete Expense",
                         tint = OnSurfaceVariant.copy(alpha = 0.5f),
                         modifier = Modifier.size(18.dp)
@@ -789,7 +769,7 @@ private fun LogExpenseBottomSheet(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = if (isEditing) Icons.Default.Edit else Icons.Default.ReceiptLong,
+                                imageVector = if (isEditing) PhosphorIcons.PencilSimple else PhosphorIcons.Receipt,
                                 contentDescription = null,
                                 tint = Primary,
                                 modifier = Modifier.size(20.dp)
@@ -819,7 +799,7 @@ private fun LogExpenseBottomSheet(
                             .background(SurfaceContainerHigh.copy(alpha = 0.6f))
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = PhosphorIcons.X,
                             contentDescription = "Close",
                             tint = OnSurfaceVariant,
                             modifier = Modifier.size(16.dp)
@@ -1011,7 +991,7 @@ private fun LogExpenseBottomSheet(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = if (isPreviewUnconverted) Icons.Default.Warning else Icons.Default.Info,
+                                    imageVector = if (isPreviewUnconverted) PhosphorIcons.WarningCircle else PhosphorIcons.Info,
                                     contentDescription = null,
                                     tint = if (isPreviewUnconverted) Color(0xFFFFB74D) else Primary,
                                     modifier = Modifier.size(16.dp)
@@ -1103,7 +1083,7 @@ private fun LogExpenseBottomSheet(
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
-                                        imageVector = Icons.Default.CalendarToday,
+                                        imageVector = PhosphorIcons.CalendarBlank,
                                         contentDescription = null,
                                         tint = Primary,
                                         modifier = Modifier.size(16.dp)
@@ -1148,7 +1128,7 @@ private fun LogExpenseBottomSheet(
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
-                                            imageVector = Icons.Default.CreditCard,
+                                            imageVector = PhosphorIcons.CreditCard,
                                             contentDescription = null,
                                             tint = Primary,
                                             modifier = Modifier.size(16.dp)
@@ -1213,7 +1193,7 @@ private fun LogExpenseBottomSheet(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Default.AttachFile,
+                                    imageVector = PhosphorIcons.Paperclip,
                                     contentDescription = null,
                                     tint = Primary,
                                     modifier = Modifier.size(20.dp)
@@ -1246,7 +1226,7 @@ private fun LogExpenseBottomSheet(
                                 val isPdf = attachedReceiptPath!!.lowercase().endsWith(".pdf")
                                 if (isPdf) {
                                     Icon(
-                                        imageVector = Icons.Default.PictureAsPdf,
+                                        imageVector = PhosphorIcons.FilePdf,
                                         contentDescription = null,
                                         tint = Color(0xFFEF5350),
                                         modifier = Modifier.size(24.dp)
@@ -1280,7 +1260,7 @@ private fun LogExpenseBottomSheet(
                                 modifier = Modifier.size(24.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Close,
+                                    imageVector = PhosphorIcons.X,
                                     contentDescription = "Remove receipt",
                                     tint = OnSurfaceVariant,
                                     modifier = Modifier.size(16.dp)
@@ -1354,7 +1334,7 @@ private fun LogExpenseBottomSheet(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.CheckCircle,
+                                    imageVector = PhosphorIcons.CheckCircle,
                                     contentDescription = "Success",
                                     tint = Color(0xFF4CAF50),
                                     modifier = Modifier.size(20.dp)
@@ -1373,7 +1353,7 @@ private fun LogExpenseBottomSheet(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    imageVector = if (isEditing) Icons.Default.CheckCircle else Icons.Default.AddCircle,
+                                    imageVector = if (isEditing) PhosphorIcons.CheckCircle else PhosphorIcons.PlusCircle,
                                     contentDescription = null,
                                     tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
                                     modifier = Modifier.size(18.dp)
@@ -1400,11 +1380,11 @@ private fun LogExpenseBottomSheet(
 // Helpers
 private fun getCategoryStyle(category: ExpenseCategory): Triple<ImageVector, Color, Color> {
     return when (category) {
-        ExpenseCategory.FOOD -> Triple(Icons.Default.Restaurant, Color(0xFFFF7043).copy(alpha = 0.18f), Color(0xFFFF7043))
-        ExpenseCategory.TRANSPORT -> Triple(Icons.Default.DirectionsCar, Color(0xFF42A5F5).copy(alpha = 0.18f), Color(0xFF1E88E5))
-        ExpenseCategory.LODGING -> Triple(Icons.Default.Hotel, Color(0xFFAB47BC).copy(alpha = 0.18f), Color(0xFFAB47BC))
-        ExpenseCategory.WORK -> Triple(Icons.Default.Work, Color(0xFF26A69A).copy(alpha = 0.18f), Color(0xFF26A69A))
-        ExpenseCategory.MISC -> Triple(Icons.Default.ShoppingBag, Color(0xFFFFA726).copy(alpha = 0.18f), Color(0xFFFFA726))
+        ExpenseCategory.FOOD -> Triple(PhosphorIcons.ForkKnife, Color(0xFFFF7043).copy(alpha = 0.18f), Color(0xFFFF7043))
+        ExpenseCategory.TRANSPORT -> Triple(PhosphorIcons.CarSimple, Color(0xFF42A5F5).copy(alpha = 0.18f), Color(0xFF1E88E5))
+        ExpenseCategory.LODGING -> Triple(PhosphorIcons.Bed, Color(0xFFAB47BC).copy(alpha = 0.18f), Color(0xFFAB47BC))
+        ExpenseCategory.WORK -> Triple(PhosphorIcons.Briefcase, Color(0xFF26A69A).copy(alpha = 0.18f), Color(0xFF26A69A))
+        ExpenseCategory.MISC -> Triple(PhosphorIcons.ShoppingBagOpen, Color(0xFFFFA726).copy(alpha = 0.18f), Color(0xFFFFA726))
     }
 }
 

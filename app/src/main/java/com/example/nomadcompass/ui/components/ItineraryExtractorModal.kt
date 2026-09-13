@@ -27,23 +27,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material.icons.filled.Hotel
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.RadioButtonUnchecked
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.ViewAgenda
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -265,7 +249,7 @@ fun ItineraryExtractorModal(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.AutoAwesome,
+                                        imageVector = PhosphorIcons.Sparkle,
                                         contentDescription = null,
                                         tint = Primary,
                                         modifier = Modifier.size(20.dp)
@@ -290,7 +274,7 @@ fun ItineraryExtractorModal(
 
                             IconButton(onClick = onDismiss) {
                                 Icon(
-                                    imageVector = Icons.Default.Close,
+                                    imageVector = PhosphorIcons.X,
                                     contentDescription = "Close",
                                     tint = OnSurfaceVariant
                                 )
@@ -355,7 +339,7 @@ fun ItineraryExtractorModal(
                                 when (activeSourceTab) {
                                     ExtractorSourceTab.SCREENSHOT -> {
                                         SourcePickerCard(
-                                            icon = Icons.Default.Image,
+                                            icon = PhosphorIcons.FileImage,
                                             title = "Screenshots & Photos (ML Kit)",
                                             subtitle = "Extracts flight tickets, boarding passes, and hotel vouchers using Google ML Kit on-device text recognition.",
                                             buttonText = "Select Screenshot / Photo",
@@ -364,7 +348,7 @@ fun ItineraryExtractorModal(
                                     }
                                     ExtractorSourceTab.PDF_DOC -> {
                                         SourcePickerCard(
-                                            icon = Icons.Default.Description,
+                                            icon = PhosphorIcons.FileText,
                                             title = "PDF Travel Documents (PDFBox)",
                                             subtitle = "Extracts text from digital PDF flight itineraries, e-visas, or travel vouchers on-device without cloud uploads.",
                                             buttonText = "Select PDF File",
@@ -421,7 +405,7 @@ fun ItineraryExtractorModal(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 contentPadding = PaddingValues(vertical = 14.dp)
                                             ) {
-                                                Icon(imageVector = Icons.Default.AutoAwesome, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
+                                                Icon(imageVector = PhosphorIcons.Sparkle, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 Text("Parse & Extract Itinerary", color = Primary, fontWeight = FontWeight.Bold)
                                             }
@@ -429,7 +413,7 @@ fun ItineraryExtractorModal(
                                     }
                                     ExtractorSourceTab.HTML_FILE -> {
                                         SourcePickerCard(
-                                            icon = Icons.Default.Language,
+                                            icon = PhosphorIcons.GlobeSimple,
                                             title = "Saved Web / HTML File",
                                             subtitle = "Parses web itineraries, saved booking pages, or local HTML documents via Jsoup.",
                                             buttonText = "Select HTML File",
@@ -477,7 +461,7 @@ fun ItineraryExtractorModal(
                                     ) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Icon(
-                                                imageVector = Icons.Default.EditNote,
+                                                imageVector = PhosphorIcons.PencilLine,
                                                 contentDescription = null,
                                                 tint = if (reviewFormat == ReviewDisplayFormat.EDITABLE_TEXT) OnPrimary else OnSurface,
                                                 modifier = Modifier.size(14.dp)
@@ -505,7 +489,7 @@ fun ItineraryExtractorModal(
                                     ) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Icon(
-                                                imageVector = Icons.Default.ViewAgenda,
+                                                imageVector = PhosphorIcons.ListBullets,
                                                 contentDescription = null,
                                                 tint = if (reviewFormat == ReviewDisplayFormat.STRUCTURED_CARDS) OnPrimary else OnSurface,
                                                 modifier = Modifier.size(14.dp)
@@ -598,7 +582,7 @@ fun ItineraryExtractorModal(
                                                 onClick = { syncDraftEventsFromText() },
                                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                             ) {
-                                                Icon(imageVector = Icons.Default.Refresh, contentDescription = null, tint = Primary, modifier = Modifier.size(14.dp))
+                                                Icon(imageVector = PhosphorIcons.ArrowsClockwise, contentDescription = null, tint = Primary, modifier = Modifier.size(14.dp))
                                                 Spacer(modifier = Modifier.width(4.dp))
                                                 Text("Update Cards", color = Primary, style = MaterialTheme.typography.labelSmall)
                                             }
@@ -762,7 +746,7 @@ fun ItineraryExtractorModal(
                                     modifier = Modifier.weight(2f),
                                     contentPadding = PaddingValues(vertical = 12.dp)
                                 ) {
-                                    Icon(imageVector = Icons.Default.Check, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
+                                    Icon(imageVector = PhosphorIcons.Check, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Save Itinerary", color = Primary, fontWeight = FontWeight.Bold)
                                 }
@@ -906,7 +890,7 @@ private fun DraftEventItemCard(
                         .clickable { onUpdate(draft.copy(isSelected = !draft.isSelected)) }
                 ) {
                     Icon(
-                        imageVector = if (draft.isSelected) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
+                        imageVector = if (draft.isSelected) PhosphorIcons.CheckCircle else PhosphorIcons.Circle,
                         contentDescription = null,
                         tint = if (draft.isSelected) Primary else OnSurfaceVariant.copy(alpha = 0.4f),
                         modifier = Modifier.size(22.dp)
@@ -943,7 +927,7 @@ private fun DraftEventItemCard(
 
                     IconButton(onClick = onDelete, modifier = Modifier.size(28.dp)) {
                         Icon(
-                            imageVector = Icons.Default.Delete,
+                            imageVector = PhosphorIcons.Trash,
                             contentDescription = "Delete",
                             tint = OnSurfaceVariant.copy(alpha = 0.6f),
                             modifier = Modifier.size(16.dp)

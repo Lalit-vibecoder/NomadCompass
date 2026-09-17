@@ -1,6 +1,16 @@
 package com.example.nomadcompass.ui.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,12 +27,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.CurrencyExchange
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.SwapVert
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,10 +36,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -49,6 +56,7 @@ import com.example.nomadcompass.ui.theme.PrimaryContainer
 import com.example.nomadcompass.ui.theme.SafetyGreen
 import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
+import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 import java.util.Locale
 
 @Composable
@@ -70,15 +78,22 @@ fun CurrencyConverterModal(
     val toCurrency = if (isSwapped) baseCurrency else targetCurrency
     val effectiveRate = if (isSwapped && exchangeRate > 0) 1.0 / exchangeRate else exchangeRate
 
-    Dialog(onDismissRequest = onDismiss) {
-        ClayCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            cornerRadius = 28.dp,
-            backgroundColor = SurfaceContainer
-        ) {
-            Column(
+    val swapRotation by animateFloatAsState(
+        targetValue = if (isSwapped) 180f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "swap_button_rotation"
+    )
+
+    FrostedGlassDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .padding(16.dp),
+    ) {
+        Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(24.dp),
@@ -102,7 +117,7 @@ fun CurrencyConverterModal(
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.CheckCircle,
+                                    imageVector = PhosphorIcons.CheckCircle,
                                     contentDescription = null,
                                     tint = SafetyGreen,
                                     modifier = Modifier.size(16.dp)
@@ -129,7 +144,7 @@ fun CurrencyConverterModal(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.CurrencyExchange,
+                            imageVector = PhosphorIcons.CurrencyCircleDollar,
                             contentDescription = null,
                             tint = Primary,
                             modifier = Modifier.size(22.dp)
@@ -158,7 +173,7 @@ fun CurrencyConverterModal(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = Icons.Default.Refresh,
+                                    imageVector = PhosphorIcons.ArrowsClockwise,
                                     contentDescription = "Refresh Rate",
                                     tint = Primary,
                                     modifier = Modifier.size(16.dp)
@@ -168,7 +183,7 @@ fun CurrencyConverterModal(
                     }
                     IconButton(onClick = onDismiss) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = PhosphorIcons.X,
                             contentDescription = "Close",
                             tint = OnSurfaceVariant
                         )
@@ -182,8 +197,8 @@ fun CurrencyConverterModal(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(CircleShape)
-                        .background(Background.copy(alpha = 0.5f))
-                        .border(1.dp, Color.White.copy(alpha = 0.05f), CircleShape)
+                        .background(SurfaceContainerLow)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                         .padding(vertical = 10.dp, horizontal = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -219,11 +234,12 @@ fun CurrencyConverterModal(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Primary,
-                            unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                            focusedContainerColor = Background.copy(alpha = 0.4f),
-                            unfocusedContainerColor = Background.copy(alpha = 0.4f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            focusedContainerColor = SurfaceContainerLow,
+                            unfocusedContainerColor = SurfaceContainerLow,
                             focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
                         ),
                         shape = RoundedCornerShape(16.dp),
                         trailingIcon = {
@@ -251,16 +267,17 @@ fun CurrencyConverterModal(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(CircleShape)
-                                .background(SecondaryContainer.copy(alpha = 0.6f))
+                                .background(com.example.nomadcompass.ui.theme.PillInactiveBackground)
+                                .border(1.dp, com.example.nomadcompass.ui.theme.PillInactiveBorder, CircleShape)
                                 .clickable { onInputAmountChanged(preset) }
-                                .padding(vertical = 6.dp),
+                                .padding(vertical = 8.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "+$preset",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = OnSurface,
-                                fontSize = 12.sp
+                                style = MaterialTheme.typography.labelSmall,
+                                color = com.example.nomadcompass.ui.theme.PillInactiveText,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
@@ -272,17 +289,24 @@ fun CurrencyConverterModal(
                 Box(
                     modifier = Modifier
                         .size(44.dp)
+                        .clayShadow(
+                            cornerRadius = 9999.dp,
+                            ambientShadowColor = Color.Black.copy(alpha = 0.50f),
+                            spotShadowColor = Color.Black.copy(alpha = 0.70f),
+                            blurRadius = 8.dp
+                        )
                         .clip(CircleShape)
                         .background(PrimaryContainer)
-                        .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape)
                         .clickable { onToggleSwap() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.SwapVert,
+                        imageVector = PhosphorIcons.ArrowsDownUp,
                         contentDescription = "Swap currencies",
-                        tint = OnPrimary,
-                        modifier = Modifier.size(24.dp)
+                        tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .graphicsLayer { rotationZ = swapRotation }
                     )
                 }
 
@@ -293,8 +317,8 @@ fun CurrencyConverterModal(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Background.copy(alpha = 0.6f))
-                        .border(1.dp, Color.White.copy(alpha = 0.05f), RoundedCornerShape(16.dp))
+                        .background(SurfaceContainerLow)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ) {
                     Text(
@@ -310,12 +334,21 @@ fun CurrencyConverterModal(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = formattedResult,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = Primary,
-                            fontWeight = FontWeight.Bold
-                        )
+                        AnimatedContent(
+                            targetState = formattedResult,
+                            transitionSpec = {
+                                (slideInVertically { height -> height / 3 } + fadeIn(animationSpec = tween(150))) togetherWith
+                                    (slideOutVertically { height -> -height / 3 } + fadeOut(animationSpec = tween(150)))
+                            },
+                            label = "converter_result_anim"
+                        ) { resultText ->
+                            Text(
+                                text = resultText,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = Primary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                         Text(
                             text = toCurrency,
                             style = MaterialTheme.typography.titleMedium,
@@ -345,6 +378,5 @@ fun CurrencyConverterModal(
                     )
                 }
             }
-        }
     }
 }

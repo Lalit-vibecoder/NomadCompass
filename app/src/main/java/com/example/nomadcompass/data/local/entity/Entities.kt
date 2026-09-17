@@ -31,6 +31,12 @@ data class UserProfileEntity(
     val homeCountryCca3: String,
     val baseCurrencyCode: String,
     val tempUnit: String,
+    val photoUri: String? = null,
+    val isBiometricEnabled: Boolean = false,
+    val accessCode: String = "",
+    val themeMode: String = "DARK",
+    val bgPhotoUri: String? = null,
+    val bgBlurRadius: Float = 24f,
 )
 
 @Entity(tableName = "weather_cache")

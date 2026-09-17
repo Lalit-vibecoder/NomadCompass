@@ -21,11 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CompassCalibration
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.WifiOff
+import com.example.nomadcompass.ui.theme.icons.GlassIconBadge
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nomadcompass.R
+import com.example.nomadcompass.ui.components.NomadLightLoadingBar
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
@@ -50,31 +48,20 @@ import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 @Composable
 fun SplashScreen(
     viewModel: SplashViewModel,
-    onNavigateNext: (hasProfile: Boolean) -> Unit,
+    onNavigateNext: (hasProfile: Boolean, isSecurityLocked: Boolean) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(uiState.isComplete) {
         if (uiState.isComplete) {
-            onNavigateNext(uiState.hasProfile)
+            onNavigateNext(uiState.hasProfile, uiState.isSecurityLocked)
         }
     }
-
-    val infiniteTransition = rememberInfiniteTransition(label = "compass")
-    val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(20000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "rotation"
-    )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(SurfaceContainerLow)
+            .background(Color.Transparent)
     ) {
 
         // Center Content
@@ -83,16 +70,14 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Rotating 3D Clay Compass Logo
+            // App Logo
             Image(
                 painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = "Nomad Compass Logo",
-                modifier = Modifier
-                    .size(200.dp)
-                    .rotate(rotation)
+                modifier = Modifier.size(240.dp)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             // App Title
             Text(
@@ -107,24 +92,20 @@ fun SplashScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Progress Bar (Claymorphism segment)
-            Box(
-                modifier = Modifier
-                    .width(220.dp)
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(9999.dp))
-                    .background(Color(0xFF353439))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .fillMaxWidth(uiState.progress / 100f)
-                        .clip(RoundedCornerShape(9999.dp))
-                        .background(Color(0xFFCCC6BC))
-                )
-            }
+            // Light Loading Bar
+            val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
+                targetValue = uiState.progress / 100f,
+                animationSpec = androidx.compose.animation.core.tween(durationMillis = 350, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+                label = "splash_progress"
+            )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            NomadLightLoadingBar(
+                progress = animatedProgress,
+                width = 220.dp,
+                height = 6.dp
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
 
             // Progress text & percentage
             Row(
@@ -154,26 +135,29 @@ fun SplashScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.WifiOff,
+                GlassIconBadge(
+                    icon = PhosphorIcons.WifiSlash,
                     contentDescription = "Offline Mode",
-                    tint = OnSurfaceVariant.copy(alpha = 0.3f),
-                    modifier = Modifier.size(20.dp)
+                    size = 36.dp,
+                    iconSize = 18.dp,
+                    tint = Color.White.copy(alpha = 0.70f)
                 )
-                Icon(
-                    imageVector = Icons.Default.Public,
+                GlassIconBadge(
+                    icon = PhosphorIcons.GlobeSimple,
                     contentDescription = "Global Data",
-                    tint = OnSurfaceVariant.copy(alpha = 0.3f),
-                    modifier = Modifier.size(20.dp)
+                    size = 36.dp,
+                    iconSize = 18.dp,
+                    tint = Color.White.copy(alpha = 0.70f)
                 )
-                Icon(
-                    imageVector = Icons.Default.Security,
+                GlassIconBadge(
+                    icon = PhosphorIcons.ShieldCheck,
                     contentDescription = "Secure",
-                    tint = OnSurfaceVariant.copy(alpha = 0.3f),
-                    modifier = Modifier.size(20.dp)
+                    size = 36.dp,
+                    iconSize = 18.dp,
+                    tint = Color.White.copy(alpha = 0.70f)
                 )
             }
 

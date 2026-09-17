@@ -17,4 +17,5 @@ data class TripAttachment(
     val mimeType: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val displayOrder: Int = 0,
+    val category: String = "General",
 )

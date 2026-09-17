@@ -28,4 +28,16 @@ interface PackingItemDao {
 
     @Query("DELETE FROM packing_items WHERE id = :id")
     suspend fun deletePackingItem(id: Long)
+
+    @Query("SELECT * FROM packing_items WHERE tripId = :tripId ORDER BY isPacked ASC, id ASC")
+    suspend fun getPackingItemsListForTrip(tripId: Int): List<PackingItemEntity>
+
+    @Query("SELECT * FROM packing_items ORDER BY tripId DESC, isPacked ASC, id ASC")
+    suspend fun getAllPackingItemsList(): List<PackingItemEntity>
+
+    @Query("SELECT * FROM packing_items WHERE id = :id")
+    suspend fun getPackingItemById(id: Long): PackingItemEntity?
+
+    @Query("UPDATE packing_items SET isPacked = :isPacked WHERE id = :id")
+    suspend fun updatePackedStatus(id: Long, isPacked: Boolean)
 }

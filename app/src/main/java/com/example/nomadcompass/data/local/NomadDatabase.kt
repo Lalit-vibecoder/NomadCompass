@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.example.nomadcompass.data.local.dao.CacheDao
 import com.example.nomadcompass.data.local.dao.CountryDao
 import com.example.nomadcompass.data.local.dao.ExpenseDao
+import com.example.nomadcompass.data.local.dao.ItineraryEventDao
 import com.example.nomadcompass.data.local.dao.PackingItemDao
 import com.example.nomadcompass.data.local.dao.TripAttachmentDao
 import com.example.nomadcompass.data.local.dao.TripDao
@@ -14,6 +15,7 @@ import com.example.nomadcompass.data.local.entity.CountryEntity
 import com.example.nomadcompass.data.local.entity.CurrencyCacheEntity
 import com.example.nomadcompass.data.local.entity.ExpenseEntity
 import com.example.nomadcompass.data.local.entity.HolidayCacheEntity
+import com.example.nomadcompass.data.local.entity.ItineraryEventEntity
 import com.example.nomadcompass.data.local.entity.PackingItemEntity
 import com.example.nomadcompass.data.local.entity.TripAttachmentEntity
 import com.example.nomadcompass.data.local.entity.TripEntity
@@ -32,8 +34,9 @@ import com.example.nomadcompass.data.local.entity.WeatherCacheEntity
         TripAttachmentEntity::class,
         ExpenseEntity::class,
         PackingItemEntity::class,
+        ItineraryEventEntity::class,
     ],
-    version = 7,
+    version = 11,
     exportSchema = false,
 )
 abstract class NomadDatabase : RoomDatabase() {
@@ -44,5 +47,23 @@ abstract class NomadDatabase : RoomDatabase() {
     abstract fun tripAttachmentDao(): TripAttachmentDao
     abstract fun expenseDao(): ExpenseDao
     abstract fun packingItemDao(): PackingItemDao
+    abstract fun itineraryEventDao(): ItineraryEventDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: NomadDatabase? = null
+
+        fun getInstance(context: android.content.Context): NomadDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = androidx.room.Room.databaseBuilder(
+                    context.applicationContext,
+                    NomadDatabase::class.java,
+                    "nomad_compass.db"
+                ).fallbackToDestructiveMigration().build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }
 

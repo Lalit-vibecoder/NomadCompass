@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_card_background"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:id="@+id/widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/widget_header_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_widget_backpack" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/widget_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Packing List"
+                android:textColor="#191C1B"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_trip_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Current Trip"
+                android:textColor="#3F4945"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Progress Counter Badge -->
+        <TextView
+            android:id="@+id/widget_counter_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/widget_item_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:text="0/0"
+            android:textColor="#008080"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- Refresh Button -->
+        <ImageView
+            android:id="@+id/widget_refresh_button"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="6dp"
+            android:contentDescription="Refresh"
+            android:padding="3dp"
+            android:src="@drawable/ic_widget_refresh" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0EAE6" />
+
+    <!-- Collection ListView -->
+    <ListView
+        android:id="@+id/widget_packing_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="6dp"
+        android:paddingTop="8dp" />
+
+    <!-- Empty View displayed when ListView has no items -->
+    <TextView
+        android:id="@+id/widget_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="No packing items yet.\nOpen NomadCompass to create a trip!"
+        android:textColor="#8E918F"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+</LinearLayout>

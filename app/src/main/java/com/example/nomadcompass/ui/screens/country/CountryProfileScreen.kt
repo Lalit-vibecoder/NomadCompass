@@ -12,32 +12,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.CurrencyExchange
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.EventNote
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.WbSunny
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.CircularProgressIndicator
+import java.io.File
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -48,8 +39,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,10 +51,17 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
+import com.example.nomadcompass.ui.components.GlassPillButton
+import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.components.CurrencyConverterModal
+import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
+import com.example.nomadcompass.ui.components.NomadNavTab
+import com.example.nomadcompass.util.CurrencyFormatter
 import java.util.Locale
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
+import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
@@ -71,6 +71,14 @@ import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
+import com.example.nomadcompass.ui.theme.SafetyGreen
+import com.example.nomadcompass.ui.theme.SafetyYellow
+import com.example.nomadcompass.ui.theme.SafetyRed
+
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.ui.draw.blur
+import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.components.bounceOnState
 
 @Composable
 fun CountryProfileScreen(
@@ -83,13 +91,37 @@ fun CountryProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val converterBlur by animateDpAsState(
+        targetValue = if (uiState.isConverterOpen) 20.dp else 0.dp,
+        label = "converter_bg_blur"
+    )
+
     Scaffold(
+        modifier = Modifier.blur(converterBlur),
         topBar = {
-            // Header Top Navigation with System Status Bar Padding
+            val isDark = LocalThemeController.current.isDarkMode
+            // Header Top Navigation with System Status Bar Padding & Subtle Frosted Glass Look
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Background.copy(alpha = 0.8f))
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                SurfaceContainerHigh.copy(alpha = if (isDark) 0.65f else 0.80f),
+                                SurfaceContainerHigh.copy(alpha = if (isDark) 0.45f else 0.60f)
+                            )
+                        )
+                    )
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = if (isDark) 0.20f else 0.35f),
+                                Color.White.copy(alpha = 0.05f)
+                            )
+                        ),
+                        shape = RectangleShape
+                    )
                     .statusBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -98,90 +130,95 @@ fun CountryProfileScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(40.dp)
+                        .height(48.dp)
                         .clip(CircleShape)
-                        .background(SurfaceContainerLow)
-                        .border(1.dp, Color.White.copy(alpha = 0.05f), CircleShape)
-                        .clickable(onClick = onExploreClick)
+                        .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.20f))
+                        .border(
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = if (isDark) 0.25f else 0.40f),
+                            shape = CircleShape
+                        )
+                        .bounceClick(scaleDown = 0.97f, onClick = onExploreClick)
                         .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(20.dp))
+                        Icon(imageVector = PhosphorIcons.MagnifyingGlass, contentDescription = null, tint = Primary, modifier = Modifier.size(22.dp))
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Search destinations...", style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
                     }
                 }
 
                 // Profile Avatar on Right
+                val photoUri = uiState.userProfile?.photoUri
+                val photoFile = remember(photoUri) {
+                    if (!photoUri.isNullOrBlank()) File(photoUri).takeIf { it.exists() } else null
+                }
+
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
                         .background(SecondaryContainer)
-                        .border(1.dp, Secondary.copy(alpha = 0.3f), CircleShape)
-                        .clickable(onClick = onProfileClick),
+                        .border(1.5.dp, if (photoFile != null) Primary else Secondary.copy(alpha = 0.4f), CircleShape)
+                        .bounceClick(onClick = onProfileClick),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "Profile", tint = Secondary, modifier = Modifier.size(20.dp))
-                }
-            }
-        },
-        bottomBar = {
-            // Bottom Navigation Bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(SurfaceContainerHigh)
-                    .border(1.dp, Color.White.copy(alpha = 0.05f))
-                    .padding(horizontal = 24.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable(onClick = onExploreClick)
-                ) {
-                    Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Primary, modifier = Modifier.size(24.dp))
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(text = "Explore", style = MaterialTheme.typography.labelSmall, color = Primary, fontWeight = FontWeight.Bold, fontSize = 11.sp)
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable(onClick = onPlannerClick)
-                ) {
-                    Icon(imageVector = Icons.Default.EventNote, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(24.dp))
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(text = "Planner", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, fontSize = 11.sp)
+                    if (photoFile != null) {
+                        AsyncImage(
+                            model = photoFile,
+                            contentDescription = "Profile",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Icon(imageVector = PhosphorIcons.GearSix, contentDescription = "Settings", tint = OnSurface, modifier = Modifier.size(22.dp))
+                    }
                 }
             }
         },
         floatingActionButton = {
-            // Floating Action Button - Clay Pill Style
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(PrimaryContainer)
-                    .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                    .clickable {
-                        val currentCca3 = uiState.detail?.country?.cca3
-                        if (currentCca3 != null) {
-                            onAddTripClick(currentCca3)
-                        } else {
-                            onPlannerClick()
-                        }
+            val isDark = LocalThemeController.current.isDarkMode
+            // Floating Action Button - Glass Pill elevated above bottom navigation bar
+            GlassPillButton(
+                onClick = {
+                    val currentCca3 = uiState.detail?.country?.cca3
+                    if (currentCca3 != null) {
+                        onAddTripClick(currentCca3)
+                    } else {
+                        onPlannerClick()
                     }
-                    .padding(horizontal = 24.dp, vertical = 14.dp)
+                },
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = 88.dp),
+                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = OnPrimary)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "ADD TRIP", style = MaterialTheme.typography.labelLarge, color = OnPrimary, fontWeight = FontWeight.Bold)
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(Primary.copy(alpha = if (isDark) 0.25f else 0.15f))
+                        .border(1.dp, Primary.copy(alpha = if (isDark) 0.45f else 0.30f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.Plus,
+                        contentDescription = null,
+                        tint = Primary,
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "PLAN TRIP",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Primary,
+                    fontWeight = FontWeight.Bold
+                )
             }
         },
-        containerColor = Background
+        containerColor = Color.Transparent
     ) { paddingValues ->
         if (uiState.isLoading || uiState.detail == null) {
             com.example.nomadcompass.ui.components.NomadLoadingAnimation(
@@ -195,8 +232,10 @@ fun CountryProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(top = paddingValues.calculateTopPadding())
+                    .clipToBounds()
                     .verticalScroll(rememberScrollState())
+                    .padding(bottom = 110.dp)
             ) {
                 // Hero Banner
                 Box(
@@ -211,19 +250,19 @@ fun CountryProfileScreen(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Gradient overlay
+                    // Multi-layer Gradient overlay for depth & readability
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
                                 Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, Background),
-                                    startY = 100f
+                                    colors = listOf(Color.Black.copy(alpha = 0.2f), Color.Transparent, Background),
+                                    startY = 0f
                                 )
                             )
                     )
 
-                    // Country title & safety badge
+                    // Country title & dynamic safety badge
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -233,23 +272,40 @@ fun CountryProfileScreen(
                             Text(
                                 text = country.commonName,
                                 style = MaterialTheme.typography.displayLarge,
-                                color = Primary
+                                color = OnSurface
                             )
                             Spacer(modifier = Modifier.width(12.dp))
-                            // Safety Shield Badge
+                            
+                            // Contextual Safety Level Badge
+                            val advisoryScore = detail.advisory?.score ?: 1.0
+                            val (shieldColor, shieldText) = when {
+                                advisoryScore < 2.5 -> SafetyGreen to "SAFE"
+                                advisoryScore < 4.5 -> SafetyYellow to "CAUTION"
+                                else -> SafetyRed to "WARNING"
+                            }
                             Box(
                                 modifier = Modifier
-                                    .size(32.dp)
                                     .clip(CircleShape)
-                                    .background(Primary),
+                                    .background(shieldColor.copy(alpha = 0.2f))
+                                    .border(1.dp, shieldColor, CircleShape)
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.CheckCircle,
-                                    contentDescription = "Safe",
-                                    tint = Background,
-                                    modifier = Modifier.size(20.dp)
-                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.SealCheck,
+                                        contentDescription = shieldText,
+                                        tint = shieldColor,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = shieldText,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = shieldColor,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(4.dp))
@@ -286,25 +342,36 @@ fun CountryProfileScreen(
                                 Text(
                                     text = "${detail.nci.score}/10",
                                     style = MaterialTheme.typography.headlineMedium,
-                                    color = Primary
+                                    color = Primary,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // 10-Segment Clay Bar
+                            // 10-Segment Aurora Gradient Clay Bar
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 for (i in 1..10) {
                                     val isActive = i <= detail.nci.score
+                                    val targetColor = if (isActive) {
+                                        if (i <= 4) Primary else if (i <= 7) Secondary else com.example.nomadcompass.ui.theme.AccentAmber
+                                    } else {
+                                        SurfaceContainerHigh
+                                    }
+                                    val barColor by androidx.compose.animation.animateColorAsState(
+                                        targetValue = targetColor,
+                                        animationSpec = androidx.compose.animation.core.tween(300),
+                                        label = "nci_bar_$i"
+                                    )
                                     Box(
                                         modifier = Modifier
                                             .weight(1f)
                                             .height(8.dp)
                                             .clip(RoundedCornerShape(9999.dp))
-                                            .background(if (isActive) Primary else Color(0xFF0E0E12))
+                                            .background(barColor)
                                     )
                                 }
                             }
@@ -334,7 +401,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.WbSunny, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.SunDim, contentDescription = null, tint = Primary)
                                         Text(text = "WEATHER", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -348,26 +415,19 @@ fun CountryProfileScreen(
                                     Text(
                                         text = headlineTemp,
                                         style = MaterialTheme.typography.headlineLarge,
-                                        color = OnSurface
+                                        color = OnSurface,
+                                        fontWeight = FontWeight.Bold
                                     )
-                                    Text(
-                                        text = subTemp,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = OnSurfaceVariant
-                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(text = subTemp, style = MaterialTheme.typography.bodySmall, color = OnSurfaceVariant)
                                 }
                             }
 
                             // Currency Card
-                            val formattedRate = if (uiState.exchangeRate >= 100) {
-                                String.format(Locale.US, "%.0f", uiState.exchangeRate)
-                            } else {
-                                String.format(Locale.US, "%.2f", uiState.exchangeRate)
-                            }
+                            val formattedRate = CurrencyFormatter.formatRate(uiState.exchangeRate, country.currencyCode)
                             ClayCard(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clickable { viewModel.openConverter() },
+                                modifier = Modifier.weight(1f),
+                                onClick = { viewModel.openConverter() },
                                 cornerRadius = 24.dp,
                                 backgroundColor = SurfaceContainer
                             ) {
@@ -376,16 +436,16 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.CurrencyExchange, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.CurrencyCircleDollar, contentDescription = null, tint = Primary)
                                         Text(text = "CURRENCY", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(text = "1 ${uiState.baseCurrencyCode}", style = MaterialTheme.typography.titleMedium, color = OnSurface)
-                                        Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(14.dp))
+                                        Icon(imageVector = PhosphorIcons.ArrowRight, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(14.dp))
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = "$formattedRate ${country.currencyCode}",
+                                            text = formattedRate,
                                             style = MaterialTheme.typography.titleMedium,
                                             color = Primary
                                         )
@@ -396,7 +456,7 @@ fun CountryProfileScreen(
                                             .fillMaxWidth()
                                             .clip(CircleShape)
                                             .background(SecondaryContainer)
-                                            .clickable { viewModel.openConverter() }
+                                            .bounceClick(scaleDown = 0.94f) { viewModel.openConverter() }
                                             .padding(vertical = 8.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -408,11 +468,13 @@ fun CountryProfileScreen(
 
                         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             // Dynamic Timezone Card using TimezoneHelper
-                            val tzInfo = com.example.nomadcompass.util.TimezoneHelper.getTimezoneInfo(
-                                cca3 = country.cca3,
-                                cca2 = country.cca2,
-                                longitude = country.longitude
-                            )
+                            val tzInfo = remember(country.cca3) {
+                                com.example.nomadcompass.util.TimezoneHelper.getTimezoneInfo(
+                                    cca3 = country.cca3,
+                                    cca2 = country.cca2,
+                                    longitude = country.longitude
+                                )
+                            }
 
                             ClayCard(
                                 modifier = Modifier.weight(1f),
@@ -424,7 +486,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.Schedule, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.Clock, contentDescription = null, tint = Primary)
                                         Text(text = "TIMEZONE", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -434,27 +496,30 @@ fun CountryProfileScreen(
                             }
 
                             // Dynamic Next Holiday Card
-                            val todayStr = try {
-                                java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date())
-                            } catch (_: Exception) {
-                                "2026-01-01"
-                            }
-
-                            val upcomingHolidays = detail.holidays.filter { it.date >= todayStr }
-                            val nextHoliday = upcomingHolidays.firstOrNull() ?: detail.holidays.lastOrNull() ?: detail.holidays.firstOrNull()
-
-                            val holidayName = nextHoliday?.name?.ifBlank { nextHoliday.localName } ?: "No Upcoming Holidays"
-                            val holidayDateFormatted = if (nextHoliday != null && nextHoliday.date.isNotBlank()) {
-                                try {
-                                    val inFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                                    val outFormat = java.text.SimpleDateFormat("MMM dd, yyyy", Locale.US)
-                                    val dateObj = inFormat.parse(nextHoliday.date)
-                                    if (dateObj != null) outFormat.format(dateObj) else nextHoliday.date
+                            val (holidayName, holidayDateFormatted) = remember(detail.holidays) {
+                                val todayStr = try {
+                                    java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date())
                                 } catch (_: Exception) {
-                                    nextHoliday.date
+                                    "2026-01-01"
                                 }
-                            } else {
-                                "None"
+
+                                val upcomingHolidays = detail.holidays.filter { it.date >= todayStr }
+                                val nextHoliday = upcomingHolidays.firstOrNull() ?: detail.holidays.lastOrNull() ?: detail.holidays.firstOrNull()
+
+                                val name = nextHoliday?.name?.ifBlank { nextHoliday.localName } ?: "No Upcoming Holidays"
+                                val dateFormatted = if (nextHoliday != null && nextHoliday.date.isNotBlank()) {
+                                    try {
+                                        val inFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                                        val outFormat = java.text.SimpleDateFormat("MMM dd, yyyy", Locale.US)
+                                        val dateObj = inFormat.parse(nextHoliday.date)
+                                        if (dateObj != null) outFormat.format(dateObj) else nextHoliday.date
+                                    } catch (_: Exception) {
+                                        nextHoliday.date
+                                    }
+                                } else {
+                                    "Check Local Listings"
+                                }
+                                Pair(name, dateFormatted)
                             }
 
                             ClayCard(
@@ -467,7 +532,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.Event, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.CalendarCheck, contentDescription = null, tint = Primary)
                                         Text(text = "NEXT HOLIDAY", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -475,7 +540,8 @@ fun CountryProfileScreen(
                                         text = holidayName,
                                         style = MaterialTheme.typography.titleMedium,
                                         color = OnSurface,
-                                        maxLines = 1
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
                                         text = holidayDateFormatted,
@@ -499,7 +565,7 @@ fun CountryProfileScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Primary)
+                                        Icon(imageVector = PhosphorIcons.Compass, contentDescription = null, tint = Primary)
                                         Text(text = "DESTINATION HIGHLIGHTS & OCCASIONS", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant)
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
@@ -511,8 +577,8 @@ fun CountryProfileScreen(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            items(highlights.topPlaces.size) { idx ->
-                                                ClayPill(text = highlights.topPlaces[idx], isActive = false, onClick = {})
+                                            items(highlights.topPlaces, key = { it }) { place ->
+                                                ClayPill(text = place, isActive = false, onClick = {})
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(12.dp))
@@ -525,8 +591,8 @@ fun CountryProfileScreen(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            items(highlights.famousFestivals.size) { idx ->
-                                                ClayPill(text = highlights.famousFestivals[idx], isActive = true, onClick = {})
+                                            items(highlights.famousFestivals, key = { it }) { festival ->
+                                                ClayPill(text = festival, isActive = true, onClick = {})
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(12.dp))
@@ -539,8 +605,8 @@ fun CountryProfileScreen(
                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            items(highlights.attractiveFeatures.size) { idx ->
-                                                ClayPill(text = highlights.attractiveFeatures[idx], isActive = false, onClick = {})
+                                            items(highlights.attractiveFeatures, key = { it }) { feature ->
+                                                ClayPill(text = feature, isActive = false, onClick = {})
                                             }
                                         }
                                     }
@@ -549,73 +615,75 @@ fun CountryProfileScreen(
                         }
                     }
 
-                    // Neighboring Destinations Carousel
+                    // Neighboring Destinations (2 cards per row)
                     if (detail.neighbors.isNotEmpty()) {
-                        Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Nearby Destinations",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    color = OnSurface
-                                )
-                                Text(
-                                    text = "VIEW ALL",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = Primary
-                                )
+                        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                            Text(
+                                text = "Nearby Destinations",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = OnSurface
+                            )
+
+                            val neighborRows = remember(detail.neighbors) {
+                                detail.neighbors.chunked(2)
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                items(detail.neighbors, key = { it.cca3 }) { neighbor ->
-                                    ClayCard(
-                                        modifier = Modifier
-                                            .width(200.dp)
-                                            .height(140.dp)
-                                            .clickable { onNeighborClick(neighbor.cca3) },
-                                        cornerRadius = 20.dp,
-                                        backgroundColor = SurfaceContainer
-                                    ) {
-                                        Box(modifier = Modifier.fillMaxSize()) {
-                                            AsyncImage(
-                                                model = neighbor.flagUrl,
-                                                contentDescription = neighbor.commonName,
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier.fillMaxSize()
-                                            )
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(
-                                                        Brush.verticalGradient(
-                                                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                            for (rowNeighbors in neighborRows) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    for (neighbor in rowNeighbors) {
+                                        ClayCard(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .height(140.dp),
+                                            onClick = { onNeighborClick(neighbor.cca3) },
+                                            cornerRadius = 20.dp,
+                                            backgroundColor = SurfaceContainer
+                                        ) {
+                                            Box(modifier = Modifier.fillMaxSize()) {
+                                                AsyncImage(
+                                                    model = neighbor.flagUrl,
+                                                    contentDescription = neighbor.commonName,
+                                                    contentScale = ContentScale.Crop,
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .background(
+                                                            Brush.verticalGradient(
+                                                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f))
+                                                            )
                                                         )
+                                                )
+                                                Column(
+                                                    modifier = Modifier
+                                                        .align(Alignment.BottomStart)
+                                                        .padding(12.dp)
+                                                ) {
+                                                    Text(
+                                                        text = "${neighbor.flagEmoji} ${neighbor.commonName}",
+                                                        style = MaterialTheme.typography.titleMedium.copy(
+                                                            fontSize = 15.sp,
+                                                            fontWeight = FontWeight.Bold
+                                                        ),
+                                                        color = Color.White,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
                                                     )
-                                            )
-                                            Column(
-                                                modifier = Modifier
-                                                    .align(Alignment.BottomStart)
-                                                    .padding(12.dp)
-                                            ) {
-                                                Text(
-                                                    text = "${neighbor.flagEmoji} ${neighbor.commonName}",
-                                                    style = MaterialTheme.typography.titleMedium,
-                                                    color = Color.White
-                                                )
-                                                Text(
-                                                    text = neighbor.region,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = Color.White.copy(alpha = 0.8f)
-                                                )
+                                                    Text(
+                                                        text = neighbor.region,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = Color.White.copy(alpha = 0.85f)
+                                                    )
+                                                }
                                             }
                                         }
+                                    }
+                                    if (rowNeighbors.size == 1) {
+                                        Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
                             }

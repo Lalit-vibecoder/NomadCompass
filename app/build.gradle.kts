@@ -45,6 +45,7 @@ dependencies {
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.biometric)
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)
@@ -82,6 +83,12 @@ dependencies {
     // Coil (image loading)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    // On-Device Offline Extractors (PDF, HTML, ML Kit OCR, Entity Extraction)
+    implementation(libs.jsoup)
+    implementation(libs.pdfbox.android)
+    implementation(libs.mlkit.text.recognition)
+    implementation(libs.mlkit.entity.extraction)
 
     // Testing
     testImplementation(libs.junit)

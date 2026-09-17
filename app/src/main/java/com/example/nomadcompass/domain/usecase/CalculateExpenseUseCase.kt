@@ -71,8 +71,9 @@ class CalculateExpenseUseCase @Inject constructor(
         val directCache = cacheDao.getCurrency(directKey, 0)
         if (directCache != null && directCache.rate > 0) {
             val rate = directCache.rate
+            val converted = kotlin.math.round(amountLocal * rate * 100.0) / 100.0
             return ConversionResult(
-                amountHome = amountLocal * rate,
+                amountHome = converted,
                 isUnconverted = false,
                 conversionRate = rate
             )
@@ -83,8 +84,9 @@ class CalculateExpenseUseCase @Inject constructor(
         val inverseCache = cacheDao.getCurrency(inverseKey, 0)
         if (inverseCache != null && inverseCache.rate > 0) {
             val rate = 1.0 / inverseCache.rate
+            val converted = kotlin.math.round(amountLocal * rate * 100.0) / 100.0
             return ConversionResult(
-                amountHome = amountLocal * rate,
+                amountHome = converted,
                 isUnconverted = false,
                 conversionRate = rate
             )
@@ -96,8 +98,9 @@ class CalculateExpenseUseCase @Inject constructor(
         if (localUsdRate != null && homeUsdRate != null && localUsdRate > 0) {
             // (Home units / USD) / (Local units / USD) = Home units / Local unit
             val rate = homeUsdRate / localUsdRate
+            val converted = kotlin.math.round(amountLocal * rate * 100.0) / 100.0
             return ConversionResult(
-                amountHome = amountLocal * rate,
+                amountHome = converted,
                 isUnconverted = false,
                 conversionRate = rate
             )

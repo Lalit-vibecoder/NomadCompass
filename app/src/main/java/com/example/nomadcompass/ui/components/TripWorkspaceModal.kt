@@ -1,16 +1,24 @@
 package com.example.nomadcompass.ui.components
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.graphics.Bitmap
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.ui.draw.blur
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,34 +34,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddPhotoAlternate
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DragHandle
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.FolderZip
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Luggage
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.NoteAdd
-import androidx.compose.material.icons.filled.Notes
-import androidx.compose.material.icons.filled.OpenInNew
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.RadioButtonUnchecked
-import androidx.compose.material.icons.filled.ReceiptLong
+import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,6 +53,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,34 +61,47 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
+import com.example.nomadcompass.R
 import com.example.nomadcompass.data.local.entity.ExpenseCategory
 import com.example.nomadcompass.domain.model.AttachmentType
 import com.example.nomadcompass.domain.model.Expense
+import com.example.nomadcompass.domain.model.ItineraryCategory
+import com.example.nomadcompass.domain.model.ItineraryEvent
 import com.example.nomadcompass.domain.model.PackingItem
 import com.example.nomadcompass.domain.model.Trip
 import com.example.nomadcompass.domain.model.TripAttachment
 import com.example.nomadcompass.ui.screens.planner.WorkspaceTab
+import com.example.nomadcompass.ui.theme.ActionPrimary
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.LocalAppBackground
+import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
 import com.example.nomadcompass.ui.theme.PrimaryContainer
+import com.example.nomadcompass.ui.theme.Secondary
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 import com.example.nomadcompass.util.FileStorageHelper
+import com.example.nomadcompass.util.PdfThumbnailHelper
 import java.io.File
 import java.util.Locale
 
@@ -112,30 +117,63 @@ fun TripWorkspaceModal(
     attachments: List<TripAttachment>,
     expenses: List<Expense> = emptyList(),
     packingItems: List<PackingItem> = emptyList(),
+    itineraryEvents: List<ItineraryEvent> = emptyList(),
     totalSpentHome: Double = 0.0,
     activeTab: WorkspaceTab = WorkspaceTab.EXPENSES,
     currencyCode: String = "USD",
     tripDestinationCurrencyCode: String = "",
+    bgPhotoUri: String? = LocalAppBackground.current.bgPhotoUri,
+    bgBlurRadius: Float = LocalAppBackground.current.bgBlurRadius,
     onSelectTab: (WorkspaceTab) -> Unit = {},
-    onAddExpense: (title: String, amountLocal: Double, currencyCode: String, category: ExpenseCategory, notes: String) -> Unit = { _, _, _, _, _ -> },
+    onAddExpense: (
+        title: String,
+        amountLocal: Double,
+        currencyCode: String,
+        category: ExpenseCategory,
+        notes: String,
+        date: Long,
+        paymentMethod: String,
+        receiptPath: String?
+    ) -> Unit = { _, _, _, _, _, _, _, _ -> },
+    onEditExpense: (
+        id: Long,
+        title: String,
+        amountLocal: Double,
+        currencyCode: String,
+        category: ExpenseCategory,
+        notes: String,
+        date: Long,
+        paymentMethod: String,
+        receiptPath: String?
+    ) -> Unit = { _, _, _, _, _, _, _, _, _ -> },
     onDeleteExpense: (Long) -> Unit = {},
     onCalculateLivePreview: (amountLocal: Double, currencyCode: String, callback: (Double, Boolean) -> Unit) -> Unit = { _, _, _ -> },
     onTogglePackingItem: (PackingItem) -> Unit = {},
     onAddPackingItem: (String) -> Unit = {},
     onDeletePackingItem: (Long) -> Unit = {},
-    onAddFileAttachment: (Uri, AttachmentType, String) -> Unit,
-    onAddNoteAttachment: (title: String, text: String) -> Unit,
+    onSaveItineraryEvents: (List<ItineraryEvent>) -> Unit = {},
+    onAddItineraryEvent: (ItineraryEvent) -> Unit = {},
+    onUpdateItineraryEvent: (ItineraryEvent) -> Unit = {},
+    onDeleteItineraryEvent: (Long) -> Unit = {},
+    onAddFileAttachment: (Uri, AttachmentType, String, String) -> Unit,
+    onAddNoteAttachment: (title: String, text: String, String) -> Unit,
     onUpdateNoteAttachment: (id: Long, title: String, text: String) -> Unit,
     onMoveAttachment: (fromIndex: Int, toIndex: Int) -> Unit,
     onDeleteAttachment: (Long) -> Unit,
+    onDeleteTrip: () -> Unit = {},
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
     var isAddChoiceMenuOpen by remember { mutableStateOf(false) }
     var isAddNoteDialogOpen by remember { mutableStateOf(false) }
     var isAddPackingDialogOpen by remember { mutableStateOf(false) }
+    var isExtractorModalOpen by remember { mutableStateOf(false) }
+    var isAddEventDialogOpen by remember { mutableStateOf(false) }
+    var isDeleteTripConfirmOpen by remember { mutableStateOf(false) }
+    var editingItineraryEvent by remember { mutableStateOf<ItineraryEvent?>(null) }
     var editingNote by remember { mutableStateOf<TripAttachment?>(null) }
     var pendingFileAttachment by remember { mutableStateOf<PendingFileAttachment?>(null) }
+    var previewingAttachment by remember { mutableStateOf<TripAttachment?>(null) }
 
     // Pickers for PDF and Image
     val pdfPickerLauncher = rememberLauncherForActivityResult(
@@ -156,25 +194,46 @@ fun TripWorkspaceModal(
         }
     }
 
+    val isSubModalOpen = isAddChoiceMenuOpen ||
+        isAddNoteDialogOpen ||
+        editingNote != null ||
+        isAddPackingDialogOpen ||
+        isExtractorModalOpen ||
+        isAddEventDialogOpen ||
+        editingItineraryEvent != null ||
+        isDeleteTripConfirmOpen ||
+        previewingAttachment != null ||
+        pendingFileAttachment != null
+
+    val workspaceBlur by animateDpAsState(
+        targetValue = if (isSubModalOpen) 18.dp else 0.dp,
+        label = "workspace_submodal_blur"
+    )
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background.copy(alpha = 0.95f))
-                .statusBarsPadding()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
+        DialogBlurBehind(blurRadius = 32)
+        AppBackground(
+            bgPhotoUri = bgPhotoUri,
+            blurRadius = bgBlurRadius
         ) {
-            ClayCard(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.94f),
-                cornerRadius = 28.dp,
-                backgroundColor = SurfaceContainer
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
+                ClayCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.94f)
+                        .blur(workspaceBlur),
+                    cornerRadius = 28.dp,
+                    backgroundColor = SurfaceContainer
+                ) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier
@@ -187,18 +246,30 @@ fun TripWorkspaceModal(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f)
+                            ) {
                                 if (trip.flagUrl.isNotBlank()) {
                                     AsyncImage(
                                         model = trip.flagUrl,
                                         contentDescription = trip.countryName,
                                         modifier = Modifier
                                             .size(36.dp)
-                                            .clip(CircleShape)
+                                            .clip(CircleShape),
+                                        contentScale = ContentScale.Crop
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
-                                } else {
+                                } else if (trip.flagEmoji.isNotBlank() && trip.flagEmoji != "✈️") {
                                     Text(text = trip.flagEmoji, fontSize = 28.sp)
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                } else {
+                                    Icon(
+                                        imageVector = PhosphorIcons.AirplaneTilt,
+                                        contentDescription = null,
+                                        tint = Primary,
+                                        modifier = Modifier.size(28.dp)
+                                    )
                                     Spacer(modifier = Modifier.width(12.dp))
                                 }
                                 Column {
@@ -206,7 +277,9 @@ fun TripWorkspaceModal(
                                         text = trip.countryName,
                                         style = MaterialTheme.typography.titleLarge,
                                         color = OnSurface,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
                                         text = "Trip Workspace & Planning Hub",
@@ -216,12 +289,25 @@ fun TripWorkspaceModal(
                                 }
                             }
 
-                            IconButton(onClick = onDismiss) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Close workspace",
-                                    tint = OnSurfaceVariant
-                                )
+                            // Header Actions: Delete Trip & Close Workspace
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                IconButton(onClick = { isDeleteTripConfirmOpen = true }) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.Trash,
+                                        contentDescription = "Delete Trip",
+                                        tint = Color(0xFFEF5350)
+                                    )
+                                }
+                                IconButton(onClick = onDismiss) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.X,
+                                        contentDescription = "Close workspace",
+                                        tint = OnSurfaceVariant
+                                    )
+                                }
                             }
                         }
 
@@ -245,6 +331,7 @@ fun TripWorkspaceModal(
                                     homeCurrencyCode = currencyCode,
                                     tripDestinationCurrencyCode = tripDestinationCurrencyCode,
                                     onAddExpense = onAddExpense,
+                                    onEditExpense = onEditExpense,
                                     onDeleteExpense = onDeleteExpense,
                                     onCalculateLivePreview = onCalculateLivePreview
                                 )
@@ -259,12 +346,26 @@ fun TripWorkspaceModal(
                                     onMoveAttachment = onMoveAttachment,
                                     onEditNote = { editingNote = it },
                                     onDeleteAttachment = onDeleteAttachment,
-                                    onOpenFile = { path, mime -> FileStorageHelper.openFile(context, path, mime) }
+                                    onOpenFile = { path, mime -> FileStorageHelper.openFile(context, path, mime) },
+                                    onPreviewAttachment = { previewingAttachment = it }
                                 )
                             }
 
                             WorkspaceTab.ITINERARY -> {
-                                ItineraryTabContent(trip = trip)
+                                ItineraryTabContent(
+                                    trip = trip,
+                                    itineraryEvents = itineraryEvents,
+                                    onOpenExtractor = { isExtractorModalOpen = true },
+                                    onAddEventClick = {
+                                        editingItineraryEvent = null
+                                        isAddEventDialogOpen = true
+                                    },
+                                    onEditEvent = { event ->
+                                        editingItineraryEvent = event
+                                        isAddEventDialogOpen = true
+                                    },
+                                    onDeleteEvent = onDeleteItineraryEvent
+                                )
                             }
 
                             WorkspaceTab.PACKING -> {
@@ -280,6 +381,97 @@ fun TripWorkspaceModal(
                 }
             }
         }
+    }
+}
+
+    // Delete Trip Confirmation Dialog
+    if (isDeleteTripConfirmOpen) {
+        FrostedGlassAlertDialog(
+            onDismissRequest = { isDeleteTripConfirmOpen = false },
+            title = {
+                Text(
+                    text = "Delete Trip to ${trip.countryName}?",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = OnSurface,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to delete this trip? All workspace documents, expenses, itinerary, and packing lists will be permanently deleted.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = OnSurfaceVariant
+                )
+            },
+            confirmButton = {
+                ClayButton(
+                    onClick = {
+                        isDeleteTripConfirmOpen = false
+                        onDeleteTrip()
+                        onDismiss()
+                    }
+                ) {
+                    Text("Delete Trip", color = Color(0xFFEF5350), fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { isDeleteTripConfirmOpen = false }) {
+                    Text("Cancel", color = OnSurfaceVariant)
+                }
+            },
+            containerColor = SurfaceContainer
+        )
+    }
+
+    // In-App Attachment Preview Modal (Image & PDF page renders & Note viewer)
+    if (previewingAttachment != null) {
+        InAppAttachmentPreviewDialog(
+            attachment = previewingAttachment!!,
+            onDismiss = { previewingAttachment = null },
+            onOpenFileExternally = { path, mime -> FileStorageHelper.openFile(context, path, mime) },
+            onEditNote = {
+                val item = previewingAttachment!!
+                previewingAttachment = null
+                editingNote = item
+            }
+        )
+    }
+
+    // Offline Itinerary Extractor Modal
+    if (isExtractorModalOpen) {
+        ItineraryExtractorModal(
+            tripId = trip.id.toLong(),
+            destinationName = trip.countryName,
+            bgPhotoUri = bgPhotoUri,
+            bgBlurRadius = bgBlurRadius,
+            onDismiss = { isExtractorModalOpen = false },
+            onSaveEvents = { events ->
+                onSaveItineraryEvents(events)
+                isExtractorModalOpen = false
+            }
+        )
+    }
+
+    // Add / Edit Manual Itinerary Event Dialog
+    if (isAddEventDialogOpen) {
+        AddEditItineraryEventDialog(
+            tripId = trip.id.toLong(),
+            defaultLocation = trip.countryName,
+            existingEvent = editingItineraryEvent,
+            onDismiss = {
+                isAddEventDialogOpen = false
+                editingItineraryEvent = null
+            },
+            onSave = { event ->
+                if (editingItineraryEvent != null) {
+                    onUpdateItineraryEvent(event)
+                } else {
+                    onAddItineraryEvent(event)
+                }
+                isAddEventDialogOpen = false
+                editingItineraryEvent = null
+            }
+        )
     }
 
     // Add Custom Packing Item Dialog
@@ -312,26 +504,26 @@ fun TripWorkspaceModal(
         )
     }
 
-    // Add File Title Prompt Dialog (for PDF and Image)
+    // Add File Title Prompt Dialog (for PDF and Image with Category Selection)
     if (pendingFileAttachment != null) {
         val pending = pendingFileAttachment!!
         AddFileTitleDialog(
             initialTitle = pending.initialTitle,
             type = pending.type,
             onDismiss = { pendingFileAttachment = null },
-            onSave = { customTitle ->
-                onAddFileAttachment(pending.uri, pending.type, customTitle)
+            onSave = { customTitle, category ->
+                onAddFileAttachment(pending.uri, pending.type, customTitle, category)
                 pendingFileAttachment = null
             }
         )
     }
 
-    // Add Note Modal Dialog
+    // Add Note Modal Dialog (with Category Selection)
     if (isAddNoteDialogOpen) {
         AddNoteDialog(
             onDismiss = { isAddNoteDialogOpen = false },
-            onSave = { title, text ->
-                onAddNoteAttachment(title, text)
+            onSave = { title, text, category ->
+                onAddNoteAttachment(title, text, category)
                 isAddNoteDialogOpen = false
             }
         )
@@ -357,53 +549,22 @@ private fun WorkspaceTabSelectorRow(
     activeTab: WorkspaceTab,
     onTabSelected: (WorkspaceTab) -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(SurfaceContainerLow)
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        WorkspaceTab.entries.forEach { tab ->
-            val isSelected = tab == activeTab
-            val (icon, label) = when (tab) {
-                WorkspaceTab.EXPENSES -> Pair(Icons.Default.ReceiptLong, "Expenses")
-                WorkspaceTab.DOCS -> Pair(Icons.Default.FolderZip, "Docs")
-                WorkspaceTab.ITINERARY -> Pair(Icons.Default.Map, "Itinerary")
-                WorkspaceTab.PACKING -> Pair(Icons.Default.Luggage, "Packing")
-            }
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(if (isSelected) Primary else Color.Transparent)
-                    .clickable { onTabSelected(tab) }
-                    .padding(vertical = 10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = label,
-                        tint = if (isSelected) OnPrimary else OnSurfaceVariant,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (isSelected) OnPrimary else OnSurfaceVariant,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                    )
-                }
+    ClaySlidingTabRow(
+        tabs = WorkspaceTab.entries,
+        selectedTab = activeTab,
+        onTabSelected = onTabSelected,
+        height = 42.dp,
+        cornerRadius = 21.dp,
+        fontSize = 12.5.sp,
+        labelProvider = { tab ->
+            when (tab) {
+                WorkspaceTab.EXPENSES -> "Expenses"
+                WorkspaceTab.DOCS -> "Docs"
+                WorkspaceTab.ITINERARY -> "Itinerary"
+                WorkspaceTab.PACKING -> "Packing"
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -416,50 +577,418 @@ private fun DocsTabContent(
     onEditNote: (TripAttachment) -> Unit,
     onDeleteAttachment: (Long) -> Unit,
     onOpenFile: (String, String) -> Unit,
+    onPreviewAttachment: (TripAttachment) -> Unit,
 ) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    // Directive 2: Search both file type and text query directly in search bar
+    val filteredAttachments = remember(attachments, searchQuery) {
+        if (searchQuery.isBlank()) {
+            attachments
+        } else {
+            val q = searchQuery.trim()
+            attachments.filter { item ->
+                item.title.contains(q, ignoreCase = true) ||
+                    (item.content?.contains(q, ignoreCase = true) == true) ||
+                    item.category.contains(q, ignoreCase = true) ||
+                    item.type.name.contains(q, ignoreCase = true) ||
+                    item.mimeType.contains(q, ignoreCase = true) ||
+                    (q.equals("pdf", ignoreCase = true) && item.type == AttachmentType.PDF) ||
+                    ((q.equals("image", ignoreCase = true) || q.equals("photo", ignoreCase = true) || q.equals("picture", ignoreCase = true) || q.equals("img", ignoreCase = true)) && item.type == AttachmentType.IMAGE) ||
+                    ((q.equals("note", ignoreCase = true) || q.equals("notes", ignoreCase = true) || q.equals("text", ignoreCase = true)) && item.type == AttachmentType.NOTE) ||
+                    ((q.equals("doc", ignoreCase = true) || q.equals("docs", ignoreCase = true) || q.equals("document", ignoreCase = true)) && (item.type == AttachmentType.PDF || item.type == AttachmentType.NOTE))
+            }
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 88.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
+            contentPadding = PaddingValues(bottom = 100.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Section 1: Trip Meta Overview
+            // Directive 1: Condensed, Unified Header Component (Dates & Budget)
             item(key = "overview_meta_card") {
+                ClayCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 14.dp,
+                    backgroundColor = SurfaceContainerLow
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Trip dates inline with calendar icon
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.CalendarBlank,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(15.dp)
+                                )
+                                Text(
+                                    text = if (trip.startDate.isNotBlank() && trip.endDate.isNotBlank()) {
+                                        "${trip.startDate} – ${trip.endDate}"
+                                    } else {
+                                        "Dates not set"
+                                    },
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    color = OnSurface
+                                )
+                            }
+
+                            // Monthly Budget inline
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    text = "Budget:",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    color = OnSurfaceVariant
+                                )
+                                Text(
+                                    text = "${formatCurrencyAmount(trip.budgetUsd, currencyCode)}/mo",
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = Primary
+                                )
+                            }
+                        }
+
+                        if (trip.notes.isNotBlank()) {
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f),
+                                thickness = 0.5.dp
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.FileText,
+                                    contentDescription = null,
+                                    tint = OnSurfaceVariant,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                                Text(
+                                    text = trip.notes,
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                                    color = OnSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Directive 2: Standard Height Search Bar without Category Chips
+            item(key = "search_bar") {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    placeholder = {
+                        Text(
+                            text = "Search documents, file type (PDF, image, note)...",
+                            fontSize = 13.sp,
+                            color = OnSurfaceVariant.copy(alpha = 0.6f)
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = PhosphorIcons.MagnifyingGlass,
+                            contentDescription = "Search",
+                            tint = Primary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(
+                                    imageVector = PhosphorIcons.XCircle,
+                                    contentDescription = "Clear search",
+                                    tint = OnSurfaceVariant,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary,
+                    )
+                )
+            }
+
+            // Directive 4: Section Header with Standardized Typography
+            item(key = "list_header") {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "DOCUMENTS & NOTES (${filteredAttachments.size})",
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.6.sp
+                        ),
+                        color = Primary
+                    )
+                    if (filteredAttachments.isNotEmpty()) {
+                        Text(
+                            text = "Tap to preview in-app",
+                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                            color = OnSurfaceVariant
+                        )
+                    }
+                }
+            }
+
+            // Directive 3: Empty State Revamp with "Start Building Your Workspace" above prominent plus button
+            if (filteredAttachments.isEmpty()) {
+                item(key = "empty_state") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 36.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (searchQuery.isNotBlank()) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.MagnifyingGlass,
+                                    contentDescription = null,
+                                    tint = OnSurfaceVariant.copy(alpha = 0.4f),
+                                    modifier = Modifier.size(48.dp)
+                                )
+                                Spacer(modifier = Modifier.height(14.dp))
+                                Text(
+                                    text = "No Matching Documents",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = OnSurface
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "No files or notes match \"$searchQuery\"",
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                                    color = OnSurfaceVariant
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                TextButton(onClick = { searchQuery = "" }) {
+                                    Text(text = "Clear Search", color = Primary, fontWeight = FontWeight.SemiBold)
+                                }
+                            }
+                        } else {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(CircleShape)
+                                        .background(Primary.copy(alpha = 0.12f))
+                                        .border(1.dp, Primary.copy(alpha = 0.28f), CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.FolderSimpleDashed,
+                                        contentDescription = null,
+                                        tint = Primary,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Start Building Your Workspace",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = OnSurface,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "Keep visas, tickets, lodging vouchers, and trip notes organized.",
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                                    color = OnSurfaceVariant,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = 24.dp)
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                                ClayButton(
+                                    onClick = onAddChoiceClick,
+                                    containerColor = ActionPrimary,
+                                    contentColor = Color.White,
+                                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 13.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.Plus,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Add Document or Note",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.labelLarge.copy(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                itemsIndexed(
+                    items = filteredAttachments,
+                    key = { _, item -> item.id }
+                ) { index, item ->
+                    UnifiedAttachmentCard(
+                        attachment = item,
+                        index = index,
+                        totalCount = filteredAttachments.size,
+                        onMoveUp = { onMoveAttachment(index, index - 1) },
+                        onMoveDown = { onMoveAttachment(index, index + 1) },
+                        onEditNote = { onEditNote(item) },
+                        onDelete = { onDeleteAttachment(item.id) },
+                        onOpenFile = onOpenFile,
+                        onPreview = { onPreviewAttachment(item) }
+                    )
+                }
+            }
+        }
+
+        // Floating Circular '+' Button at Bottom-Right for Docs
+        if (filteredAttachments.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 12.dp, end = 12.dp)
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(ActionPrimary)
+                    .border(1.5.dp, Color.White.copy(alpha = 0.35f), CircleShape)
+                    .clickable(onClick = onAddChoiceClick),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = PhosphorIcons.Plus,
+                    contentDescription = "Add Item to Workspace",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ItineraryTabContent(
+    trip: Trip,
+    itineraryEvents: List<ItineraryEvent>,
+    onOpenExtractor: () -> Unit,
+    onAddEventClick: () -> Unit,
+    onEditEvent: (ItineraryEvent) -> Unit,
+    onDeleteEvent: (Long) -> Unit,
+) {
+    val context = LocalContext.current
+    val isDark = LocalThemeController.current.isDarkMode
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            contentPadding = PaddingValues(bottom = 100.dp)
+        ) {
+            // Header Overview Card
+            item(key = "itinerary_overview") {
                 ClayCard(
                     modifier = Modifier.fillMaxWidth(),
                     cornerRadius = 20.dp,
                     backgroundColor = SurfaceContainerLow
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(18.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.CalendarMonth,
-                                    contentDescription = null,
-                                    tint = Primary,
-                                    modifier = Modifier.size(20.dp)
+                            Column {
+                                Text(
+                                    text = "🗺️ ${trip.countryName} Schedule",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = OnSurface,
+                                    fontWeight = FontWeight.Bold
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = "${trip.startDate} to ${trip.endDate}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = OnSurface
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Primary,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.AttachMoney,
-                                    contentDescription = null,
-                                    tint = Primary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(Primary.copy(alpha = 0.15f))
+                                    .border(1.dp, Primary.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                            ) {
                                 Text(
-                                    text = "${formatCurrencyAmount(trip.budgetUsd, currencyCode)} / mo",
-                                    style = MaterialTheme.typography.titleMedium,
+                                    text = "${itineraryEvents.size} Events",
+                                    style = MaterialTheme.typography.labelSmall,
                                     color = Primary,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -467,200 +996,599 @@ private fun DocsTabContent(
                         }
 
                         if (trip.notes.isNotBlank()) {
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = "Remote Work Arrangement:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = OnSurfaceVariant
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
                             Text(
                                 text = trip.notes,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = OnSurface
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
                             )
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        // Action Buttons Row: Offline Extractor + Add Event
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            // Offline Extractor Button (Highlighted)
+                            Box(
+                                modifier = Modifier
+                                    .weight(1.3f)
+                                    .bounceClick(scaleDown = 0.96f, onClick = onOpenExtractor)
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            colors = listOf(
+                                                PrimaryContainer,
+                                                Primary.copy(alpha = 0.85f)
+                                            )
+                                        )
+                                    )
+                                    .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                                    .padding(vertical = 10.dp, horizontal = 12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.Sparkle,
+                                        contentDescription = null,
+                                        tint = OnPrimary,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "Offline Extractor",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = OnPrimary,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            // Manual Add Button
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .bounceClick(scaleDown = 0.96f, onClick = onAddEventClick)
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.22f))
+                                    .border(1.dp, Color.White.copy(alpha = if (isDark) 0.25f else 0.40f), RoundedCornerShape(9999.dp))
+                                    .padding(vertical = 10.dp, horizontal = 12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.Plus,
+                                        contentDescription = null,
+                                        tint = OnSurface,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = "Add Event",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = OnSurface,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            // Section 2: Summary Stats Row
-            item(key = "stats_row") {
-                val pdfCount = attachments.count { it.type == AttachmentType.PDF }
-                val imageCount = attachments.count { it.type == AttachmentType.IMAGE }
-                val noteCount = attachments.count { it.type == AttachmentType.NOTE }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    AttachmentStatBox(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Default.PictureAsPdf,
-                        count = pdfCount,
-                        label = "PDF Docs",
-                        tint = Color(0xFFEF5350)
-                    )
-                    AttachmentStatBox(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Default.Image,
-                        count = imageCount,
-                        label = "Images",
-                        tint = Color(0xFF42A5F5)
-                    )
-                    AttachmentStatBox(
-                        modifier = Modifier.weight(1f),
-                        icon = Icons.Default.Notes,
-                        count = noteCount,
-                        label = "Trip Notes",
-                        tint = Color(0xFFFFCA28)
-                    )
-                }
-            }
-
-            // Section 3: Workspace Items List Header
-            item(key = "list_header") {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "WORKSPACE ITEMS (${attachments.size})",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = Primary,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.5.sp
-                        )
-                        if (attachments.isNotEmpty()) {
-                            Text(
-                                text = "Use ▲ ▼ to reorder items",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = OnSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Empty State if no attachments
-            if (attachments.isEmpty()) {
-                item(key = "empty_state") {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        contentAlignment = Alignment.Center
+            // Timeline Items
+            if (itineraryEvents.isEmpty()) {
+                item(key = "empty_itinerary") {
+                    ClayCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        cornerRadius = 20.dp,
+                        backgroundColor = SurfaceContainerLow
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = Icons.Default.FolderZip,
-                                contentDescription = null,
-                                tint = OnSurfaceVariant.copy(alpha = 0.5f),
-                                modifier = Modifier.size(52.dp)
-                            )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(54.dp)
+                                    .clip(CircleShape)
+                                    .background(Primary.copy(alpha = 0.15f))
+                                    .border(1.dp, Primary.copy(alpha = 0.35f), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.Sparkle,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                text = "Workspace is Empty",
+                                text = "No Itinerary Events Yet",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = OnSurface
+                                color = OnSurface,
+                                fontWeight = FontWeight.Bold
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = "Tap the '+' button at bottom right to add PDFs, save images, or write trip notes.",
+                                text = "Ingest unformatted text, PDFs, HTML, or screenshots to extract flights, hotels, and activities on-device.",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = OnSurfaceVariant
+                                color = OnSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 12.dp),
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
+                            Spacer(modifier = Modifier.height(18.dp))
+
+                            GlassPillButton(
+                                onClick = onOpenExtractor,
+                                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.Sparkle,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Launch Offline Extractor", color = Primary, fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
                 }
             } else {
-                // Sequenced Items List
                 itemsIndexed(
-                    items = attachments,
+                    items = itineraryEvents,
                     key = { _, item -> item.id }
-                ) { index, item ->
-                    UnifiedAttachmentCard(
-                        attachment = item,
-                        index = index,
-                        totalCount = attachments.size,
-                        onMoveUp = { onMoveAttachment(index, index - 1) },
-                        onMoveDown = { onMoveAttachment(index, index + 1) },
-                        onEditNote = { onEditNote(item) },
-                        onDelete = { onDeleteAttachment(item.id) },
-                        onOpenFile = onOpenFile
+                ) { _, event ->
+                    ItineraryTimelineCard(
+                        event = event,
+                        onEdit = { onEditEvent(event) },
+                        onDelete = { onDeleteEvent(event.id) },
+                        onCopyCode = { code ->
+                            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as? ClipboardManager
+                            val clip = ClipData.newPlainText("Confirmation Code", code)
+                            clipboard?.setPrimaryClip(clip)
+                            Toast.makeText(context, "Copied code: $code", Toast.LENGTH_SHORT).show()
+                        }
                     )
                 }
             }
-        }
-
-        // Floating Circular '+' Button at Bottom-Right for Docs
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 12.dp, end = 12.dp)
-                .size(58.dp)
-                .clip(CircleShape)
-                .background(PrimaryContainer)
-                .border(1.5.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                .clickable(onClick = onAddChoiceClick),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Item to Workspace",
-                tint = OnPrimary,
-                modifier = Modifier.size(30.dp)
-            )
         }
     }
 }
 
 @Composable
-private fun ItineraryTabContent(trip: Trip) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+private fun ItineraryTimelineCard(
+    event: ItineraryEvent,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onCopyCode: (String) -> Unit,
+) {
+    val isDark = LocalThemeController.current.isDarkMode
+
+    ClayCard(
+        modifier = Modifier.fillMaxWidth(),
+        cornerRadius = 16.dp,
+        backgroundColor = SurfaceContainerLow
     ) {
-        item(key = "itinerary_overview") {
-            ClayCard(
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Header Row: Category Badge + Title + Action Icons
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                cornerRadius = 20.dp,
-                backgroundColor = SurfaceContainerLow
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(modifier = Modifier.padding(18.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(event.category.defaultColor.copy(alpha = 0.20f))
+                            .border(1.dp, event.category.defaultColor.copy(alpha = 0.40f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = event.category.icon,
+                            contentDescription = event.category.displayName,
+                            tint = event.category.defaultColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = event.title,
+                            style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp),
+                            color = OnSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (event.category == ItineraryCategory.FLIGHT) {
+                                Icon(
+                                    imageVector = PhosphorIcons.AirplaneTilt,
+                                    contentDescription = null,
+                                    tint = event.category.defaultColor,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = event.category.displayName,
+                                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                                    color = event.category.defaultColor,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            } else {
+                                Text(
+                                    text = "${event.category.emoji} ${event.category.displayName}",
+                                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                                    color = event.category.defaultColor,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onEdit, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            imageVector = PhosphorIcons.PencilSimple,
+                            contentDescription = "Edit",
+                            tint = OnSurfaceVariant.copy(alpha = 0.7f),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(2.dp))
+                    IconButton(onClick = onDelete, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            imageVector = PhosphorIcons.Trash,
+                            contentDescription = "Delete",
+                            tint = OnSurfaceVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Dates & Times Row
+            if (event.startDateTime.isNotBlank() || event.endDateTime.isNotBlank()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.CalendarBlank,
+                        contentDescription = null,
+                        tint = Primary,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "🗺️ ${trip.countryName} Trip Itinerary",
-                        style = MaterialTheme.typography.titleMedium,
+                        text = if (event.endDateTime.isNotBlank()) "${event.startDateTime} → ${event.endDateTime}" else event.startDateTime,
+                        style = MaterialTheme.typography.bodySmall,
                         color = OnSurface,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Medium
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Trip Dates: ${trip.startDate} to ${trip.endDate}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Primary,
-                        fontWeight = FontWeight.SemiBold
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+
+            // Location Row
+            if (event.location.isNotBlank()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.MapPin,
+                        contentDescription = null,
+                        tint = Color(0xFFFF5252),
+                        modifier = Modifier.size(14.dp)
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Planned Legs & Work Hubs:",
-                        style = MaterialTheme.typography.labelSmall,
+                        text = event.location,
+                        style = MaterialTheme.typography.bodySmall,
                         color = OnSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // Bottom Confirmation Code & Notes Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (event.confirmationCode.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(9999.dp))
+                            .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.25f))
+                            .border(1.dp, Primary.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                            .clickable { onCopyCode(event.confirmationCode) }
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Code: ${event.confirmationCode}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Primary,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                imageVector = PhosphorIcons.CopySimple,
+                                contentDescription = "Copy code",
+                                tint = Primary,
+                                modifier = Modifier.size(12.dp)
+                            )
+                        }
+                    }
+                }
+
+                if (event.notes.isNotBlank()) {
                     Text(
-                        text = trip.notes.ifBlank { "Remote work setup and exploration itinerary." },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = OnSurface
+                        text = event.notes,
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                        color = OnSurfaceVariant.copy(alpha = 0.75f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false).padding(start = 8.dp)
                     )
                 }
             }
         }
     }
+}
+
+@Composable
+private fun AddEditItineraryEventDialog(
+    tripId: Long,
+    defaultLocation: String,
+    existingEvent: ItineraryEvent?,
+    onDismiss: () -> Unit,
+    onSave: (ItineraryEvent) -> Unit,
+) {
+    var title by remember { mutableStateOf(existingEvent?.title ?: "") }
+    var selectedCategory by remember { mutableStateOf(existingEvent?.category ?: ItineraryCategory.ACTIVITY) }
+    var location by remember { mutableStateOf(existingEvent?.location ?: defaultLocation) }
+    var startDateTime by remember { mutableStateOf(existingEvent?.startDateTime ?: "") }
+    var endDateTime by remember { mutableStateOf(existingEvent?.endDateTime ?: "") }
+    var confirmationCode by remember { mutableStateOf(existingEvent?.confirmationCode ?: "") }
+    var notes by remember { mutableStateOf(existingEvent?.notes ?: "") }
+
+    FrostedGlassAlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = if (existingEvent != null) "Edit Itinerary Event" else "Add Itinerary Event",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Event Title *") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary
+                    )
+                )
+
+                // Category Selector
+                Text(
+                    text = "Category",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = OnSurfaceVariant
+                )
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(ItineraryCategory.entries) { cat ->
+                        val isSelected = cat == selectedCategory
+                        Box(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(if (isSelected) cat.defaultColor else Color.White.copy(alpha = 0.10f))
+                                .border(1.dp, cat.defaultColor.copy(alpha = 0.40f), CircleShape)
+                                .clickable { selectedCategory = cat }
+                                .padding(horizontal = 10.dp, vertical = 5.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                if (cat == ItineraryCategory.FLIGHT) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.AirplaneTilt,
+                                        contentDescription = null,
+                                        tint = if (isSelected) OnPrimary else OnSurface,
+                                        modifier = Modifier.size(12.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = cat.displayName,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = if (isSelected) OnPrimary else OnSurface,
+                                        fontSize = 10.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                } else {
+                                    Text(
+                                        text = "${cat.emoji} ${cat.displayName}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = if (isSelected) OnPrimary else OnSurface,
+                                        fontSize = 10.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = location,
+                    onValueChange = { location = it },
+                    label = { Text("Location / Airport / Address") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary
+                    )
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = startDateTime,
+                        onValueChange = { startDateTime = it },
+                        label = { Text("Start Date/Time") },
+                        placeholder = { Text("YYYY-MM-DD HH:mm") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            focusedContainerColor = SurfaceContainerLow,
+                            unfocusedContainerColor = SurfaceContainerLow,
+                            focusedTextColor = OnSurface,
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary
+                        )
+                    )
+                    OutlinedTextField(
+                        value = endDateTime,
+                        onValueChange = { endDateTime = it },
+                        label = { Text("End Date/Time") },
+                        placeholder = { Text("YYYY-MM-DD HH:mm") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            focusedContainerColor = SurfaceContainerLow,
+                            unfocusedContainerColor = SurfaceContainerLow,
+                            focusedTextColor = OnSurface,
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary
+                        )
+                    )
+                }
+
+                OutlinedTextField(
+                    value = confirmationCode,
+                    onValueChange = { confirmationCode = it },
+                    label = { Text("Confirmation Code / PNR") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary
+                    )
+                )
+
+                OutlinedTextField(
+                    value = notes,
+                    onValueChange = { notes = it },
+                    label = { Text("Notes / Details") },
+                    maxLines = 3,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (title.isNotBlank()) {
+                        val event = ItineraryEvent(
+                            id = existingEvent?.id ?: 0,
+                            tripId = tripId,
+                            title = title.trim(),
+                            category = selectedCategory,
+                            location = location.trim(),
+                            startDateTime = startDateTime.trim(),
+                            endDateTime = endDateTime.trim(),
+                            confirmationCode = confirmationCode.trim(),
+                            notes = notes.trim()
+                        )
+                        onSave(event)
+                    }
+                }
+            ) {
+                Text("Save", color = Primary, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = OnSurfaceVariant)
+            }
+        }
+    )
 }
 
 @Composable
@@ -672,9 +1600,11 @@ private fun PackingTabContent(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(bottom = 80.dp)
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
             item(key = "packing_header") {
                 Text(
@@ -695,7 +1625,7 @@ private fun PackingTabContent(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                imageVector = Icons.Default.Luggage,
+                                imageVector = PhosphorIcons.SuitcaseRolling,
                                 contentDescription = null,
                                 tint = OnSurfaceVariant.copy(alpha = 0.5f),
                                 modifier = Modifier.size(52.dp)
@@ -721,9 +1651,8 @@ private fun PackingTabContent(
                     key = { _, item -> item.id }
                 ) { _, item ->
                     ClayCard(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onTogglePackingItem(item) },
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onTogglePackingItem(item) },
                         cornerRadius = 14.dp,
                         backgroundColor = SurfaceContainerLow
                     ) {
@@ -739,10 +1668,12 @@ private fun PackingTabContent(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Icon(
-                                    imageVector = if (item.isPacked) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
+                                    imageVector = if (item.isPacked) PhosphorIcons.CheckCircle else PhosphorIcons.Circle,
                                     contentDescription = if (item.isPacked) "Packed" else "Not Packed",
                                     tint = if (item.isPacked) Primary else OnSurfaceVariant.copy(alpha = 0.5f),
-                                    modifier = Modifier.size(22.dp)
+                                    modifier = Modifier
+                                        .size(22.dp)
+                                        .bounceOnState(state = item.isPacked, maxScale = 1.35f)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
@@ -755,10 +1686,12 @@ private fun PackingTabContent(
 
                             IconButton(
                                 onClick = { onDeletePackingItem(item.id) },
-                                modifier = Modifier.size(28.dp)
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .bounceClick(scaleDown = 0.82f)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Close,
+                                    imageVector = PhosphorIcons.X,
                                     contentDescription = "Remove Item",
                                     tint = OnSurfaceVariant.copy(alpha = 0.5f),
                                     modifier = Modifier.size(16.dp)
@@ -779,11 +1712,11 @@ private fun PackingTabContent(
                 .clip(CircleShape)
                 .background(PrimaryContainer)
                 .border(1.5.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                .clickable(onClick = onAddPackingItemClick),
+                .bounceClick(scaleDown = 0.92f, onClick = onAddPackingItemClick),
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                imageVector = PhosphorIcons.Plus,
                 contentDescription = "Add Custom Packing Item",
                 tint = OnPrimary,
                 modifier = Modifier.size(28.dp)
@@ -799,7 +1732,7 @@ private fun AddPackingItemDialog(
 ) {
     var itemName by remember { mutableStateOf("") }
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -819,9 +1752,19 @@ private fun AddPackingItemDialog(
                 OutlinedTextField(
                     value = itemName,
                     onValueChange = { itemName = it },
-                    placeholder = { Text("e.g. Swimsuit, Drone, Passports") },
+                    placeholder = { Text("e.g. Swimsuit, Drone, Passports", color = OnSurfaceVariant.copy(alpha = 0.6f)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        focusedContainerColor = SurfaceContainerLow,
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        cursorColor = Primary,
+                    )
                 )
             }
         },
@@ -856,26 +1799,34 @@ private fun UnifiedAttachmentCard(
     onEditNote: () -> Unit,
     onDelete: () -> Unit,
     onOpenFile: (String, String) -> Unit,
+    onPreview: () -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
+    var pdfThumbnail by remember(attachment.filePath) { mutableStateOf<Bitmap?>(null) }
+
+    LaunchedEffect(attachment.filePath) {
+        if (attachment.type == AttachmentType.PDF && attachment.filePath != null) {
+            pdfThumbnail = PdfThumbnailHelper.getPdfThumbnail(attachment.filePath, 140, 140)
+        }
+    }
 
     ClayCard(
         modifier = Modifier
             .fillMaxWidth()
-            .then(
+            .clickable {
                 if (attachment.type == AttachmentType.NOTE) {
-                    Modifier.clickable { isExpanded = !isExpanded }
+                    isExpanded = !isExpanded
                 } else {
-                    Modifier
+                    onPreview()
                 }
-            ),
+            },
         cornerRadius = 16.dp,
         backgroundColor = SurfaceContainerLow
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(14.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -890,29 +1841,29 @@ private fun UnifiedAttachmentCard(
                     IconButton(
                         onClick = onMoveUp,
                         enabled = index > 0,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(22.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
+                            imageVector = PhosphorIcons.CaretUp,
                             contentDescription = "Move Up",
                             tint = if (index > 0) Primary else OnSurfaceVariant.copy(alpha = 0.2f)
                         )
                     }
 
                     Icon(
-                        imageVector = Icons.Default.DragHandle,
+                        imageVector = PhosphorIcons.DotsSixVertical,
                         contentDescription = "Reorder handle",
-                        tint = OnSurfaceVariant.copy(alpha = 0.5f),
-                        modifier = Modifier.size(16.dp)
+                        tint = OnSurfaceVariant.copy(alpha = 0.4f),
+                        modifier = Modifier.size(14.dp)
                     )
 
                     IconButton(
                         onClick = onMoveDown,
                         enabled = index < totalCount - 1,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(22.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
+                            imageVector = PhosphorIcons.CaretDown,
                             contentDescription = "Move Down",
                             tint = if (index < totalCount - 1) Primary else OnSurfaceVariant.copy(alpha = 0.2f)
                         )
@@ -921,64 +1872,62 @@ private fun UnifiedAttachmentCard(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Icon / Thumbnail representation
-                when (attachment.type) {
-                    AttachmentType.PDF -> {
-                        Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(Color(0xFFEF5350).copy(alpha = 0.2f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PictureAsPdf,
-                                contentDescription = null,
-                                tint = Color(0xFFEF5350),
-                                modifier = Modifier.size(22.dp)
-                            )
-                        }
-                    }
-                    AttachmentType.IMAGE -> {
-                        if (attachment.filePath != null) {
-                            AsyncImage(
-                                model = File(attachment.filePath),
-                                contentDescription = attachment.title,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(44.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                            )
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .size(44.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFF42A5F5).copy(alpha = 0.2f)),
-                                contentAlignment = Alignment.Center
-                            ) {
+                // In-App Thumbnail representation (PDF native render, Coil Image, or Note Icon)
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(
+                            when (attachment.type) {
+                                AttachmentType.PDF -> Color(0xFFEF5350).copy(alpha = 0.15f)
+                                AttachmentType.IMAGE -> Color(0xFF42A5F5).copy(alpha = 0.15f)
+                                AttachmentType.NOTE -> Color(0xFFFFCA28).copy(alpha = 0.2f)
+                            }
+                        )
+                        .clickable(onClick = onPreview),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when (attachment.type) {
+                        AttachmentType.PDF -> {
+                            if (pdfThumbnail != null) {
+                                Image(
+                                    bitmap = pdfThumbnail!!.asImageBitmap(),
+                                    contentDescription = "PDF Thumbnail",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
                                 Icon(
-                                    imageVector = Icons.Default.Image,
+                                    imageVector = PhosphorIcons.FilePdf,
                                     contentDescription = null,
-                                    tint = Color(0xFF42A5F5),
-                                    modifier = Modifier.size(22.dp)
+                                    tint = Color(0xFFEF5350),
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
-                    }
-                    AttachmentType.NOTE -> {
-                        Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(Color(0xFFFFCA28).copy(alpha = 0.2f)),
-                            contentAlignment = Alignment.Center
-                        ) {
+                        AttachmentType.IMAGE -> {
+                            if (attachment.filePath != null) {
+                                AsyncImage(
+                                    model = File(attachment.filePath),
+                                    contentDescription = attachment.title,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = PhosphorIcons.FileImage,
+                                    contentDescription = null,
+                                    tint = Color(0xFF42A5F5),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+                        AttachmentType.NOTE -> {
                             Icon(
-                                imageVector = Icons.Default.Notes,
+                                imageVector = PhosphorIcons.FileText,
                                 contentDescription = null,
                                 tint = Color(0xFFFFB300),
-                                modifier = Modifier.size(22.dp)
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }
@@ -986,54 +1935,81 @@ private fun UnifiedAttachmentCard(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // Main Details
+                // Main Details & Category Badge
                 Column(modifier = Modifier.weight(1f)) {
-                    // Type Pill Badge & Title
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        val (badgeText, badgeBg, badgeTextColor) = when (attachment.type) {
+                    // Type & Category Badges Row
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        val (typeBadgeText, typeBadgeBg, typeBadgeColor) = when (attachment.type) {
                             AttachmentType.PDF -> Triple("PDF", Color(0xFFEF5350).copy(alpha = 0.15f), Color(0xFFEF5350))
                             AttachmentType.IMAGE -> Triple("IMAGE", Color(0xFF42A5F5).copy(alpha = 0.15f), Color(0xFF1E88E5))
                             AttachmentType.NOTE -> Triple("NOTE", Color(0xFFFFCA28).copy(alpha = 0.2f), Color(0xFFF57F17))
                         }
+
+                        // Attachment Type Badge
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(badgeBg)
+                                .background(typeBadgeBg)
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = badgeText,
+                                text = typeBadgeText,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = badgeTextColor,
+                                color = typeBadgeColor,
                                 fontSize = 9.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.5.sp
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = attachment.title,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = OnSurface,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                        // Category Badge
+                        if (attachment.category.isNotBlank() && !attachment.category.equals("General", true)) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Primary.copy(alpha = 0.12f))
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = attachment.category.uppercase(),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Primary,
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 0.5.sp
+                                )
+                            }
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
+
+                    Text(
+                        text = attachment.title,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        color = OnSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.height(2.dp))
 
                     if (attachment.type == AttachmentType.NOTE) {
                         Text(
-                            text = if (isExpanded) "Tap to collapse note" else "Tap to view full note",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Primary.copy(alpha = 0.8f)
+                            text = if (isExpanded) "Tap to collapse note" else "Tap to preview or expand note",
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                            color = Primary.copy(alpha = 0.85f)
                         )
                     } else {
                         Text(
                             text = FileStorageHelper.formatFileSize(attachment.fileSize),
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                             color = OnSurfaceVariant
                         )
                     }
@@ -1046,49 +2022,52 @@ private fun UnifiedAttachmentCard(
                     if (attachment.type == AttachmentType.NOTE) {
                         IconButton(
                             onClick = { isExpanded = !isExpanded },
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(30.dp)
                         ) {
                             Icon(
-                                imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                imageVector = if (isExpanded) PhosphorIcons.CaretUp else PhosphorIcons.CaretDown,
                                 contentDescription = if (isExpanded) "Collapse Note" else "Expand Note",
                                 tint = OnSurfaceVariant,
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier.size(18.dp)
                             )
                         }
                         IconButton(
                             onClick = onEditNote,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(30.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Edit,
+                                imageVector = PhosphorIcons.PencilSimple,
                                 contentDescription = "Edit Note",
                                 tint = Primary,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
                         }
-                    } else if (attachment.filePath != null) {
+                    } else {
+                        // Quick In-App Preview / Open Pill
                         Box(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .background(PrimaryContainer)
-                                .clickable { onOpenFile(attachment.filePath, attachment.mimeType) }
+                                .clickable(onClick = onPreview)
                                 .padding(horizontal = 10.dp, vertical = 6.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Default.OpenInNew,
+                                    imageVector = PhosphorIcons.Eye,
                                     contentDescription = null,
-                                    tint = OnPrimary,
-                                    modifier = Modifier.size(13.dp)
+                                    tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                                    modifier = Modifier.size(12.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "VIEW",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = OnPrimary,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 10.sp
+                                    text = "PREVIEW",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        letterSpacing = 0.5.sp
+                                    ),
+                                    color = com.example.nomadcompass.ui.theme.OnPrimaryContainer
                                 )
                             }
                         }
@@ -1097,13 +2076,13 @@ private fun UnifiedAttachmentCard(
 
                     IconButton(
                         onClick = onDelete,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(30.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Delete,
+                            imageVector = PhosphorIcons.Trash,
                             contentDescription = "Delete",
                             tint = OnSurfaceVariant.copy(alpha = 0.6f),
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                 }
@@ -1152,45 +2131,280 @@ private fun UnifiedAttachmentCard(
     }
 }
 
+/**
+ * Full In-App Attachment Preview Dialog (PDF Full Page Bitmaps, Full Image Viewer, and Note Reader)
+ */
 @Composable
-private fun AttachmentStatBox(
-    modifier: Modifier = Modifier,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    count: Int,
-    label: String,
-    tint: Color,
+private fun InAppAttachmentPreviewDialog(
+    attachment: TripAttachment,
+    onDismiss: () -> Unit,
+    onOpenFileExternally: (String, String) -> Unit,
+    onEditNote: () -> Unit,
 ) {
-    ClayCard(
-        modifier = modifier,
-        cornerRadius = 14.dp,
-        backgroundColor = SurfaceContainerLow
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = tint,
-                modifier = Modifier.size(22.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = count.toString(),
-                style = MaterialTheme.typography.titleMedium,
-                color = OnSurface,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = OnSurfaceVariant,
-                fontSize = 10.sp
-            )
+    val context = LocalContext.current
+    var pdfPages by remember(attachment.filePath) { mutableStateOf<List<Bitmap>>(emptyList()) }
+    var isLoadingPages by remember { mutableStateOf(attachment.type == AttachmentType.PDF) }
+
+    LaunchedEffect(attachment.filePath) {
+        if (attachment.type == AttachmentType.PDF && attachment.filePath != null) {
+            isLoadingPages = true
+            pdfPages = PdfThumbnailHelper.getPdfPageBitmaps(attachment.filePath, 900)
+            isLoadingPages = false
         }
     }
-}
+
+    FrostedGlassDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier
+            .fillMaxWidth(0.94f)
+            .fillMaxHeight(0.92f)
+            .statusBarsPadding()
+            .padding(vertical = 12.dp),
+        cornerRadius = 24.dp
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(18.dp)
+        ) {
+                    // Header Bar with Details & Actions
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(Primary.copy(alpha = 0.15f))
+                                    .padding(horizontal = 8.dp, vertical = 3.dp)
+                            ) {
+                                Text(
+                                    text = attachment.category.uppercase(),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Primary,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 10.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = attachment.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = OnSurface,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (attachment.filePath != null) {
+                                IconButton(
+                                    onClick = { onOpenFileExternally(attachment.filePath, attachment.mimeType) },
+                                    modifier = Modifier.size(36.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.ArrowSquareOut,
+                                        contentDescription = "Open Externally",
+                                        tint = Primary
+                                    )
+                                }
+                            } else if (attachment.type == AttachmentType.NOTE) {
+                                IconButton(
+                                    onClick = onEditNote,
+                                    modifier = Modifier.size(36.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.PencilSimple,
+                                        contentDescription = "Edit Note",
+                                        tint = Primary
+                                    )
+                                }
+                            }
+
+                            IconButton(
+                                onClick = onDismiss,
+                                modifier = Modifier.size(36.dp)
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.X,
+                                    contentDescription = "Close preview",
+                                    tint = OnSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // Content Viewer
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(SurfaceContainerLow),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        when (attachment.type) {
+                            AttachmentType.PDF -> {
+                                if (isLoadingPages) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier.padding(24.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.app_logo),
+                                            contentDescription = "Loading PDF",
+                                            modifier = Modifier.size(72.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(14.dp))
+                                        NomadLightLoadingBar(width = 140.dp, height = 4.dp)
+                                        Spacer(modifier = Modifier.height(10.dp))
+                                        Text(
+                                            text = "Rendering PDF pages...",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = OnSurfaceVariant
+                                        )
+                                    }
+                                } else if (pdfPages.isEmpty()) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Icon(
+                                            imageVector = PhosphorIcons.FilePdf,
+                                            contentDescription = null,
+                                            tint = Color(0xFFEF5350),
+                                            modifier = Modifier.size(48.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(10.dp))
+                                        Text(
+                                            text = "PDF page preview not available",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = OnSurface
+                                        )
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        TextButton(onClick = {
+                                            if (attachment.filePath != null) {
+                                                onOpenFileExternally(attachment.filePath, attachment.mimeType)
+                                            }
+                                        }) {
+                                            Text("Open with PDF Reader", color = Primary)
+                                        }
+                                    }
+                                } else {
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(10.dp),
+                                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        itemsIndexed(pdfPages) { pageIdx, pageBitmap ->
+                                            Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                Text(
+                                                    text = "Page ${pageIdx + 1} of ${pdfPages.size}",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = OnSurfaceVariant,
+                                                    modifier = Modifier.padding(bottom = 4.dp)
+                                                )
+                                                Image(
+                                                    bitmap = pageBitmap.asImageBitmap(),
+                                                    contentDescription = "PDF Page ${pageIdx + 1}",
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .clip(RoundedCornerShape(8.dp))
+                                                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp)),
+                                                    contentScale = ContentScale.FillWidth
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            AttachmentType.IMAGE -> {
+                                if (attachment.filePath != null) {
+                                    AsyncImage(
+                                        model = File(attachment.filePath),
+                                        contentDescription = attachment.title,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(10.dp)
+                                            .clip(RoundedCornerShape(12.dp)),
+                                        contentScale = ContentScale.Fit
+                                    )
+                                } else {
+                                    Text(
+                                        text = "Image preview unavailable",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = OnSurfaceVariant
+                                    )
+                                }
+                            }
+
+                            AttachmentType.NOTE -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "NOTE TEXT",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = Primary,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        TextButton(onClick = {
+                                            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                            clipboard.setPrimaryClip(ClipData.newPlainText("Trip Note", attachment.content ?: ""))
+                                            Toast.makeText(context, "Note copied to clipboard", Toast.LENGTH_SHORT).show()
+                                        }) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Icon(
+                                                    imageVector = PhosphorIcons.CopySimple,
+                                                    contentDescription = null,
+                                                    tint = Primary,
+                                                    modifier = Modifier.size(16.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Text("Copy", color = Primary, fontSize = 12.sp)
+                                            }
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                                        item {
+                                            Text(
+                                                text = attachment.content ?: "No content",
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                color = OnSurface,
+                                                lineHeight = 24.sp
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
 @Composable
 private fun AddOptionsChoiceDialog(
@@ -1199,7 +2413,7 @@ private fun AddOptionsChoiceDialog(
     onSelectImage: () -> Unit,
     onSelectNote: () -> Unit,
 ) {
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -1222,21 +2436,21 @@ private fun AddOptionsChoiceDialog(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 ChoiceRowItem(
-                    icon = Icons.Default.PictureAsPdf,
+                    icon = PhosphorIcons.FilePdf,
                     title = "Attach PDF Document",
                     subtitle = "Boarding passes, hotel vouchers, visas",
                     tint = Color(0xFFEF5350),
                     onClick = onSelectPdf
                 )
                 ChoiceRowItem(
-                    icon = Icons.Default.Image,
+                    icon = PhosphorIcons.FileImage,
                     title = "Save Photo / Image",
                     subtitle = "Maps, receipts, location photos",
                     tint = Color(0xFF42A5F5),
                     onClick = onSelectImage
                 )
                 ChoiceRowItem(
-                    icon = Icons.Default.NoteAdd,
+                    icon = PhosphorIcons.FileText,
                     title = "Write Trip Note",
                     subtitle = "Co-working passwords, places to visit, plans",
                     tint = Color(0xFFFFCA28),
@@ -1309,11 +2523,13 @@ private fun AddFileTitleDialog(
     initialTitle: String,
     type: AttachmentType,
     onDismiss: () -> Unit,
-    onSave: (String) -> Unit,
+    onSave: (String, String) -> Unit,
 ) {
     var title by remember { mutableStateOf(initialTitle) }
+    var selectedCategory by remember { mutableStateOf("Visas") }
+    val categories = listOf("Visas", "Tickets", "Lodging", "IDs", "General")
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -1324,31 +2540,69 @@ private fun AddFileTitleDialog(
             )
         },
         text = {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 Text(
-                    text = "Enter a title for this file in your workspace:",
+                    text = "Enter title and select a category:",
                     style = MaterialTheme.typography.bodyMedium,
                     color = OnSurfaceVariant
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
                     label = { Text("Attachment Title") },
                     singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
+
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        text = "DOCUMENT CATEGORY",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnSurfaceVariant,
+                        fontWeight = FontWeight.Bold
+                    )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        items(categories) { cat ->
+                            val isSelected = cat == selectedCategory
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(if (isSelected) Primary else SurfaceContainerLow)
+                                    .border(1.dp, if (isSelected) Primary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
+                                    .clickable { selectedCategory = cat }
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text(
+                                    text = cat,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (isSelected) OnPrimary else OnSurface,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                )
+                            }
+                        }
+                    }
+                }
             }
         },
         confirmButton = {
-            ClayButton(onClick = { onSave(title) }) {
-                Text("Save to Workspace", color = OnPrimary)
+            ClayButton(onClick = { onSave(title, selectedCategory) }) {
+                Text("Save to Workspace", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
@@ -1363,12 +2617,14 @@ private fun AddFileTitleDialog(
 @Composable
 private fun AddNoteDialog(
     onDismiss: () -> Unit,
-    onSave: (String, String) -> Unit,
+    onSave: (String, String, String) -> Unit,
 ) {
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf("Notes") }
+    val categories = listOf("Notes", "Visas", "Tickets", "Lodging", "IDs", "General")
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -1388,14 +2644,49 @@ private fun AddNoteDialog(
                     onValueChange = { title = it },
                     label = { Text("Note Title (e.g., Wi-Fi Details, Hotel Booking)") },
                     singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
+
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        text = "CATEGORY",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnSurfaceVariant,
+                        fontWeight = FontWeight.Bold
+                    )
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        items(categories) { cat ->
+                            val isSelected = cat == selectedCategory
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(if (isSelected) Primary else SurfaceContainerLow)
+                                    .border(1.dp, if (isSelected) Primary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
+                                    .clickable { selectedCategory = cat }
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text(
+                                    text = cat,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (isSelected) OnPrimary else OnSurface,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                )
+                            }
+                        }
+                    }
+                }
 
                 OutlinedTextField(
                     value = content,
@@ -1403,19 +2694,25 @@ private fun AddNoteDialog(
                     label = { Text("Note Content") },
                     minLines = 4,
                     maxLines = 8,
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
             }
         },
         confirmButton = {
-            ClayButton(onClick = { onSave(title, content) }) {
-                Text("Save Note", color = OnPrimary)
+            ClayButton(onClick = { onSave(title, content, selectedCategory) }) {
+                Text("Save Note", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
@@ -1437,7 +2734,7 @@ private fun EditNoteDialog(
     var title by remember { mutableStateOf(initialTitle) }
     var content by remember { mutableStateOf(initialContent) }
 
-    AlertDialog(
+    FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -1457,12 +2754,18 @@ private fun EditNoteDialog(
                     onValueChange = { title = it },
                     label = { Text("Note Title") },
                     singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
 
@@ -1472,19 +2775,25 @@ private fun EditNoteDialog(
                     label = { Text("Note Content") },
                     minLines = 4,
                     maxLines = 8,
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = OnSurfaceVariant.copy(alpha = 0.3f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                         focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow
+                        unfocusedContainerColor = SurfaceContainerLow,
+                        focusedTextColor = OnSurface,
+                        unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
+                        cursorColor = Primary,
                     )
                 )
             }
         },
         confirmButton = {
             ClayButton(onClick = { onSave(title, content) }) {
-                Text("Update Note", color = OnPrimary)
+                Text("Update Note", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
@@ -1505,5 +2814,6 @@ private fun formatCurrencyAmount(amountUsd: Double, currencyCode: String): Strin
         "INR" -> "₹"
         else -> "$currencyCode "
     }
-    return "$symbol${String.format(Locale.US, "%,.0f", amountUsd)}"
+    val absFormatted = String.format(Locale.US, "%,.0f", kotlin.math.abs(amountUsd))
+    return if (amountUsd < 0) "-$symbol$absFormatted" else "$symbol$absFormatted"
 }

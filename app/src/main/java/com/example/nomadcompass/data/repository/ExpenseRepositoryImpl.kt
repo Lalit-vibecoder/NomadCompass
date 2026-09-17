@@ -29,6 +29,10 @@ class ExpenseRepositoryImpl @Inject constructor(
         return expenseDao.insertExpense(expense.toEntity())
     }
 
+    override suspend fun updateExpense(expense: Expense) {
+        expenseDao.insertExpense(expense.toEntity())
+    }
+
     override suspend fun deleteExpense(id: Long) {
         expenseDao.deleteExpense(id)
     }
@@ -43,7 +47,9 @@ class ExpenseRepositoryImpl @Inject constructor(
         isUnconverted = isUnconverted,
         category = ExpenseCategory.fromString(category),
         date = date,
-        notes = notes
+        notes = notes,
+        paymentMethod = paymentMethod,
+        receiptPath = receiptPath,
     )
 
     private fun Expense.toEntity() = ExpenseEntity(
@@ -56,6 +62,8 @@ class ExpenseRepositoryImpl @Inject constructor(
         isUnconverted = isUnconverted,
         category = category.name,
         date = date,
-        notes = notes
+        notes = notes,
+        paymentMethod = paymentMethod,
+        receiptPath = receiptPath,
     )
 }

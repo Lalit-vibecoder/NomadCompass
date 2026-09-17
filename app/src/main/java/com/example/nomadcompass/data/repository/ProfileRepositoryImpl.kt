@@ -21,7 +21,13 @@ class ProfileRepositoryImpl @Inject constructor(
                     userName = it.userName,
                     homeCountryCca3 = it.homeCountryCca3,
                     baseCurrencyCode = it.baseCurrencyCode,
-                    tempUnit = it.tempUnit
+                    tempUnit = it.tempUnit,
+                    photoUri = it.photoUri,
+                    isBiometricEnabled = it.isBiometricEnabled,
+                    accessCode = it.accessCode,
+                    themeMode = it.themeMode,
+                    bgPhotoUri = it.bgPhotoUri,
+                    bgBlurRadius = it.bgBlurRadius,
                 )
             }
         }
@@ -33,7 +39,13 @@ class ProfileRepositoryImpl @Inject constructor(
                 userName = profile.userName,
                 homeCountryCca3 = profile.homeCountryCca3,
                 baseCurrencyCode = profile.baseCurrencyCode,
-                tempUnit = profile.tempUnit
+                tempUnit = profile.tempUnit,
+                photoUri = profile.photoUri,
+                isBiometricEnabled = profile.isBiometricEnabled,
+                accessCode = profile.accessCode,
+                themeMode = profile.themeMode,
+                bgPhotoUri = profile.bgPhotoUri,
+                bgBlurRadius = profile.bgBlurRadius,
             )
         )
     }

@@ -34,14 +34,16 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogWindowProvider
+import com.example.nomadcompass.ui.theme.GlassCardBackground
+import com.example.nomadcompass.ui.theme.GlassCardBorder
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 
 /**
  * A composable that renders a modern frosted glassmorphic card:
- * - Translucent glass surface tint allowing background wallpaper/content to shine through
+ * - Standard dark translucent glass background: rgba(18, 18, 18, 0.5)
+ * - Standard translucent glass border: rgba(255, 255, 255, 0.1)
  * - Vertical frosted glass specular gradient sheen
- * - Glass refraction rim border
  * - Omni-directional ambient & spot drop shadows
  * - Top-edge specular light highlight reflection
  */
@@ -49,48 +51,51 @@ import com.example.nomadcompass.ui.theme.SurfaceContainer
 fun ClayCard(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 24.dp,
-    backgroundColor: Color = SurfaceContainer,
+    backgroundColor: Color = GlassCardBackground,
     onClick: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val isDark = LocalThemeController.current.isDarkMode
     val shape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
 
-    val effectiveBg = remember(backgroundColor, isDark) {
-        if (backgroundColor.alpha == 1f) {
-            backgroundColor.copy(alpha = if (isDark) 0.55f else 0.70f)
+    val surfaceContainer = SurfaceContainer
+    val effectiveBg = remember(backgroundColor, surfaceContainer, isDark) {
+        if (backgroundColor == GlassCardBackground || backgroundColor == surfaceContainer) {
+            Color(0x80121212)
+        } else if (backgroundColor.alpha == 1f) {
+            backgroundColor.copy(alpha = 0.50f)
         } else {
             backgroundColor
         }
     }
 
-    val ambientShadow = remember(isDark) { Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f) }
-    val spotShadow = remember(isDark) { Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f) }
+    val ambientShadow = remember { Color.Black.copy(alpha = 0.40f) }
+    val spotShadow = remember { Color.Black.copy(alpha = 0.50f) }
 
-    val borderBrush = remember(isDark) {
+    val borderBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
-                Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
+                GlassCardBorder,
+                GlassCardBorder,
             )
         )
     }
 
-    val frostedSheenBrush = remember(isDark) {
+    val frostedSheenBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = if (isDark) 0.12f else 0.24f),
-                Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
+                Color.White.copy(alpha = 0.08f),
+                Color.White.copy(alpha = 0.02f),
                 Color.Transparent,
             )
         )
     }
 
-    val topHighlightBrush = remember(isDark) {
+    val topHighlightBrush = remember {
         Brush.horizontalGradient(
             colors = listOf(
                 Color.Transparent,
-                Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
+                Color.White.copy(alpha = 0.25f),
                 Color.Transparent,
             )
         )
@@ -109,7 +114,7 @@ fun ClayCard(
                 cornerRadius = cornerRadius,
                 ambientShadowColor = ambientShadow,
                 spotShadowColor = spotShadow,
-                blurRadius = if (isDark) 16.dp else 14.dp,
+                blurRadius = 14.dp,
             )
             .clip(shape)
             .background(effectiveBg, shape)
@@ -133,7 +138,7 @@ fun ClayCard(
 fun FrostedGlassCard(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 24.dp,
-    backgroundColor: Color = SurfaceContainer,
+    backgroundColor: Color = GlassCardBackground,
     onClick: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) = ClayCard(
@@ -151,7 +156,7 @@ fun FrostedGlassCard(
 fun GlassCard(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 24.dp,
-    backgroundColor: Color = SurfaceContainer,
+    backgroundColor: Color = GlassCardBackground,
     onClick: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) = ClayCard(
@@ -208,7 +213,7 @@ fun FrostedGlassDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 28.dp,
-    backgroundColor: Color = SurfaceContainer,
+    backgroundColor: Color = GlassCardBackground,
     properties: DialogProperties = DialogProperties(usePlatformDefaultWidth = false),
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -264,7 +269,7 @@ fun FrostedGlassAlertDialog(
     title: @Composable (() -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
     shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(28.dp),
-    containerColor: Color = SurfaceContainer,
+    containerColor: Color = GlassCardBackground,
     tonalElevation: Dp = 0.dp,
     properties: DialogProperties = DialogProperties(usePlatformDefaultWidth = false),
 ) {

@@ -172,8 +172,21 @@ class PlannerViewModel @Inject constructor(
         val destCountry = sortedCountries.find { it.cca3.equals(activeTrip?.destinationCca3, ignoreCase = true) }
         val destCurrency = destCountry?.currencyCode?.ifBlank { currency } ?: currency
 
+        val enrichedTrips = trips.map { trip ->
+            val country = sortedCountries.find { it.cca3.equals(trip.destinationCca3, ignoreCase = true) }
+            if (country != null && (trip.countryName.isBlank() || trip.countryName.equals(trip.destinationCca3, ignoreCase = true) || trip.flagEmoji.isBlank() || trip.flagEmoji == "✈️" || trip.flagUrl.isBlank())) {
+                trip.copy(
+                    countryName = if (trip.countryName.isBlank() || trip.countryName.equals(trip.destinationCca3, ignoreCase = true)) country.commonName else trip.countryName,
+                    flagEmoji = if (trip.flagEmoji.isBlank() || trip.flagEmoji == "✈️") country.flagEmoji else trip.flagEmoji,
+                    flagUrl = if (trip.flagUrl.isBlank()) country.flagUrl else trip.flagUrl
+                )
+            } else {
+                trip
+            }
+        }
+
         state.copy(
-            trips = trips,
+            trips = enrichedTrips,
             availableCountries = sortedCountries,
             workspaceAttachments = attachments,
             workspaceExpenses = expenses,
@@ -474,11 +487,11 @@ class PlannerViewModel @Inject constructor(
     fun saveTrip() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isSaving = true)
-            val country = _uiState.value.availableCountries.find { it.cca3 == _uiState.value.selectedCca3 }
+            val country = _uiState.value.availableCountries.find { it.cca3.equals(_uiState.value.selectedCca3, ignoreCase = true) }
             val trip = Trip(
                 destinationCca3 = _uiState.value.selectedCca3,
                 countryName = country?.commonName ?: _uiState.value.selectedCca3,
-                flagEmoji = country?.flagEmoji ?: "✈️",
+                flagEmoji = country?.flagEmoji ?: "",
                 flagUrl = country?.flagUrl ?: "",
                 startDate = _uiState.value.startDate,
                 endDate = _uiState.value.endDate,

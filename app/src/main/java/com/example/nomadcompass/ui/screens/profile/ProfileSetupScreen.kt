@@ -63,8 +63,10 @@ import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
 import com.example.nomadcompass.ui.components.ClaySlidingTabRow
 import com.example.nomadcompass.ui.components.bounceClick
+import com.example.nomadcompass.ui.theme.ActionPrimary
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.Error
+import com.example.nomadcompass.ui.theme.GlassCardBackground
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -245,7 +247,7 @@ fun ProfileSetupScreen(
             ClayCard(
                 modifier = Modifier.fillMaxWidth(),
                 cornerRadius = 28.dp,
-                backgroundColor = SurfaceContainer
+                backgroundColor = GlassCardBackground
             ) {
                 Column(
                     modifier = Modifier
@@ -253,6 +255,32 @@ fun ProfileSetupScreen(
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(18.dp)
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = PhosphorIcons.SlidersHorizontal,
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "Personal Preferences",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = OnSurface,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = "Identity, home passport & base currency",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant
+                            )
+                        }
+                    }
+
                     // Full Name Field
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
@@ -436,7 +464,7 @@ fun ProfileSetupScreen(
             ClayCard(
                 modifier = Modifier.fillMaxWidth(),
                 cornerRadius = 28.dp,
-                backgroundColor = SurfaceContainer
+                backgroundColor = GlassCardBackground
             ) {
                 Column(
                     modifier = Modifier
@@ -460,7 +488,7 @@ fun ProfileSetupScreen(
                                 text = "App Background Wallpaper",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = OnSurface,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = "Upload custom wallpaper & adjust blur level",
@@ -609,7 +637,7 @@ fun ProfileSetupScreen(
             ClayCard(
                 modifier = Modifier.fillMaxWidth(),
                 cornerRadius = 28.dp,
-                backgroundColor = SurfaceContainer
+                backgroundColor = GlassCardBackground
             ) {
                 Column(
                     modifier = Modifier
@@ -637,7 +665,7 @@ fun ProfileSetupScreen(
                                     text = "Secure App Launch",
                                     style = MaterialTheme.typography.titleMedium,
                                     color = OnSurface,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
                                     text = "Protect app with PIN or Biometrics",
@@ -772,10 +800,12 @@ fun ProfileSetupScreen(
                 )
             }
 
-            // Submit Button
+            // Submit Button with #FF2E63 ActionPrimary styling
             ClayButton(
                 onClick = viewModel::saveProfile,
                 enabled = !uiState.isSaving,
+                containerColor = ActionPrimary,
+                contentColor = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 24.dp)
@@ -783,7 +813,7 @@ fun ProfileSetupScreen(
                 Text(
                     text = if (uiState.isSaving) "SAVING..." else "SAVE PROFILE & CONTINUE",
                     style = MaterialTheme.typography.labelLarge,
-                    color = OnPrimaryContainer,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }

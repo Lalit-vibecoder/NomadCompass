@@ -4,8 +4,11 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.ui.res.painterResource
+import com.example.nomadcompass.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -436,12 +439,21 @@ fun ItineraryExtractorModal(
                                     val hotelCount = draftEvents.count { it.category == ItineraryCategory.ACCOMMODATION }
                                     val plansCount = draftEvents.count { it.category != ItineraryCategory.FLIGHT && it.category != ItineraryCategory.ACCOMMODATION }
 
-                                    Text(
-                                        text = "✈️ $flightsCount  •  🏨 $hotelCount  •  🎯 $plansCount",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Primary,
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = PhosphorIcons.AirplaneTilt,
+                                            contentDescription = null,
+                                            tint = Primary,
+                                            modifier = Modifier.size(13.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = "$flightsCount  •  🏨 $hotelCount  •  🎯 $plansCount",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = Primary,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 }
 
                                 // Toggle: Text Editor vs Cards
@@ -540,12 +552,33 @@ fun ItineraryExtractorModal(
                                             .padding(horizontal = 12.dp, vertical = 6.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(
-                                            text = "${tab.emoji} ${tab.title} ($badgeCount)",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = if (isSelected) OnPrimary else OnSurface,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                                        )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        if (tab == ReviewModeTab.FLIGHTS) {
+                                            Icon(
+                                                imageVector = PhosphorIcons.AirplaneTilt,
+                                                contentDescription = null,
+                                                tint = if (isSelected) OnPrimary else OnSurface,
+                                                modifier = Modifier.size(13.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(
+                                                text = "${tab.title} ($badgeCount)",
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = if (isSelected) OnPrimary else OnSurface,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                            )
+                                        } else {
+                                            Text(
+                                                text = "${tab.emoji} ${tab.title} ($badgeCount)",
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = if (isSelected) OnPrimary else OnSurface,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                            )
+                                        }
+                                    }
                                     }
                                 }
                             }
@@ -765,16 +798,27 @@ fun ItineraryExtractorModal(
                                     .padding(14.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
-                                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = Primary)
-                                    Text(
-                                        text = statusMessage ?: "Extracting on-device...",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = OnSurface
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.app_logo),
+                                            contentDescription = "Nomad Compass",
+                                            modifier = Modifier.size(28.dp)
+                                        )
+                                        Text(
+                                            text = statusMessage ?: "Extracting on-device...",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = OnSurface,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+                                    NomadLightLoadingBar(width = 180.dp, height = 4.dp)
                                 }
                             }
                         }
@@ -914,13 +958,32 @@ private fun DraftEventItemCard(
                             .border(1.dp, draft.category.defaultColor.copy(alpha = 0.35f), CircleShape)
                             .padding(horizontal = 8.dp, vertical = 3.dp)
                     ) {
-                        Text(
-                            text = "${draft.category.emoji} ${draft.category.displayName}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = draft.category.defaultColor,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (draft.category == ItineraryCategory.FLIGHT) {
+                                Icon(
+                                    imageVector = PhosphorIcons.AirplaneTilt,
+                                    contentDescription = null,
+                                    tint = draft.category.defaultColor,
+                                    modifier = Modifier.size(11.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = draft.category.displayName,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = draft.category.defaultColor,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            } else {
+                                Text(
+                                    text = "${draft.category.emoji} ${draft.category.displayName}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = draft.category.defaultColor,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.width(6.dp))
@@ -1017,13 +1080,32 @@ private fun DraftEventItemCard(
                                     .clickable { onUpdate(draft.copy(category = cat)) }
                                     .padding(horizontal = 10.dp, vertical = 5.dp)
                             ) {
-                                Text(
-                                    text = "${cat.emoji} ${cat.displayName}",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = if (isCatSelected) OnPrimary else OnSurface,
-                                    fontSize = 10.sp,
-                                    fontWeight = if (isCatSelected) FontWeight.Bold else FontWeight.Normal
-                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    if (cat == ItineraryCategory.FLIGHT) {
+                                        Icon(
+                                            imageVector = PhosphorIcons.AirplaneTilt,
+                                            contentDescription = null,
+                                            tint = if (isCatSelected) OnPrimary else OnSurface,
+                                            modifier = Modifier.size(11.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = cat.displayName,
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = if (isCatSelected) OnPrimary else OnSurface,
+                                            fontSize = 10.sp,
+                                            fontWeight = if (isCatSelected) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "${cat.emoji} ${cat.displayName}",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = if (isCatSelected) OnPrimary else OnSurface,
+                                            fontSize = 10.sp,
+                                            fontWeight = if (isCatSelected) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

@@ -22,21 +22,23 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.nomadcompass.ui.theme.ActionPrimary
 import com.example.nomadcompass.ui.theme.LocalThemeController
+import com.example.nomadcompass.ui.theme.OnActionPrimary
 import com.example.nomadcompass.ui.theme.OnPrimaryContainer
 import com.example.nomadcompass.ui.theme.PillActiveBackground
 import com.example.nomadcompass.ui.theme.PillActiveText
 
 /**
- * A tactile pill/capsule primary button with soft drop shadows.
+ * A tactile pill/capsule primary button with soft drop shadows and #FF2E63 ActionPrimary styling.
  */
 @Composable
 fun ClayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    containerColor: Color = PillActiveBackground,
-    contentColor: Color = PillActiveText,
+    containerColor: Color = ActionPrimary,
+    contentColor: Color = OnActionPrimary,
     contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 14.dp),
     content: @Composable RowScope.() -> Unit,
 ) {

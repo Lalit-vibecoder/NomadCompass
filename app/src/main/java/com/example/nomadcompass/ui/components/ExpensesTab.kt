@@ -84,6 +84,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.data.local.entity.ExpenseCategory
 import com.example.nomadcompass.domain.model.Expense
+import com.example.nomadcompass.ui.theme.ActionPrimary
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
 import com.example.nomadcompass.ui.theme.OnSurface
@@ -95,6 +96,7 @@ import com.example.nomadcompass.ui.theme.SecondaryContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
+import com.example.nomadcompass.util.CurrencyFormatter
 import com.example.nomadcompass.util.FileStorageHelper
 import java.io.File
 import java.text.SimpleDateFormat
@@ -235,14 +237,14 @@ fun ExpensesTab(
             }
         }
 
-        // Quick-Add FAB at Bottom-Right
+        // Quick-Add FAB at Bottom-Right with #FF2E63 ActionPrimary styling
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 12.dp, end = 12.dp)
                 .size(58.dp)
                 .clip(CircleShape)
-                .background(PrimaryContainer)
+                .background(ActionPrimary)
                 .border(1.5.dp, Color.White.copy(alpha = 0.4f), CircleShape)
                 .clickable { isLogSheetOpen = true },
             contentAlignment = Alignment.Center
@@ -250,7 +252,7 @@ fun ExpensesTab(
             Icon(
                 imageVector = PhosphorIcons.Plus,
                 contentDescription = "Log Expense",
-                tint = OnPrimary,
+                tint = Color.White,
                 modifier = Modifier.size(30.dp)
             )
         }
@@ -1355,14 +1357,14 @@ private fun LogExpenseBottomSheet(
                                 Icon(
                                     imageVector = if (isEditing) PhosphorIcons.CheckCircle else PhosphorIcons.PlusCircle,
                                     contentDescription = null,
-                                    tint = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                                    tint = Color.White,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = if (isEditing) "Save Changes" else "Save Expense",
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
+                                    color = Color.White,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -1389,16 +1391,7 @@ private fun getCategoryStyle(category: ExpenseCategory): Triple<ImageVector, Col
 }
 
 private fun formatAmount(amount: Double, currencyCode: String): String {
-    val symbol = when (currencyCode.uppercase()) {
-        "USD" -> "$"
-        "EUR" -> "€"
-        "GBP" -> "£"
-        "JPY" -> "¥"
-        "INR" -> "₹"
-        else -> "$currencyCode "
-    }
-    val absFormatted = String.format(Locale.US, "%,.2f", kotlin.math.abs(amount))
-    return if (amount < 0) "-$symbol$absFormatted" else "$symbol$absFormatted"
+    return CurrencyFormatter.formatAmount(amount, currencyCode)
 }
 
 private fun formatNumber(amount: Double): String {

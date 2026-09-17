@@ -56,6 +56,7 @@ import com.example.nomadcompass.ui.components.clayShadow
 import com.example.nomadcompass.ui.components.CurrencyConverterModal
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
+import com.example.nomadcompass.util.CurrencyFormatter
 import java.util.Locale
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.LocalThemeController
@@ -423,11 +424,7 @@ fun CountryProfileScreen(
                             }
 
                             // Currency Card
-                            val formattedRate = if (uiState.exchangeRate >= 100) {
-                                String.format(Locale.US, "%.0f", uiState.exchangeRate)
-                            } else {
-                                String.format(Locale.US, "%.2f", uiState.exchangeRate)
-                            }
+                            val formattedRate = CurrencyFormatter.formatRate(uiState.exchangeRate, country.currencyCode)
                             ClayCard(
                                 modifier = Modifier.weight(1f),
                                 onClick = { viewModel.openConverter() },
@@ -448,7 +445,7 @@ fun CountryProfileScreen(
                                         Icon(imageVector = PhosphorIcons.ArrowRight, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(14.dp))
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = "$formattedRate ${country.currencyCode}",
+                                            text = formattedRate,
                                             style = MaterialTheme.typography.titleMedium,
                                             color = Primary
                                         )

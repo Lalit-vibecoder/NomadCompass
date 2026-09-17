@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nomadcompass.R
+import com.example.nomadcompass.ui.components.NomadLightLoadingBar
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
@@ -57,17 +58,6 @@ fun SplashScreen(
         }
     }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "compass")
-    val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(20000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "rotation"
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -80,16 +70,14 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Rotating 3D Clay Compass Logo
+            // App Logo
             Image(
                 painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = "Nomad Compass Logo",
-                modifier = Modifier
-                    .size(200.dp)
-                    .rotate(rotation)
+                modifier = Modifier.size(240.dp)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             // App Title
             Text(
@@ -104,30 +92,20 @@ fun SplashScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Progress Bar (Claymorphism segment)
+            // Light Loading Bar
             val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
                 targetValue = uiState.progress / 100f,
                 animationSpec = androidx.compose.animation.core.tween(durationMillis = 350, easing = androidx.compose.animation.core.FastOutSlowInEasing),
                 label = "splash_progress"
             )
 
-            Box(
-                modifier = Modifier
-                    .width(220.dp)
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(9999.dp))
-                    .background(Color(0xFF353439))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .fillMaxWidth(animatedProgress)
-                        .clip(RoundedCornerShape(9999.dp))
-                        .background(Color(0xFFCCC6BC))
-                )
-            }
+            NomadLightLoadingBar(
+                progress = animatedProgress,
+                width = 220.dp,
+                height = 6.dp
+            )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             // Progress text & percentage
             Row(

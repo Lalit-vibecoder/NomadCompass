@@ -76,9 +76,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.domain.model.Trip
+import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.FrostedGlassDialog
 import com.example.nomadcompass.ui.components.GlassPillButton
+import com.example.nomadcompass.ui.components.NomadDatePickerDialog
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.TripWorkspaceModal
@@ -86,12 +88,16 @@ import com.example.nomadcompass.ui.components.bounceClick
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.ui.draw.blur
 import com.example.nomadcompass.ui.components.clayShadow
+import com.example.nomadcompass.ui.theme.ActionPrimary
+import com.example.nomadcompass.ui.theme.GlassCardBackground
+import com.example.nomadcompass.ui.theme.GlassCardBorder
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
 import com.example.nomadcompass.ui.theme.Primary
 import com.example.nomadcompass.ui.theme.Secondary
 import com.example.nomadcompass.ui.theme.SurfaceContainer
+import com.example.nomadcompass.util.CurrencyFormatter
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 import java.io.File
@@ -211,34 +217,27 @@ fun PlannerScreen(
             }
         },
         floatingActionButton = {
-            // Floating Action Button - Glass Pill elevated above bottom navigation bar
-            GlassPillButton(
+            // Floating Action Button with #FF2E63 ActionPrimary styling
+            ClayButton(
                 onClick = { viewModel.openAddDialog() },
+                containerColor = ActionPrimary,
+                contentColor = Color.White,
                 modifier = Modifier
                     .navigationBarsPadding()
                     .padding(bottom = 88.dp),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
+                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(Primary.copy(alpha = if (isDark) 0.25f else 0.15f))
-                        .border(1.dp, Primary.copy(alpha = if (isDark) 0.45f else 0.30f), CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = PhosphorIcons.Plus,
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+                Icon(
+                    imageVector = PhosphorIcons.Plus,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "PLAN NEW TRIP",
                     style = MaterialTheme.typography.labelLarge,
-                    color = Primary,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -509,36 +508,36 @@ private fun SageTripCard(
     val sageGradientStart = if (isDark) Color(0xFF537E76) else Color(0xFF7AA59D)
     val sageGradientEnd = if (isDark) Color(0xFF385E56) else Color(0xFF59857D)
 
-    val cardBgBrush = remember(isDark) {
+    val cardBgBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                sageGradientStart.copy(alpha = if (isDark) 0.55f else 0.70f),
-                sageGradientEnd.copy(alpha = if (isDark) 0.40f else 0.55f)
+                GlassCardBackground,
+                GlassCardBackground
             )
         )
     }
-    val cardSheenBrush = remember(isDark) {
+    val cardSheenBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = if (isDark) 0.12f else 0.20f),
-                Color.White.copy(alpha = if (isDark) 0.02f else 0.05f),
+                Color.White.copy(alpha = 0.08f),
+                Color.White.copy(alpha = 0.02f),
                 Color.Transparent
             )
         )
     }
-    val cardBorderBrush = remember(isDark) {
+    val cardBorderBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = if (isDark) 0.35f else 0.50f),
-                Color.White.copy(alpha = if (isDark) 0.08f else 0.18f)
+                GlassCardBorder,
+                GlassCardBorder
             )
         )
     }
-    val specularBrush = remember(isDark) {
+    val specularBrush = remember {
         Brush.horizontalGradient(
             colors = listOf(
                 Color.Transparent,
-                Color.White.copy(alpha = if (isDark) 0.35f else 0.60f),
+                Color.White.copy(alpha = 0.25f),
                 Color.Transparent
             )
         )
@@ -595,10 +594,10 @@ private fun SageTripCard(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.weight(1f)
                 ) {
-                    // Circular flag with glass border
+                    // Small country flag in place of first country code
                     Box(
                         modifier = Modifier
-                            .size(38.dp)
+                            .size(32.dp)
                             .clayShadow(
                                 cornerRadius = 9999.dp,
                                 ambientShadowColor = Color.Black.copy(alpha = 0.25f),
@@ -619,25 +618,30 @@ private fun SageTripCard(
                                     .fillMaxSize()
                                     .clip(CircleShape)
                             )
+                        } else if (trip.flagEmoji.isNotBlank() && trip.flagEmoji != "✈️") {
+                            Text(text = trip.flagEmoji, fontSize = 16.sp)
                         } else {
-                            Text(text = trip.flagEmoji, fontSize = 18.sp)
+                            Icon(
+                                imageVector = PhosphorIcons.AirplaneTilt,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(16.dp)
+                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
 
-                    Column {
-                        Text(
-                            text = "${trip.destinationCca3.uppercase()} • ${trip.countryName.ifBlank { trip.destinationCca3 }}",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.Bold
-                            ),
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = trip.countryName.ifBlank { trip.destinationCca3 },
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -672,7 +676,7 @@ private fun SageTripCard(
                     modifier = Modifier
                         .clip(RoundedCornerShape(9999.dp))
                         .background(Color.Black.copy(alpha = if (isDark) 0.30f else 0.18f))
-                        .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
+                        .border(1.dp, GlassCardBorder, RoundedCornerShape(9999.dp))
                         .clickable(onClick = onEditTrip)
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
@@ -708,7 +712,7 @@ private fun SageTripCard(
                     modifier = Modifier
                         .clip(RoundedCornerShape(9999.dp))
                         .background(Color.Black.copy(alpha = if (isDark) 0.30f else 0.18f))
-                        .border(1.dp, Color.White.copy(alpha = 0.25f), RoundedCornerShape(9999.dp))
+                        .border(1.dp, GlassCardBorder, RoundedCornerShape(9999.dp))
                         .clickable(onClick = onEditTrip)
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
@@ -716,8 +720,9 @@ private fun SageTripCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
+                        val sym = CurrencyFormatter.getSymbol(currencyCode).trim()
                         Text(
-                            text = currencyCode,
+                            text = sym,
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -754,6 +759,33 @@ private fun EditTripDetailsDialog(
     var startDate by remember { mutableStateOf(trip.startDate) }
     var endDate by remember { mutableStateOf(trip.endDate) }
     var budgetText by remember { mutableStateOf(trip.budgetUsd.toString().removeSuffix(".0")) }
+    var showStartDatePicker by remember { mutableStateOf(false) }
+    var showEndDatePicker by remember { mutableStateOf(false) }
+
+    if (showStartDatePicker) {
+        NomadDatePickerDialog(
+            initialDate = startDate,
+            title = "Select Start Date",
+            onDateSelected = { selectedDate ->
+                startDate = selectedDate
+                if (endDate.isNotBlank() && selectedDate > endDate) {
+                    endDate = selectedDate
+                }
+            },
+            onDismiss = { showStartDatePicker = false }
+        )
+    }
+
+    if (showEndDatePicker) {
+        NomadDatePickerDialog(
+            initialDate = endDate.ifBlank { startDate },
+            title = "Select End Date",
+            onDateSelected = { selectedDate ->
+                endDate = selectedDate
+            },
+            onDismiss = { showEndDatePicker = false }
+        )
+    }
 
     FrostedGlassDialog(
         onDismissRequest = onDismiss,
@@ -798,11 +830,35 @@ private fun EditTripDetailsDialog(
                             color = OnSurface,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(
-                            text = "${trip.flagEmoji} ${trip.countryName.ifBlank { trip.destinationCca3 }}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = OnSurfaceVariant
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (trip.flagUrl.isNotBlank()) {
+                                AsyncImage(
+                                    model = trip.flagUrl,
+                                    contentDescription = trip.countryName,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .clip(CircleShape)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                            } else if (trip.flagEmoji.isNotBlank() && trip.flagEmoji != "✈️") {
+                                Text(text = trip.flagEmoji, fontSize = 13.sp)
+                                Spacer(modifier = Modifier.width(6.dp))
+                            } else {
+                                Icon(
+                                    imageVector = PhosphorIcons.AirplaneTilt,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                            }
+                            Text(
+                                text = trip.countryName.ifBlank { trip.destinationCca3 },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = OnSurfaceVariant
+                            )
+                        }
                     }
                 }
                 IconButton(
@@ -826,7 +882,7 @@ private fun EditTripDetailsDialog(
                 thickness = 0.8.dp
             )
 
-            // Dates Row (Start Date & End Date)
+            // Dates Row (Start Date & End Date with Calendar View)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -839,31 +895,35 @@ private fun EditTripDetailsDialog(
                         color = OnSurfaceVariant,
                         letterSpacing = 1.sp
                     )
-                    OutlinedTextField(
-                        value = startDate,
-                        onValueChange = { startDate = it },
-                        placeholder = { Text("YYYY-MM-DD", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
-                        singleLine = true,
-                        shape = RoundedCornerShape(14.dp),
-                        leadingIcon = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                            .clickable { showStartDatePicker = true }
+                            .padding(horizontal = 12.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
                             Icon(
                                 imageVector = PhosphorIcons.CalendarBlank,
-                                contentDescription = null,
+                                contentDescription = "Select Start Date",
                                 tint = Primary,
                                 modifier = Modifier.size(18.dp)
                             )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                            focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface,
-                            cursorColor = Primary,
-                        )
-                    )
+                            Text(
+                                text = startDate.ifBlank { "YYYY-MM-DD" },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (startDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
                 }
 
                 // End Date
@@ -874,31 +934,35 @@ private fun EditTripDetailsDialog(
                         color = OnSurfaceVariant,
                         letterSpacing = 1.sp
                     )
-                    OutlinedTextField(
-                        value = endDate,
-                        onValueChange = { endDate = it },
-                        placeholder = { Text("YYYY-MM-DD", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
-                        singleLine = true,
-                        shape = RoundedCornerShape(14.dp),
-                        leadingIcon = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                            .clickable { showEndDatePicker = true }
+                            .padding(horizontal = 12.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
                             Icon(
                                 imageVector = PhosphorIcons.CalendarBlank,
-                                contentDescription = null,
+                                contentDescription = "Select End Date",
                                 tint = Primary,
                                 modifier = Modifier.size(18.dp)
                             )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                            focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface,
-                            cursorColor = Primary,
-                        )
-                    )
+                            Text(
+                                text = endDate.ifBlank { "YYYY-MM-DD" },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (endDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
                 }
             }
 
@@ -952,24 +1016,26 @@ private fun EditTripDetailsDialog(
                     Text(text = "Cancel", color = OnSurfaceVariant)
                 }
 
-                GlassPillButton(
+                ClayButton(
                     onClick = {
                         val budgetVal = budgetText.toDoubleOrNull() ?: trip.budgetUsd
                         onSave(startDate.trim(), endDate.trim(), budgetVal)
                     },
+                    containerColor = ActionPrimary,
+                    contentColor = Color.White,
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
                 ) {
                     Icon(
                         imageVector = PhosphorIcons.Check,
                         contentDescription = null,
-                        tint = Primary,
+                        tint = Color.White,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "Save",
-                        color = Primary,
+                        color = Color.White,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -1010,6 +1076,34 @@ private fun AddTripDialog(
                 it.region.contains(q, ignoreCase = true)
             }.take(5)
         }
+    }
+
+    var showStartDatePicker by remember { mutableStateOf(false) }
+    var showEndDatePicker by remember { mutableStateOf(false) }
+
+    if (showStartDatePicker) {
+        NomadDatePickerDialog(
+            initialDate = uiState.startDate,
+            title = "Select Start Date",
+            onDateSelected = { selectedDate ->
+                onStartDateChanged(selectedDate)
+                if (uiState.endDate.isNotBlank() && selectedDate > uiState.endDate) {
+                    onEndDateChanged(selectedDate)
+                }
+            },
+            onDismiss = { showStartDatePicker = false }
+        )
+    }
+
+    if (showEndDatePicker) {
+        NomadDatePickerDialog(
+            initialDate = uiState.endDate.ifBlank { uiState.startDate },
+            title = "Select End Date",
+            onDateSelected = { selectedDate ->
+                onEndDateChanged(selectedDate)
+            },
+            onDismiss = { showEndDatePicker = false }
+        )
     }
 
     FrostedGlassDialog(
@@ -1313,57 +1407,84 @@ private fun AddTripDialog(
                     }
                 }
 
-                // Dates Row (Start & End)
+                // Dates Row (Start & End with Calendar View)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.Top
                 ) {
+                    // Start Date
                     Column(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(text = "START DATE", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, letterSpacing = 1.sp)
-                        OutlinedTextField(
-                            value = uiState.startDate,
-                            onValueChange = onStartDateChanged,
-                            placeholder = { Text("YYYY-MM-DD", fontSize = 12.sp, color = OnSurfaceVariant.copy(alpha = 0.5f)) },
-                            singleLine = true,
-                            shape = RoundedCornerShape(14.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                                focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                                unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                                focusedTextColor = OnSurface,
-                                unfocusedTextColor = OnSurface,
-                                cursorColor = Primary,
-                            )
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                                .clickable { showStartDatePicker = true }
+                                .padding(horizontal = 12.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.CalendarBlank,
+                                    contentDescription = "Select Start Date",
+                                    tint = Primary,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = uiState.startDate.ifBlank { "YYYY-MM-DD" },
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (uiState.startDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
                     }
+
+                    // End Date
                     Column(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(text = "END DATE", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, letterSpacing = 1.sp)
-                        OutlinedTextField(
-                            value = uiState.endDate,
-                            onValueChange = onEndDateChanged,
-                            placeholder = { Text("YYYY-MM-DD", fontSize = 12.sp, color = OnSurfaceVariant.copy(alpha = 0.5f)) },
-                            singleLine = true,
-                            shape = RoundedCornerShape(14.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                                focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                                unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                                focusedTextColor = OnSurface,
-                                unfocusedTextColor = OnSurface,
-                                cursorColor = Primary,
-                            )
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                                .clickable { showEndDatePicker = true }
+                                .padding(horizontal = 12.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.CalendarBlank,
+                                    contentDescription = "Select End Date",
+                                    tint = Primary,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = uiState.endDate.ifBlank { "YYYY-MM-DD" },
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (uiState.endDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -1435,20 +1556,22 @@ private fun AddTripDialog(
                         Text(text = "Cancel", color = OnSurfaceVariant, fontWeight = FontWeight.Medium)
                     }
                     Spacer(modifier = Modifier.width(12.dp))
-                    GlassPillButton(
+                    ClayButton(
                         onClick = onSave,
+                        containerColor = ActionPrimary,
+                        contentColor = Color.White,
                         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
                     ) {
                         Icon(
                             imageVector = PhosphorIcons.Check,
                             contentDescription = null,
-                            tint = Primary,
+                            tint = Color.White,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "Save Trip",
-                            color = Primary,
+                            color = Color.White,
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold
                         )

@@ -68,13 +68,16 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
+import com.example.nomadcompass.R
 import com.example.nomadcompass.data.local.entity.ExpenseCategory
 import com.example.nomadcompass.domain.model.AttachmentType
 import com.example.nomadcompass.domain.model.Expense
@@ -84,6 +87,7 @@ import com.example.nomadcompass.domain.model.PackingItem
 import com.example.nomadcompass.domain.model.Trip
 import com.example.nomadcompass.domain.model.TripAttachment
 import com.example.nomadcompass.ui.screens.planner.WorkspaceTab
+import com.example.nomadcompass.ui.theme.ActionPrimary
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.LocalAppBackground
 import com.example.nomadcompass.ui.theme.LocalThemeController
@@ -256,8 +260,16 @@ fun TripWorkspaceModal(
                                         contentScale = ContentScale.Crop
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
-                                } else {
+                                } else if (trip.flagEmoji.isNotBlank() && trip.flagEmoji != "✈️") {
                                     Text(text = trip.flagEmoji, fontSize = 28.sp)
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                } else {
+                                    Icon(
+                                        imageVector = PhosphorIcons.AirplaneTilt,
+                                        contentDescription = null,
+                                        tint = Primary,
+                                        modifier = Modifier.size(28.dp)
+                                    )
                                     Spacer(modifier = Modifier.width(12.dp))
                                 }
                                 Column {
@@ -568,22 +580,24 @@ private fun DocsTabContent(
     onPreviewAttachment: (TripAttachment) -> Unit,
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("All") }
-    val categories = listOf("All", "Visas", "Tickets", "Lodging", "IDs", "Notes")
 
-    val filteredAttachments = remember(attachments, selectedCategory, searchQuery) {
-        attachments.filter { item ->
-            val matchesCategory = when (selectedCategory) {
-                "All" -> true
-                "Notes" -> item.type == AttachmentType.NOTE || item.category.equals("Notes", true)
-                else -> item.category.equals(selectedCategory, true)
+    // Directive 2: Search both file type and text query directly in search bar
+    val filteredAttachments = remember(attachments, searchQuery) {
+        if (searchQuery.isBlank()) {
+            attachments
+        } else {
+            val q = searchQuery.trim()
+            attachments.filter { item ->
+                item.title.contains(q, ignoreCase = true) ||
+                    (item.content?.contains(q, ignoreCase = true) == true) ||
+                    item.category.contains(q, ignoreCase = true) ||
+                    item.type.name.contains(q, ignoreCase = true) ||
+                    item.mimeType.contains(q, ignoreCase = true) ||
+                    (q.equals("pdf", ignoreCase = true) && item.type == AttachmentType.PDF) ||
+                    ((q.equals("image", ignoreCase = true) || q.equals("photo", ignoreCase = true) || q.equals("picture", ignoreCase = true) || q.equals("img", ignoreCase = true)) && item.type == AttachmentType.IMAGE) ||
+                    ((q.equals("note", ignoreCase = true) || q.equals("notes", ignoreCase = true) || q.equals("text", ignoreCase = true)) && item.type == AttachmentType.NOTE) ||
+                    ((q.equals("doc", ignoreCase = true) || q.equals("docs", ignoreCase = true) || q.equals("document", ignoreCase = true)) && (item.type == AttachmentType.PDF || item.type == AttachmentType.NOTE))
             }
-            val matchesSearch = if (searchQuery.isBlank()) true else {
-                item.title.contains(searchQuery, true) ||
-                    (item.content?.contains(searchQuery, true) == true) ||
-                    item.category.contains(searchQuery, true)
-            }
-            matchesCategory && matchesSearch
         }
     }
 
@@ -593,90 +607,96 @@ private fun DocsTabContent(
                 .fillMaxSize()
                 .clipToBounds(),
             contentPadding = PaddingValues(bottom = 100.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Section 1: Trip Meta Overview with clean modern visual hierarchy
+            // Directive 1: Condensed, Unified Header Component (Dates & Budget)
             item(key = "overview_meta_card") {
                 ClayCard(
                     modifier = Modifier.fillMaxWidth(),
-                    cornerRadius = 20.dp,
+                    cornerRadius = 14.dp,
                     backgroundColor = SurfaceContainerLow
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Date range combined with calendar icon
+                            // Trip dates inline with calendar icon
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(SurfaceContainerHigh.copy(alpha = 0.6f))
-                                    .border(
-                                        1.dp,
-                                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                        RoundedCornerShape(12.dp)
-                                    )
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Icon(
                                     imageVector = PhosphorIcons.CalendarBlank,
                                     contentDescription = null,
                                     tint = Primary,
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(15.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "${trip.startDate} – ${trip.endDate}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = OnSurface,
-                                    fontWeight = FontWeight.SemiBold
+                                    text = if (trip.startDate.isNotBlank() && trip.endDate.isNotBlank()) {
+                                        "${trip.startDate} – ${trip.endDate}"
+                                    } else {
+                                        "Dates not set"
+                                    },
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
+                                    color = OnSurface
                                 )
                             }
 
-                            // Monthly Budget with clear label and amount
-                            Column(horizontalAlignment = Alignment.End) {
+                            // Monthly Budget inline
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
                                 Text(
-                                    text = "Monthly Budget",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = OnSurfaceVariant,
-                                    fontSize = 11.sp,
-                                    letterSpacing = 0.5.sp
+                                    text = "Budget:",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    color = OnSurfaceVariant
                                 )
                                 Text(
-                                    text = "${formatCurrencyAmount(trip.budgetUsd, currencyCode)} / mo",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Primary,
-                                    fontWeight = FontWeight.Bold
+                                    text = "${formatCurrencyAmount(trip.budgetUsd, currencyCode)}/mo",
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = Primary
                                 )
                             }
                         }
 
                         if (trip.notes.isNotBlank()) {
                             HorizontalDivider(
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-                                thickness = 0.8.dp
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f),
+                                thickness = 0.5.dp
                             )
-                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                                Text(
-                                    text = "WORKSPACE ARRANGEMENT / NOTES",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = OnSurfaceVariant,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 10.sp,
-                                    letterSpacing = 0.8.sp
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.FileText,
+                                    contentDescription = null,
+                                    tint = OnSurfaceVariant,
+                                    modifier = Modifier.size(12.dp)
                                 )
                                 Text(
                                     text = trip.notes,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = OnSurface.copy(alpha = 0.9f)
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                                    color = OnSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
@@ -684,19 +704,27 @@ private fun DocsTabContent(
                 }
             }
 
-            // Section 2: Instant Search Bar
+            // Directive 2: Standard Height Search Bar without Category Chips
             item(key = "search_bar") {
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Search docs, visas, tickets, notes...") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    placeholder = {
+                        Text(
+                            text = "Search documents, file type (PDF, image, note)...",
+                            fontSize = 13.sp,
+                            color = OnSurfaceVariant.copy(alpha = 0.6f)
+                        )
+                    },
                     leadingIcon = {
                         Icon(
                             imageVector = PhosphorIcons.MagnifyingGlass,
                             contentDescription = "Search",
                             tint = Primary,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     },
                     trailingIcon = {
@@ -712,7 +740,7 @@ private fun DocsTabContent(
                         }
                     },
                     singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
                         unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
@@ -725,42 +753,7 @@ private fun DocsTabContent(
                 )
             }
 
-            // Section 3: Category Filter Pills Row with direct item counts
-            item(key = "category_filter_pills") {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(categories) { cat ->
-                        val count = if (cat == "All") attachments.size else {
-                            if (cat == "Notes") attachments.count { it.type == AttachmentType.NOTE || it.category.equals("Notes", true) }
-                            else attachments.count { it.category.equals(cat, true) }
-                        }
-                        val isSelected = cat == selectedCategory
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .background(if (isSelected) Primary else SurfaceContainerLow)
-                                .border(
-                                    width = 1.dp,
-                                    color = if (isSelected) Primary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                    shape = RoundedCornerShape(20.dp)
-                                )
-                                .clickable { selectedCategory = cat }
-                                .padding(horizontal = 14.dp, vertical = 8.dp)
-                        ) {
-                            Text(
-                                text = "$cat ($count)",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = if (isSelected) OnPrimary else OnSurface,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Section 5: List Header
+            // Directive 4: Section Header with Standardized Typography
             item(key = "list_header") {
                 Row(
                     modifier = Modifier
@@ -771,49 +764,125 @@ private fun DocsTabContent(
                 ) {
                     Text(
                         text = "DOCUMENTS & NOTES (${filteredAttachments.size})",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Primary,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.5.sp
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.6.sp
+                        ),
+                        color = Primary
                     )
                     if (filteredAttachments.isNotEmpty()) {
                         Text(
                             text = "Tap to preview in-app",
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
                             color = OnSurfaceVariant
                         )
                     }
                 }
             }
 
-            // Empty State
+            // Directive 3: Empty State Revamp with "Start Building Your Workspace" above prominent plus button
             if (filteredAttachments.isEmpty()) {
                 item(key = "empty_state") {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 32.dp),
+                            .padding(vertical = 36.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = PhosphorIcons.FolderSimpleDashed,
-                                contentDescription = null,
-                                tint = OnSurfaceVariant.copy(alpha = 0.5f),
-                                modifier = Modifier.size(52.dp)
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = if (searchQuery.isNotBlank() || selectedCategory != "All") "No matching documents" else "Workspace is Empty",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = OnSurface
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = if (searchQuery.isNotBlank()) "Try a different search query or category filter." else "Tap '+' below to add visas, tickets, lodging vouchers, or notes.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = OnSurfaceVariant
-                            )
+                        if (searchQuery.isNotBlank()) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.MagnifyingGlass,
+                                    contentDescription = null,
+                                    tint = OnSurfaceVariant.copy(alpha = 0.4f),
+                                    modifier = Modifier.size(48.dp)
+                                )
+                                Spacer(modifier = Modifier.height(14.dp))
+                                Text(
+                                    text = "No Matching Documents",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = OnSurface
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "No files or notes match \"$searchQuery\"",
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                                    color = OnSurfaceVariant
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                TextButton(onClick = { searchQuery = "" }) {
+                                    Text(text = "Clear Search", color = Primary, fontWeight = FontWeight.SemiBold)
+                                }
+                            }
+                        } else {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(CircleShape)
+                                        .background(Primary.copy(alpha = 0.12f))
+                                        .border(1.dp, Primary.copy(alpha = 0.28f), CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.FolderSimpleDashed,
+                                        contentDescription = null,
+                                        tint = Primary,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Start Building Your Workspace",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = OnSurface,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "Keep visas, tickets, lodging vouchers, and trip notes organized.",
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                                    color = OnSurfaceVariant,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = 24.dp)
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                                ClayButton(
+                                    onClick = onAddChoiceClick,
+                                    containerColor = ActionPrimary,
+                                    contentColor = Color.White,
+                                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 13.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.Plus,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Add Document or Note",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.labelLarge.copy(
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -838,23 +907,25 @@ private fun DocsTabContent(
         }
 
         // Floating Circular '+' Button at Bottom-Right for Docs
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 12.dp, end = 12.dp)
-                .size(58.dp)
-                .clip(CircleShape)
-                .background(PrimaryContainer)
-                .border(1.5.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                .clickable(onClick = onAddChoiceClick),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = PhosphorIcons.Plus,
-                contentDescription = "Add Item to Workspace",
-                tint = OnPrimary,
-                modifier = Modifier.size(30.dp)
-            )
+        if (filteredAttachments.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 12.dp, end = 12.dp)
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(ActionPrimary)
+                    .border(1.5.dp, Color.White.copy(alpha = 0.35f), CircleShape)
+                    .clickable(onClick = onAddChoiceClick),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = PhosphorIcons.Plus,
+                    contentDescription = "Add Item to Workspace",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
     }
 }
@@ -1152,12 +1223,30 @@ private fun ItineraryTimelineCard(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Text(
-                            text = "${event.category.emoji} ${event.category.displayName}",
-                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
-                            color = event.category.defaultColor,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (event.category == ItineraryCategory.FLIGHT) {
+                                Icon(
+                                    imageVector = PhosphorIcons.AirplaneTilt,
+                                    contentDescription = null,
+                                    tint = event.category.defaultColor,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = event.category.displayName,
+                                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                                    color = event.category.defaultColor,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            } else {
+                                Text(
+                                    text = "${event.category.emoji} ${event.category.displayName}",
+                                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                                    color = event.category.defaultColor,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -1345,13 +1434,32 @@ private fun AddEditItineraryEventDialog(
                                 .clickable { selectedCategory = cat }
                                 .padding(horizontal = 10.dp, vertical = 5.dp)
                         ) {
-                            Text(
-                                text = "${cat.emoji} ${cat.displayName}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = if (isSelected) OnPrimary else OnSurface,
-                                fontSize = 10.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                if (cat == ItineraryCategory.FLIGHT) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.AirplaneTilt,
+                                        contentDescription = null,
+                                        tint = if (isSelected) OnPrimary else OnSurface,
+                                        modifier = Modifier.size(12.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = cat.displayName,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = if (isSelected) OnPrimary else OnSurface,
+                                        fontSize = 10.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                } else {
+                                    Text(
+                                        text = "${cat.emoji} ${cat.displayName}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = if (isSelected) OnPrimary else OnSurface,
+                                        fontSize = 10.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -1712,13 +1820,13 @@ private fun UnifiedAttachmentCard(
                     onPreview()
                 }
             },
-        cornerRadius = 18.dp,
+        cornerRadius = 16.dp,
         backgroundColor = SurfaceContainerLow
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(14.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1845,14 +1953,15 @@ private fun UnifiedAttachmentCard(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(4.dp))
                                 .background(typeBadgeBg)
-                                .padding(horizontal = 5.dp, vertical = 1.dp)
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text = typeBadgeText,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = typeBadgeColor,
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.5.sp
                             )
                         }
 
@@ -1862,26 +1971,29 @@ private fun UnifiedAttachmentCard(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(4.dp))
                                     .background(Primary.copy(alpha = 0.12f))
-                                    .padding(horizontal = 6.dp, vertical = 1.dp)
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
                                 Text(
                                     text = attachment.category.uppercase(),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = Primary,
-                                    fontSize = 8.sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 0.5.sp
                                 )
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
 
                     Text(
                         text = attachment.title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
                         color = OnSurface,
-                        fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -1891,13 +2003,13 @@ private fun UnifiedAttachmentCard(
                     if (attachment.type == AttachmentType.NOTE) {
                         Text(
                             text = if (isExpanded) "Tap to collapse note" else "Tap to preview or expand note",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Primary.copy(alpha = 0.8f)
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                            color = Primary.copy(alpha = 0.85f)
                         )
                     } else {
                         Text(
                             text = FileStorageHelper.formatFileSize(attachment.fileSize),
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                             color = OnSurfaceVariant
                         )
                     }
@@ -1950,10 +2062,12 @@ private fun UnifiedAttachmentCard(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "PREVIEW",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = com.example.nomadcompass.ui.theme.OnPrimaryContainer,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 9.sp
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        letterSpacing = 0.5.sp
+                                    ),
+                                    color = com.example.nomadcompass.ui.theme.OnPrimaryContainer
                                 )
                             }
                         }
@@ -2140,8 +2254,18 @@ private fun InAppAttachmentPreviewDialog(
                         when (attachment.type) {
                             AttachmentType.PDF -> {
                                 if (isLoadingPages) {
-                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        CircularProgressIndicator(color = Primary, modifier = Modifier.size(36.dp))
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier.padding(24.dp)
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.app_logo),
+                                            contentDescription = "Loading PDF",
+                                            modifier = Modifier.size(72.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(14.dp))
+                                        NomadLightLoadingBar(width = 140.dp, height = 4.dp)
                                         Spacer(modifier = Modifier.height(10.dp))
                                         Text(
                                             text = "Rendering PDF pages...",

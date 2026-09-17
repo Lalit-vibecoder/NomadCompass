@@ -76,7 +76,10 @@ import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.bounceClick
 import com.example.nomadcompass.ui.components.bounceOnState
 import com.example.nomadcompass.ui.components.clayShadow
+import com.example.nomadcompass.ui.theme.ActionPrimary
 import com.example.nomadcompass.ui.theme.Background
+import com.example.nomadcompass.ui.theme.GlassCardBackground
+import com.example.nomadcompass.ui.theme.GlassCardBorder
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.MossButtonBorder
 import com.example.nomadcompass.ui.theme.MossButtonGradientEnd
@@ -520,36 +523,36 @@ private fun SageDestinationCard(
         )
     }
 
-    val cardBgBrush = remember(isDark) {
+    val cardBgBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                sageGradientStart.copy(alpha = if (isDark) 0.65f else 0.78f),
-                sageGradientEnd.copy(alpha = if (isDark) 0.50f else 0.65f)
+                GlassCardBackground,
+                GlassCardBackground
             )
         )
     }
-    val cardSheenBrush = remember(isDark) {
+    val cardSheenBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = if (isDark) 0.15f else 0.25f),
-                Color.White.copy(alpha = if (isDark) 0.03f else 0.08f),
+                Color.White.copy(alpha = 0.08f),
+                Color.White.copy(alpha = 0.02f),
                 Color.Transparent
             )
         )
     }
-    val cardBorderBrush = remember(isDark) {
+    val cardBorderBrush = remember {
         Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = if (isDark) 0.35f else 0.52f),
-                Color.White.copy(alpha = if (isDark) 0.10f else 0.20f)
+                GlassCardBorder,
+                GlassCardBorder
             )
         )
     }
-    val cardSpecularBrush = remember(isDark) {
+    val cardSpecularBrush = remember {
         Brush.horizontalGradient(
             colors = listOf(
                 Color.Transparent,
-                Color.White.copy(alpha = if (isDark) 0.40f else 0.65f),
+                Color.White.copy(alpha = 0.25f),
                 Color.Transparent
             )
         )
@@ -566,7 +569,7 @@ private fun SageDestinationCard(
 
     // Animated heart color and scale for interactive favoriting micro-interaction
     val heartColor by animateColorAsState(
-        targetValue = if (country.isFavorite) Color(0xFFFF4B60) else Color.White,
+        targetValue = if (country.isFavorite) ActionPrimary else Color.White,
         animationSpec = tween(250),
         label = "heartColor"
     )
@@ -632,28 +635,23 @@ private fun SageDestinationCard(
                     .background(brush = darkOverlayBrush)
             )
 
-            // Top-Left Frosted Sage Notch for Destination Title (matching "Bali" in image)
+            // Top-Left Frosted Dark Glass Notch for Destination Title
             Box(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .clip(titleNotchShape)
-                    .background(sageSolid.copy(alpha = if (isDark) 0.85f else 0.92f))
+                    .background(Color(0xCC121212))
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = if (isDark) 0.22f else 0.32f),
-                                Color.White.copy(alpha = 0.05f)
+                                Color.White.copy(alpha = 0.08f),
+                                Color.White.copy(alpha = 0.02f)
                             )
                         )
                     )
                     .border(
                         width = 1.dp,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.50f),
-                                Color.White.copy(alpha = 0.20f)
-                            )
-                        ),
+                        color = GlassCardBorder,
                         shape = titleNotchShape
                     )
                     .padding(horizontal = 18.dp, vertical = 10.dp),
@@ -661,10 +659,10 @@ private fun SageDestinationCard(
             ) {
                 Text(
                     text = country.commonName,
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = (-0.5).sp
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = (-0.3).sp
                     ),
                     color = Color.White,
                     maxLines = 1,
@@ -687,17 +685,10 @@ private fun SageDestinationCard(
                         blurRadius = 8.dp
                     )
                     .clip(CircleShape)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = if (isDark) 0.28f else 0.40f),
-                                Color.Black.copy(alpha = if (isDark) 0.45f else 0.25f)
-                            )
-                        )
-                    )
+                    .background(Color(0xCC121212))
                     .border(
                         width = 1.2.dp,
-                        color = if (country.isFavorite) Color(0xFFFF4B60).copy(alpha = 0.6f) else Color.White.copy(alpha = if (isDark) 0.40f else 0.55f),
+                        color = if (country.isFavorite) ActionPrimary.copy(alpha = 0.7f) else GlassCardBorder,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -715,28 +706,23 @@ private fun SageDestinationCard(
                 )
             }
 
-            // Bottom-Right Frosted Sage Notch for Country / Region Location (matching "📍 Indonesia" in image)
+            // Bottom-Right Frosted Dark Glass Notch for Country / Region Location
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .clip(locationNotchShape)
-                    .background(sageSolid.copy(alpha = if (isDark) 0.75f else 0.88f))
+                    .background(Color(0xCC121212))
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = if (isDark) 0.18f else 0.28f),
-                                Color.White.copy(alpha = 0.04f)
+                                Color.White.copy(alpha = 0.08f),
+                                Color.White.copy(alpha = 0.02f)
                             )
                         )
                     )
                     .border(
                         width = 1.dp,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.40f),
-                                Color.White.copy(alpha = 0.15f)
-                            )
-                        ),
+                        color = GlassCardBorder,
                         shape = locationNotchShape
                     )
                     .padding(horizontal = 16.dp, vertical = 9.dp),
@@ -751,13 +737,13 @@ private fun SageDestinationCard(
                         modifier = Modifier
                             .size(18.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFFE53935).copy(alpha = 0.20f)),
+                            .background(ActionPrimary.copy(alpha = 0.20f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = PhosphorIcons.MapPin,
                             contentDescription = null,
-                            tint = Color(0xFFFF5252),
+                            tint = ActionPrimary,
                             modifier = Modifier.size(14.dp)
                         )
                     }
@@ -765,7 +751,7 @@ private fun SageDestinationCard(
                     Text(
                         text = country.region.ifBlank { country.commonName },
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 15.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold
                         ),
                         color = Color.White

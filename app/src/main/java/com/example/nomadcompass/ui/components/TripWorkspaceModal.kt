@@ -8,10 +8,14 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.ui.draw.blur
 import androidx.compose.foundation.Image
@@ -226,15 +230,25 @@ fun TripWorkspaceModal(
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                ClayCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.94f)
-                        .blur(workspaceBlur),
-                    cornerRadius = 28.dp,
-                    backgroundColor = SurfaceContainer
+                var isModalVisible by remember { mutableStateOf(false) }
+                LaunchedEffect(Unit) {
+                    isModalVisible = true
+                }
+
+                AnimatedVisibility(
+                    visible = isModalVisible,
+                    enter = fadeIn(tween(200, easing = FastOutSlowInEasing)) + scaleIn(initialScale = 0.94f, animationSpec = tween(200, easing = FastOutSlowInEasing)),
+                    exit = fadeOut(tween(160, easing = FastOutSlowInEasing)) + scaleOut(targetScale = 0.96f, animationSpec = tween(160, easing = FastOutSlowInEasing))
                 ) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                    ClayCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.94f)
+                            .blur(workspaceBlur),
+                        cornerRadius = 28.dp,
+                        backgroundColor = SurfaceContainer
+                    ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -382,6 +396,7 @@ fun TripWorkspaceModal(
             }
         }
     }
+}
 }
 
     // Delete Trip Confirmation Dialog

@@ -632,8 +632,12 @@ private fun SageTripCard(
 
                     Spacer(modifier = Modifier.width(10.dp))
 
+                    val standardizedCountryName = remember(trip.countryName, trip.destinationCca3) {
+                        trip.countryName.ifBlank { trip.destinationCca3.uppercase() }.trim()
+                    }
+
                     Text(
-                        text = trip.countryName.ifBlank { trip.destinationCca3 },
+                        text = standardizedCountryName,
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontSize = 17.sp,
                             fontWeight = FontWeight.SemiBold
@@ -830,34 +834,49 @@ private fun EditTripDetailsDialog(
                             color = OnSurface,
                             fontWeight = FontWeight.Bold
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (trip.flagUrl.isNotBlank()) {
-                                AsyncImage(
-                                    model = trip.flagUrl,
-                                    contentDescription = trip.countryName,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .clip(CircleShape)
+                        val standardizedCountryName = remember(trip.countryName, trip.destinationCca3) {
+                            trip.countryName.ifBlank { trip.destinationCca3.uppercase() }.trim()
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(9999.dp))
+                                .background(SurfaceContainerHigh.copy(alpha = 0.85f))
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f), RoundedCornerShape(9999.dp))
+                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                if (trip.flagUrl.isNotBlank()) {
+                                    AsyncImage(
+                                        model = trip.flagUrl,
+                                        contentDescription = standardizedCountryName,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                            .clip(CircleShape)
+                                    )
+                                } else if (trip.flagEmoji.isNotBlank() && trip.flagEmoji != "✈️") {
+                                    Text(text = trip.flagEmoji, fontSize = 13.sp)
+                                } else {
+                                    Icon(
+                                        imageVector = PhosphorIcons.AirplaneTilt,
+                                        contentDescription = null,
+                                        tint = Primary,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                }
+                                Text(
+                                    text = standardizedCountryName,
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 12.sp
+                                    ),
+                                    color = OnSurface
                                 )
-                                Spacer(modifier = Modifier.width(6.dp))
-                            } else if (trip.flagEmoji.isNotBlank() && trip.flagEmoji != "✈️") {
-                                Text(text = trip.flagEmoji, fontSize = 13.sp)
-                                Spacer(modifier = Modifier.width(6.dp))
-                            } else {
-                                Icon(
-                                    imageVector = PhosphorIcons.AirplaneTilt,
-                                    contentDescription = null,
-                                    tint = Primary,
-                                    modifier = Modifier.size(14.dp)
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
                             }
-                            Text(
-                                text = trip.countryName.ifBlank { trip.destinationCca3 },
-                                style = MaterialTheme.typography.bodySmall,
-                                color = OnSurfaceVariant
-                            )
                         }
                     }
                 }
@@ -1524,26 +1543,121 @@ private fun AddTripDialog(
                     )
                 }
 
-                // Notes Field
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(text = "REMOTE WORK NOTES", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, letterSpacing = 1.sp)
-                    OutlinedTextField(
-                        value = uiState.notes,
-                        onValueChange = onNotesChanged,
-                        placeholder = { Text("e.g. Co-working, e-SIM setup...", color = OnSurfaceVariant.copy(alpha = 0.5f)) },
-                        singleLine = true,
-                        shape = RoundedCornerShape(14.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                            unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                            focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface,
-                            cursorColor = Primary,
-                        )
+                // Travelling For Dropdown Field
+                val travelReasons = remember {
+                    listOf(
+                        "💻 Digital Nomad / Remote Work",
+                        "🏖️ Vacation & Tourism",
+                        "🏡 Workation (Work + Leisure)",
+                        "💼 Business & Networking",
+                        "🎒 Solo Backpacking & Exploration",
+                        "📍 Relocation & Scouting",
+                        "🎓 Study & Research",
+                        "🎪 Conference & Events",
+                        "✨ Other / Custom..."
                     )
+                }
+                var isTravellingForExpanded by remember { mutableStateOf(false) }
+                var isCustomReason by remember { mutableStateOf(false) }
+
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        text = "TRAVELLING FOR",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnSurfaceVariant,
+                        letterSpacing = 1.sp
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                            .border(
+                                width = 1.dp,
+                                color = if (isTravellingForExpanded) Primary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                                shape = RoundedCornerShape(14.dp)
+                            )
+                            .clickable { isTravellingForExpanded = !isTravellingForExpanded }
+                            .padding(horizontal = 14.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = uiState.notes.ifBlank { "Select reason for travel..." },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (uiState.notes.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Icon(
+                                imageVector = if (isTravellingForExpanded) PhosphorIcons.CaretUp else PhosphorIcons.CaretDown,
+                                contentDescription = "Expand travelling options",
+                                tint = Primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = isTravellingForExpanded,
+                            onDismissRequest = { isTravellingForExpanded = false },
+                            modifier = Modifier
+                                .fillMaxWidth(0.82f)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(SurfaceContainerHigh)
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                        ) {
+                            travelReasons.forEach { reason ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = reason,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = if (uiState.notes == reason) Primary else OnSurface,
+                                            fontWeight = if (uiState.notes == reason) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                    },
+                                    onClick = {
+                                        if (reason.contains("Custom")) {
+                                            isCustomReason = true
+                                            onNotesChanged("")
+                                        } else {
+                                            isCustomReason = false
+                                            onNotesChanged(reason)
+                                        }
+                                        isTravellingForExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    // If user selects custom or has entered custom notes
+                    if (isCustomReason || (uiState.notes.isNotBlank() && travelReasons.none { it == uiState.notes })) {
+                        OutlinedTextField(
+                            value = uiState.notes,
+                            onValueChange = onNotesChanged,
+                            placeholder = { Text("Enter custom travel purpose or notes...", color = OnSurfaceVariant.copy(alpha = 0.5f), fontSize = 13.sp) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                                unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
+                                focusedTextColor = OnSurface,
+                                unfocusedTextColor = OnSurface,
+                                cursorColor = Primary,
+                            )
+                        )
+                    }
                 }
 
                 // Action Buttons Row

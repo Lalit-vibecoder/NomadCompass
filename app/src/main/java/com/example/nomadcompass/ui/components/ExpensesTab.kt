@@ -303,7 +303,7 @@ private fun BudgetSummaryCard(
     val progress = if (tripBudgetHome > 0) (totalSpentHome / tripBudgetHome).toFloat().coerceIn(0f, 1f) else 0f
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
-        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
         label = "budgetProgress"
     )
 

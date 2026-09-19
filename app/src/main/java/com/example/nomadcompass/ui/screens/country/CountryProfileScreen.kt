@@ -29,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.CircularProgressIndicator
 import java.io.File
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -49,6 +50,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
 import com.example.nomadcompass.ui.components.GlassPillButton
@@ -57,7 +59,10 @@ import com.example.nomadcompass.ui.components.CurrencyConverterModal
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.util.CurrencyFormatter
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Locale
+import com.example.nomadcompass.ui.theme.ActionPrimary
 import com.example.nomadcompass.ui.theme.Background
 import com.example.nomadcompass.ui.theme.LocalThemeController
 import com.example.nomadcompass.ui.theme.OnPrimary
@@ -100,87 +105,133 @@ fun CountryProfileScreen(
         modifier = Modifier.blur(converterBlur),
         topBar = {
             val isDark = LocalThemeController.current.isDarkMode
-            // Header Top Navigation with System Status Bar Padding & Subtle Frosted Glass Look
-            Row(
+            val currentDateText = remember {
+                val now = LocalDate.now()
+                val formatter = DateTimeFormatter.ofPattern("EEE. d MMMM", Locale.ENGLISH)
+                now.format(formatter)
+            }
+            val greetingName = uiState.userProfile?.userName?.takeIf { it.isNotBlank() } ?: "Nomad"
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                SurfaceContainerHigh.copy(alpha = if (isDark) 0.65f else 0.80f),
-                                SurfaceContainerHigh.copy(alpha = if (isDark) 0.45f else 0.60f)
+                                Color(0xFF132A22).copy(alpha = 0.85f),
+                                Color(0xFF132A22).copy(alpha = 0.40f),
+                                Color.Transparent
                             )
                         )
-                    )
-                    .border(
-                        width = 1.dp,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = if (isDark) 0.20f else 0.35f),
-                                Color.White.copy(alpha = 0.05f)
-                            )
-                        ),
-                        shape = RectangleShape
                     )
                     .statusBarsPadding()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.20f))
-                        .border(
-                            width = 1.dp,
-                            color = Color.White.copy(alpha = if (isDark) 0.25f else 0.40f),
-                            shape = CircleShape
-                        )
-                        .bounceClick(scaleDown = 0.97f, onClick = onExploreClick)
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.CenterStart
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = PhosphorIcons.MagnifyingGlass, contentDescription = null, tint = Primary, modifier = Modifier.size(22.dp))
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(text = "Search destinations...", style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
+                    // Profile Avatar on Left
+                    val photoUri = uiState.userProfile?.photoUri
+                    val photoFile = remember(photoUri) {
+                        if (!photoUri.isNullOrBlank()) File(photoUri).takeIf { it.exists() } else null
                     }
-                }
 
-                // Profile Avatar on Right
-                val photoUri = uiState.userProfile?.photoUri
-                val photoFile = remember(photoUri) {
-                    if (!photoUri.isNullOrBlank()) File(photoUri).takeIf { it.exists() } else null
-                }
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .bounceClick(onClick = onProfileClick)
+                            .clayShadow(
+                                cornerRadius = 9999.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.40f else 0.15f),
+                                spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.50f else 0.20f),
+                                blurRadius = 6.dp
+                            )
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = if (isDark) 0.15f else 0.25f))
+                            .border(1.2.dp, Color.White.copy(alpha = if (isDark) 0.35f else 0.50f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (photoFile != null) {
+                            AsyncImage(
+                                model = photoFile,
+                                contentDescription = "Profile",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            Icon(
+                                imageVector = PhosphorIcons.UserCircle,
+                                contentDescription = "Profile",
+                                tint = OnSurface,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
 
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(SecondaryContainer)
-                        .border(1.5.dp, if (photoFile != null) Primary else Secondary.copy(alpha = 0.4f), CircleShape)
-                        .bounceClick(onClick = onProfileClick),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (photoFile != null) {
-                        AsyncImage(
-                            model = photoFile,
-                            contentDescription = "Profile",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    // Date & Greeting Column
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = currentDateText,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            color = OnSurfaceVariant,
+                            maxLines = 1
                         )
-                    } else {
-                        Icon(imageVector = PhosphorIcons.GearSix, contentDescription = "Settings", tint = OnSurface, modifier = Modifier.size(22.dp))
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Hello $greetingName",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = OnSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    // Gear Icon Button on Right
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .bounceClick(onClick = onProfileClick)
+                            .clayShadow(
+                                cornerRadius = 9999.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f),
+                                spotShadowColor = Color.Black.copy(alpha = if (isDark) 0.45f else 0.18f),
+                                blurRadius = 6.dp
+                            )
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = if (isDark) 0.14f else 0.22f))
+                            .border(
+                                width = 1.dp,
+                                color = Color.White.copy(alpha = if (isDark) 0.28f else 0.45f),
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = PhosphorIcons.GearSix,
+                            contentDescription = "Settings",
+                            tint = OnSurface,
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 }
             }
         },
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            val isDark = LocalThemeController.current.isDarkMode
-            // Floating Action Button - Glass Pill elevated above bottom navigation bar
-            GlassPillButton(
+            // Sticky Plan Trip Bar positioned just above the bottom navigation bar
+            ClayButton(
                 onClick = {
                     val currentCca3 = uiState.detail?.country?.cca3
                     if (currentCca3 != null) {
@@ -189,31 +240,26 @@ fun CountryProfileScreen(
                         onPlannerClick()
                     }
                 },
+                containerColor = ActionPrimary,
+                contentColor = Color.White,
                 modifier = Modifier
-                    .navigationBarsPadding()
-                    .padding(bottom = 88.dp),
-                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 68.dp)
+                    .height(52.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(Primary.copy(alpha = if (isDark) 0.25f else 0.15f))
-                        .border(1.dp, Primary.copy(alpha = if (isDark) 0.45f else 0.30f), CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = PhosphorIcons.Plus,
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+                Icon(
+                    imageVector = PhosphorIcons.Plus,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "PLAN TRIP",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Primary,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -232,16 +278,15 @@ fun CountryProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding())
                     .clipToBounds()
                     .verticalScroll(rememberScrollState())
-                    .padding(bottom = 110.dp)
+                    .padding(bottom = 160.dp)
             ) {
                 // Hero Banner
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(360.dp)
+                        .height(380.dp)
                 ) {
                     AsyncImage(
                         model = country.flagUrl,

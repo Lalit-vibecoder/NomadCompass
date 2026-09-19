@@ -32,8 +32,11 @@ object FileStorageHelper {
                 dir.mkdirs()
             }
 
+            // Sanitize file name to prevent path traversal vulnerabilities
+            val sanitizedFileName = File(fileName).name.replace(Regex("[^a-zA-Z0-9._-]"), "_").ifBlank { "attachment" }
+
             // Generate unique local file to prevent overwriting
-            val destinationFile = File(dir, "${System.currentTimeMillis()}_$fileName")
+            val destinationFile = File(dir, "${System.currentTimeMillis()}_$sanitizedFileName")
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 FileOutputStream(destinationFile).use { outputStream ->
                     inputStream.copyTo(outputStream)

@@ -6,7 +6,7 @@
 
     <application
         android:name=".NomadCompassApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -41,8 +41,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.example.nomadcompass.action.TOGGLE_PACKING_ITEM" />
-                <action android:name="com.example.nomadcompass.action.REFRESH_PACKING_WIDGET" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

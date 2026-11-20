@@ -458,6 +458,7 @@ fun PlannerScreen(
             onUpdateNoteAttachment = { id, title, text -> viewModel.updateNoteAttachment(id, title, text) },
             onMoveAttachment = viewModel::moveAttachment,
             onDeleteAttachment = viewModel::deleteAttachment,
+            onEditTrip = { editingTripDetails = uiState.activeWorkspaceTrip },
             onDeleteTrip = { viewModel.deleteTrip(uiState.activeWorkspaceTrip!!.id) },
             onDismiss = viewModel::closeTripWorkspace
         )

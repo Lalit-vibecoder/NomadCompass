@@ -164,10 +164,12 @@ fun TripWorkspaceModal(
     onUpdateNoteAttachment: (id: Long, title: String, text: String) -> Unit,
     onMoveAttachment: (fromIndex: Int, toIndex: Int) -> Unit,
     onDeleteAttachment: (Long) -> Unit,
+    onEditTrip: () -> Unit = {},
     onDeleteTrip: () -> Unit = {},
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
+    var isOverflowMenuOpen by remember { mutableStateOf(false) }
     var isAddChoiceMenuOpen by remember { mutableStateOf(false) }
     var isAddNoteDialogOpen by remember { mutableStateOf(false) }
     var isAddPackingDialogOpen by remember { mutableStateOf(false) }
@@ -218,14 +220,15 @@ fun TripWorkspaceModal(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        DialogBlurBehind(blurRadius = 32)
+        DialogBlurBehind(blurRadius = 24)
         AppBackground(
             bgPhotoUri = bgPhotoUri,
-            blurRadius = bgBlurRadius
+            blurRadius = 24f
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color(0xFF0B0F19).copy(alpha = 0.88f))
                     .statusBarsPadding()
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
@@ -303,17 +306,55 @@ fun TripWorkspaceModal(
                                 }
                             }
 
-                            // Header Actions: Delete Trip & Close Workspace
+                            // Header Actions: 3-Dot Overflow Menu (Edit & Delete) + Close Workspace
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                IconButton(onClick = { isDeleteTripConfirmOpen = true }) {
-                                    Icon(
-                                        imageVector = PhosphorIcons.Trash,
-                                        contentDescription = "Delete Trip",
-                                        tint = Color(0xFFEF5350)
-                                    )
+                                Box {
+                                    IconButton(onClick = { isOverflowMenuOpen = true }) {
+                                        Icon(
+                                            imageVector = PhosphorIcons.DotsThreeVertical,
+                                            contentDescription = "Trip Options",
+                                            tint = OnSurfaceVariant
+                                        )
+                                    }
+                                    DropdownMenu(
+                                        expanded = isOverflowMenuOpen,
+                                        onDismissRequest = { isOverflowMenuOpen = false },
+                                        modifier = Modifier.background(SurfaceContainer)
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("Edit Trip", color = OnSurface) },
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = PhosphorIcons.PencilSimple,
+                                                    contentDescription = null,
+                                                    tint = Primary,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                            },
+                                            onClick = {
+                                                isOverflowMenuOpen = false
+                                                onEditTrip()
+                                            }
+                                        )
+                                        DropdownMenuItem(
+                                            text = { Text("Delete Trip", color = Color(0xFFEF5350)) },
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = PhosphorIcons.Trash,
+                                                    contentDescription = null,
+                                                    tint = Color(0xFFEF5350),
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                            },
+                                            onClick = {
+                                                isOverflowMenuOpen = false
+                                                isDeleteTripConfirmOpen = true
+                                            }
+                                        )
+                                    }
                                 }
                                 IconButton(onClick = onDismiss) {
                                     Icon(
@@ -945,6 +986,27 @@ private fun DocsTabContent(
     }
 }
 
+private fun formatTripDateRange(startDateStr: String, endDateStr: String): String {
+    return try {
+        val start = java.time.LocalDate.parse(startDateStr.trim())
+        val end = java.time.LocalDate.parse(endDateStr.trim())
+        val days = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1
+        val monthDayFormatter = java.time.format.DateTimeFormatter.ofPattern("MMM d", java.util.Locale.ENGLISH)
+        val startFormatted = start.format(monthDayFormatter)
+        val endFormatted = end.format(monthDayFormatter)
+        val daysLabel = if (days == 1L) "1 Day" else "$days Days"
+        if (start.year == end.year) {
+            "$startFormatted – $endFormatted, ${end.year} • $daysLabel"
+        } else {
+            "$startFormatted, ${start.year} – $endFormatted, ${end.year} • $daysLabel"
+        }
+    } catch (_: Exception) {
+        if (startDateStr.isNotBlank() && endDateStr.isNotBlank()) {
+            "$startDateStr to $endDateStr"
+        } else startDateStr.ifBlank { endDateStr }
+    }
+}
+
 @Composable
 private fun ItineraryTabContent(
     trip: Trip,
@@ -987,7 +1049,7 @@ private fun ItineraryTabContent(
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
-                                    text = "${trip.startDate} to ${trip.endDate}",
+                                    text = formatTripDateRange(trip.startDate, trip.endDate),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = Primary,
                                     fontWeight = FontWeight.SemiBold
@@ -1021,79 +1083,81 @@ private fun ItineraryTabContent(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(14.dp))
+                        if (itineraryEvents.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(14.dp))
 
-                        // Action Buttons Row: Offline Extractor + Add Event
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            // Offline Extractor Button (Highlighted)
-                            Box(
-                                modifier = Modifier
-                                    .weight(1.3f)
-                                    .bounceClick(scaleDown = 0.96f, onClick = onOpenExtractor)
-                                    .clip(RoundedCornerShape(9999.dp))
-                                    .background(
-                                        brush = Brush.horizontalGradient(
-                                            colors = listOf(
-                                                PrimaryContainer,
-                                                Primary.copy(alpha = 0.85f)
+                            // Action Buttons Row: Offline Extractor + Add Event
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                // Offline Extractor Button (Highlighted)
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1.3f)
+                                        .bounceClick(scaleDown = 0.96f, onClick = onOpenExtractor)
+                                        .clip(RoundedCornerShape(9999.dp))
+                                        .background(
+                                            brush = Brush.horizontalGradient(
+                                                colors = listOf(
+                                                    PrimaryContainer,
+                                                    Primary.copy(alpha = 0.85f)
+                                                )
                                             )
                                         )
-                                    )
-                                    .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
-                                    .padding(vertical = 10.dp, horizontal = 12.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
+                                        .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                                        .padding(vertical = 10.dp, horizontal = 12.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
-                                        imageVector = PhosphorIcons.Sparkle,
-                                        contentDescription = null,
-                                        tint = OnPrimary,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "AI Generator",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = OnPrimary,
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = PhosphorIcons.Sparkle,
+                                            contentDescription = null,
+                                            tint = OnPrimary,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            text = "AI Generator",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = OnPrimary,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 }
-                            }
 
-                            // Manual Add Button
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .bounceClick(scaleDown = 0.96f, onClick = onAddEventClick)
-                                    .clip(RoundedCornerShape(9999.dp))
-                                    .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.22f))
-                                    .border(1.dp, Color.White.copy(alpha = if (isDark) 0.25f else 0.40f), RoundedCornerShape(9999.dp))
-                                    .padding(vertical = 10.dp, horizontal = 12.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
+                                // Manual Add Button
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .bounceClick(scaleDown = 0.96f, onClick = onAddEventClick)
+                                        .clip(RoundedCornerShape(9999.dp))
+                                        .background(Color.White.copy(alpha = if (isDark) 0.12f else 0.22f))
+                                        .border(1.dp, Color.White.copy(alpha = if (isDark) 0.25f else 0.40f), RoundedCornerShape(9999.dp))
+                                        .padding(vertical = 10.dp, horizontal = 12.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
-                                        imageVector = PhosphorIcons.Plus,
-                                        contentDescription = null,
-                                        tint = OnSurface,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text = "Add Event",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = OnSurface,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = PhosphorIcons.Plus,
+                                            contentDescription = null,
+                                            tint = OnSurface,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = "Add Event",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = OnSurface,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -1131,35 +1195,74 @@ private fun ItineraryTabContent(
                                     modifier = Modifier.size(28.dp)
                                 )
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(14.dp))
                             Text(
-                                text = "No Itinerary Events Yet",
+                                text = "Your itinerary is empty",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = OnSurface,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = "Ingest unformatted text, PDFs, HTML, or screenshots to extract flights, hotels, and activities on-device.",
+                                text = "Generate a day-by-day plan with AI, import a trip using your 6-digit web sync code, or add events manually.",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = OnSurfaceVariant,
-                                modifier = Modifier.padding(horizontal = 12.dp),
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                textAlign = TextAlign.Center
                             )
-                            Spacer(modifier = Modifier.height(18.dp))
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                            GlassPillButton(
-                                onClick = onOpenExtractor,
-                                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
+                            // Primary full-width gradient button: "Generate Itinerary with AI"
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .bounceClick(scaleDown = 0.97f, onClick = onOpenExtractor)
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            colors = listOf(
+                                                PrimaryContainer,
+                                                Primary.copy(alpha = 0.9f)
+                                            )
+                                        )
+                                    )
+                                    .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                                    .padding(vertical = 12.dp, horizontal = 20.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    imageVector = PhosphorIcons.Sparkle,
-                                    contentDescription = null,
-                                    tint = Primary,
-                                    modifier = Modifier.size(16.dp)
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.Sparkle,
+                                        contentDescription = null,
+                                        tint = OnPrimary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Generate Itinerary with AI",
+                                        style = MaterialTheme.typography.labelLarge,
+                                        color = OnPrimary,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Tertiary clickable text button below: "+ Add Event Manually"
+                            TextButton(
+                                onClick = onAddEventClick,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "+ Add Event Manually",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = Primary,
+                                    fontWeight = FontWeight.SemiBold
                                 )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("✨ Generate AI Itinerary", color = Primary, fontWeight = FontWeight.Bold)
                             }
                         }
                     }

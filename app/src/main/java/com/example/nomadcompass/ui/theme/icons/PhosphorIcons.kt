@@ -621,6 +621,23 @@ object PhosphorIcons {
         }
     }
 
+    val DotsThreeVertical: ImageVector = phosphorVector("DotsThreeVertical") {
+        strokePath(strokeWidth = 18f) {
+            moveTo(128f, 60f)
+            arcTo(16f, 16f, 0f, true, true, 128f, 28f)
+            arcTo(16f, 16f, 0f, false, true, 128f, 60f)
+            close()
+            moveTo(128f, 144f)
+            arcTo(16f, 16f, 0f, true, true, 128f, 112f)
+            arcTo(16f, 16f, 0f, false, true, 128f, 144f)
+            close()
+            moveTo(128f, 228f)
+            arcTo(16f, 16f, 0f, true, true, 128f, 196f)
+            arcTo(16f, 16f, 0f, false, true, 128f, 228f)
+            close()
+        }
+    }
+
     val DotsSixVertical: ImageVector = phosphorVector("DotsSixVertical") {
         strokePath(strokeWidth = 18f) {
             moveTo(96f, 72f)

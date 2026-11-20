@@ -48,6 +48,11 @@ import androidx.compose.ui.unit.sp
 import com.example.nomadcompass.R
 import com.example.nomadcompass.ui.theme.OnSurface
 import com.example.nomadcompass.ui.theme.OnSurfaceVariant
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 
 /**
  * Luminous light loading bar with support for both indeterminate
@@ -135,88 +140,49 @@ fun NomadLightLoadingBar(
 }
 
 /**
- * Custom animated loading view for NomadCompass.
- * Displays the Nomad Compass brand logo with a light loading bar below it,
- * breathing status typography, and branded subtitle.
+ * Animated Paperplane Loading Screen.
+ * Renders the animated Paperplane vector loading screen centered
+ * on the exact same background as the other pages of the app.
  */
 @Composable
 fun NomadLoadingAnimation(
     modifier: Modifier = Modifier,
-    message: String = "Locating destination...",
+    message: String? = null,
     progress: Float? = null,
     logoSize: Dp = 190.dp,
     barWidth: Dp = 210.dp,
+    animationSize: Dp = 320.dp,
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "nomad_loading")
-
-    // Subtle breathing pulse scale animation (non-rotating)
-    val scalePulse by infiniteTransition.animateFloat(
-        initialValue = 0.98f,
-        targetValue = 1.02f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1600, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale"
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.paperplane_loading)
     )
-
-    // Text alpha pulse animation
-    val alphaPulse by infiniteTransition.animateFloat(
-        initialValue = 0.5f,
-        targetValue = 1.0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 900, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "alpha"
+    val lottieProgress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
     )
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Brand Logo (Unclipped and enlarged, without rotation)
-            Image(
-                painter = painterResource(id = R.drawable.app_logo),
-                contentDescription = "Nomad Compass Logo",
-                modifier = Modifier
-                    .size(logoSize)
-                    .scale(scalePulse)
+            LottieAnimation(
+                composition = composition,
+                progress = { lottieProgress },
+                modifier = Modifier.size(animationSize)
             )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            // Light Loading Bar below the logo
-            NomadLightLoadingBar(
-                progress = progress,
-                width = barWidth,
-                height = 5.dp
-            )
-
-            Spacer(modifier = Modifier.height(18.dp))
-
-            Text(
-                text = message,
-                style = MaterialTheme.typography.titleMedium,
-                color = OnSurface,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.alpha(alphaPulse)
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "NOMAD COMPASS",
-                style = MaterialTheme.typography.labelSmall,
-                color = OnSurfaceVariant.copy(alpha = 0.65f),
-                letterSpacing = 2.sp
-            )
+            if (!message.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = OnSurfaceVariant,
+                    fontWeight = FontWeight.Medium
+                )
+            }
         }
     }
 }

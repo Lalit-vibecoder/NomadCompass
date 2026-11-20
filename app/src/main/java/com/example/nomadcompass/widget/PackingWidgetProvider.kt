@@ -46,6 +46,7 @@ class PackingWidgetProvider : AppWidgetProvider() {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
+            @Suppress("DEPRECATION")
             views.setRemoteAdapter(R.id.widget_packing_list, serviceIntent)
             views.setEmptyView(R.id.widget_packing_list, R.id.widget_empty_view)
 
@@ -140,6 +141,7 @@ class PackingWidgetProvider : AppWidgetProvider() {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
+    @Suppress("DEPRECATION")
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
@@ -161,7 +163,9 @@ class PackingWidgetProvider : AppWidgetProvider() {
 
                             withContext(Dispatchers.Main) {
                                 // Notify ListView to refresh items
-                                appWidgetManager.notifyAppWidgetViewDataChanged(allWidgetIds, R.id.widget_packing_list)
+                                for (widgetId in allWidgetIds) {
+                                    appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_packing_list)
+                                }
 
                                 // Update counters on all widget instances
                                 for (widgetId in allWidgetIds) {
@@ -178,7 +182,9 @@ class PackingWidgetProvider : AppWidgetProvider() {
             }
 
             ACTION_REFRESH_PACKING_WIDGET -> {
-                appWidgetManager.notifyAppWidgetViewDataChanged(allWidgetIds, R.id.widget_packing_list)
+                for (widgetId in allWidgetIds) {
+                    appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_packing_list)
+                }
                 for (widgetId in allWidgetIds) {
                     updateHeaderInfo(context, appWidgetManager, widgetId)
                 }

@@ -1058,7 +1058,7 @@ private fun ItineraryTabContent(
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
-                                        text = "Offline Extractor",
+                                        text = "AI Generator",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = OnPrimary,
                                         fontWeight = FontWeight.Bold
@@ -1159,7 +1159,7 @@ private fun ItineraryTabContent(
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("Launch Offline Extractor", color = Primary, fontWeight = FontWeight.Bold)
+                                Text("✨ Generate AI Itinerary", color = Primary, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -2269,25 +2269,10 @@ private fun InAppAttachmentPreviewDialog(
                         when (attachment.type) {
                             AttachmentType.PDF -> {
                                 if (isLoadingPages) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center,
-                                        modifier = Modifier.padding(24.dp)
-                                    ) {
-                                        Image(
-                                            painter = painterResource(id = R.drawable.app_logo),
-                                            contentDescription = "Loading PDF",
-                                            modifier = Modifier.size(72.dp)
-                                        )
-                                        Spacer(modifier = Modifier.height(14.dp))
-                                        NomadLightLoadingBar(width = 140.dp, height = 4.dp)
-                                        Spacer(modifier = Modifier.height(10.dp))
-                                        Text(
-                                            text = "Rendering PDF pages...",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = OnSurfaceVariant
-                                        )
-                                    }
+                                    NomadLoadingAnimation(
+                                        modifier = Modifier.fillMaxSize(),
+                                        animationSize = 160.dp
+                                    )
                                 } else if (pdfPages.isEmpty()) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(

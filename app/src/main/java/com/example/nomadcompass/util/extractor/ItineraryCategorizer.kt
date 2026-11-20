@@ -2,6 +2,7 @@ package com.example.nomadcompass.util.extractor
 
 import com.example.nomadcompass.domain.model.DraftItineraryEvent
 import com.example.nomadcompass.domain.model.ItineraryCategory
+import com.example.nomadcompass.domain.model.toDraftEvents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -220,18 +221,26 @@ object ItineraryCategorizer {
 
         // 3. Parse Plans
         if (categorized.plansText.isNotBlank()) {
-            val plansEvents = OfflineTravelHeuristicParser.parse(
-                categorized.plansText,
-                defaultDestination
-            ).map { event ->
-                // Keep categorized as ACTIVITY, TRANSPORT, RESTAURANT, or fallback to ACTIVITY
-                val cat = when (event.category) {
-                    ItineraryCategory.FLIGHT, ItineraryCategory.ACCOMMODATION, ItineraryCategory.OTHER -> ItineraryCategory.ACTIVITY
-                    else -> event.category
+            if (SpatialItineraryParser.DAY_ANCHOR_PATTERN.matcher(categorized.plansText).find()) {
+                val hierarchicalResult = SpatialItineraryParser.parse(categorized.plansText)
+                val hierarchicalEvents = hierarchicalResult.toDraftEvents(defaultDestination)
+                if (hierarchicalEvents.isNotEmpty()) {
+                    results.addAll(hierarchicalEvents)
                 }
-                event.copy(category = cat)
+            } else {
+                val plansEvents = OfflineTravelHeuristicParser.parse(
+                    categorized.plansText,
+                    defaultDestination
+                ).map { event ->
+                    // Keep categorized as ACTIVITY, TRANSPORT, RESTAURANT, or fallback to ACTIVITY
+                    val cat = when (event.category) {
+                        ItineraryCategory.FLIGHT, ItineraryCategory.ACCOMMODATION, ItineraryCategory.OTHER -> ItineraryCategory.ACTIVITY
+                        else -> event.category
+                    }
+                    event.copy(category = cat)
+                }
+                results.addAll(plansEvents)
             }
-            results.addAll(plansEvents)
         }
 
         // Fallback: If no discrete events found, create a generic draft from any available content
@@ -246,12 +255,13 @@ object ItineraryCategorizer {
     }
 
     private fun splitIntoBlocks(text: String): List<String> {
-        val parts = text.split(Regex("\n\\s*\n+"))
+        val unwrapped = SpatialItineraryParser.unwrapLines(text.lines())
+        val parts = unwrapped.joinToString("\n").split(Regex("\n\\s*\n+"))
         val trimmed = parts.map { it.trim() }.filter { it.isNotEmpty() }
         if (trimmed.size > 1) return trimmed
 
         // Fallback to line splits if no paragraph breaks
-        return text.lines().map { it.trim() }.filter { it.length > 10 }
+        return unwrapped.filter { it.length > 10 }
     }
 
     private fun classifyBlock(lower: String): CategoryType {

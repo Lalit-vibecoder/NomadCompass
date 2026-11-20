@@ -14,3 +14,12 @@
 .cxx
 local.properties
 .kotlin/
+
+# Firebase & Functions
+functions/node_modules/
+functions/lib/
+functions/.runtimeconfig.json
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+google-services.json

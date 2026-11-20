@@ -82,18 +82,43 @@ object OfflineDocumentExtractor {
 
     /**
      * Extracts text from screenshots, photos, and scanned booking receipts on-device using Google ML Kit OCR.
+     * Uses SpatialItineraryParser to process Text.TextBlock geometry and sort lines spatially.
      */
     suspend fun extractFromImage(context: Context, uri: Uri): Result<String> = withContext(Dispatchers.IO) {
         try {
             val inputImage = InputImage.fromFilePath(context, uri)
             val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
             val visionText = recognizer.process(inputImage).awaitResult()
-            val text = visionText.text
-            if (text.isNotBlank()) {
-                Result.success(text.trim())
+            
+            // Do NOT read OCR text as a flat string.
+            // Retrieve Text.TextBlock objects and sort spatially by coordinates.
+            val spatiallySortedText = SpatialItineraryParser.sortSpatially(visionText)
+            val finalText = if (spatiallySortedText.isNotBlank()) spatiallySortedText else visionText.text.trim()
+
+            if (finalText.isNotBlank()) {
+                Result.success(finalText)
             } else {
                 Result.failure(IllegalStateException("No text detected in screenshot. Please ensure the image is clear and well-lit."))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Directly extracts hierarchical [com.example.nomadcompass.domain.model.ParsedItineraryResult]
+     * from an image using spatial sorting and day chunking.
+     */
+    suspend fun extractHierarchicalFromImage(
+        context: Context,
+        uri: Uri
+    ): Result<com.example.nomadcompass.domain.model.ParsedItineraryResult> = withContext(Dispatchers.IO) {
+        try {
+            val inputImage = InputImage.fromFilePath(context, uri)
+            val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            val visionText = recognizer.process(inputImage).awaitResult()
+            val parsed = SpatialItineraryParser.parse(visionText)
+            Result.success(parsed)
         } catch (e: Exception) {
             Result.failure(e)
         }

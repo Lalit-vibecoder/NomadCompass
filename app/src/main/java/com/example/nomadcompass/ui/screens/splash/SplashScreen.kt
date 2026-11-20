@@ -59,116 +59,114 @@ fun SplashScreen(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Transparent)
+        modifier = Modifier.fillMaxSize()
     ) {
 
-        // Center Content
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            // App Logo
-            Image(
-                painter = painterResource(id = R.drawable.app_logo),
-                contentDescription = "Nomad Compass Logo",
-                modifier = Modifier.size(240.dp)
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            // App Title
-            Text(
-                text = "NOMAD COMPASS",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = 2.sp
-                ),
-                color = OnSurface,
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Light Loading Bar
-            val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
-                targetValue = uiState.progress / 100f,
-                animationSpec = androidx.compose.animation.core.tween(durationMillis = 350, easing = androidx.compose.animation.core.FastOutSlowInEasing),
-                label = "splash_progress"
-            )
-
-            NomadLightLoadingBar(
-                progress = animatedProgress,
-                width = 220.dp,
-                height = 6.dp
-            )
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Progress text & percentage
-            Row(
-                modifier = Modifier.width(220.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            // Center Content
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = uiState.statusMessage,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = OnSurfaceVariant.copy(alpha = 0.6f)
+                // App Logo
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = "Nomad Compass Logo",
+                    modifier = Modifier.size(240.dp)
                 )
-                Text(
-                    text = "${uiState.progress}%",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = OnSurfaceVariant.copy(alpha = 0.6f)
-                )
-            }
-        }
 
-        // Atmospheric Footer
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                GlassIconBadge(
-                    icon = PhosphorIcons.WifiSlash,
-                    contentDescription = "Offline Mode",
-                    size = 36.dp,
-                    iconSize = 18.dp,
-                    tint = Color.White.copy(alpha = 0.70f)
+                Spacer(modifier = Modifier.height(28.dp))
+
+                // App Title
+                Text(
+                    text = "NOMAD COMPASS",
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 2.sp
+                    ),
+                    color = Color.White,
                 )
-                GlassIconBadge(
-                    icon = PhosphorIcons.GlobeSimple,
-                    contentDescription = "Global Data",
-                    size = 36.dp,
-                    iconSize = 18.dp,
-                    tint = Color.White.copy(alpha = 0.70f)
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Light Loading Bar
+                val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
+                    targetValue = uiState.progress / 100f,
+                    animationSpec = androidx.compose.animation.core.tween(durationMillis = 350, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+                    label = "splash_progress"
                 )
-                GlassIconBadge(
-                    icon = PhosphorIcons.ShieldCheck,
-                    contentDescription = "Secure",
-                    size = 36.dp,
-                    iconSize = 18.dp,
-                    tint = Color.White.copy(alpha = 0.70f)
+
+                NomadLightLoadingBar(
+                    progress = animatedProgress,
+                    width = 220.dp,
+                    height = 6.dp
                 )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // Progress text & percentage
+                Row(
+                    modifier = Modifier.width(220.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = uiState.statusMessage,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color(0xFFCAF0F8).copy(alpha = 0.85f)
+                    )
+                    Text(
+                        text = "${uiState.progress}%",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color(0xFFCAF0F8).copy(alpha = 0.85f)
+                    )
+                }
             }
 
-            Text(
-                text = "V4.2.0 STABLE BUILD",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    letterSpacing = 3.sp,
-                    fontSize = 11.sp
-                ),
-                color = OnSurfaceVariant.copy(alpha = 0.25f)
-            )
+            // Atmospheric Footer
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 48.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    GlassIconBadge(
+                        icon = PhosphorIcons.WifiSlash,
+                        contentDescription = "Offline Mode",
+                        size = 36.dp,
+                        iconSize = 18.dp,
+                        tint = Color.White.copy(alpha = 0.70f)
+                    )
+                    GlassIconBadge(
+                        icon = PhosphorIcons.GlobeSimple,
+                        contentDescription = "Global Data",
+                        size = 36.dp,
+                        iconSize = 18.dp,
+                        tint = Color.White.copy(alpha = 0.70f)
+                    )
+                    GlassIconBadge(
+                        icon = PhosphorIcons.ShieldCheck,
+                        contentDescription = "Secure",
+                        size = 36.dp,
+                        iconSize = 18.dp,
+                        tint = Color.White.copy(alpha = 0.70f)
+                    )
+                }
+
+                Text(
+                    text = "V4.2.0 STABLE BUILD",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        letterSpacing = 3.sp,
+                        fontSize = 11.sp
+                    ),
+                    color = Color(0xFFCAF0F8).copy(alpha = 0.50f)
+                )
+            }
         }
     }
-}

@@ -104,7 +104,8 @@ fun CountryProfileScreen(
     Scaffold(
         modifier = Modifier.blur(converterBlur),
         topBar = {
-            val isDark = LocalThemeController.current.isDarkMode
+            if (!uiState.isLoading && uiState.detail != null) {
+                val isDark = LocalThemeController.current.isDarkMode
             val currentDateText = remember {
                 val now = LocalDate.now()
                 val formatter = DateTimeFormatter.ofPattern("EEE. d MMMM", Locale.ENGLISH)
@@ -227,49 +228,51 @@ fun CountryProfileScreen(
                     }
                 }
             }
-        },
+        }
+    },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            // Sticky Plan Trip Bar positioned just above the bottom navigation bar
-            ClayButton(
-                onClick = {
-                    val currentCca3 = uiState.detail?.country?.cca3
-                    if (currentCca3 != null) {
-                        onAddTripClick(currentCca3)
-                    } else {
-                        onPlannerClick()
-                    }
-                },
-                containerColor = ActionPrimary,
-                contentColor = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 68.dp)
-                    .height(52.dp),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
-            ) {
-                Icon(
-                    imageVector = PhosphorIcons.Plus,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "PLAN TRIP",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
+            if (!uiState.isLoading && uiState.detail != null) {
+                // Sticky Plan Trip Bar positioned just above the bottom navigation bar
+                ClayButton(
+                    onClick = {
+                        val currentCca3 = uiState.detail?.country?.cca3
+                        if (currentCca3 != null) {
+                            onAddTripClick(currentCca3)
+                        } else {
+                            onPlannerClick()
+                        }
+                    },
+                    containerColor = ActionPrimary,
+                    contentColor = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .padding(bottom = 68.dp)
+                        .height(52.dp),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.Plus,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "PLAN TRIP",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
         if (uiState.isLoading || uiState.detail == null) {
             com.example.nomadcompass.ui.components.NomadLoadingAnimation(
-                modifier = Modifier.padding(paddingValues),
-                message = "Calibrating Nomad Insights..."
+                modifier = Modifier.fillMaxSize()
             )
         } else {
             val detail = uiState.detail!!

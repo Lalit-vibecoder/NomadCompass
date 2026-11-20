@@ -6,6 +6,16 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+import java.util.Properties
+
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        load(localFile.inputStream())
+    }
+}
+val geminiApiKey: String = localProperties.getProperty("GEMINI_API_KEY") ?: ""
+
 android {
     namespace = "com.example.nomadcompass"
     compileSdk = 35
@@ -18,6 +28,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -89,6 +101,12 @@ dependencies {
     implementation(libs.pdfbox.android)
     implementation(libs.mlkit.text.recognition)
     implementation(libs.mlkit.entity.extraction)
+
+    // Gemini AI Client
+    implementation(libs.google.generativeai)
+
+    // Lottie Animation
+    implementation(libs.lottie.compose)
 
     // Testing
     testImplementation(libs.junit)

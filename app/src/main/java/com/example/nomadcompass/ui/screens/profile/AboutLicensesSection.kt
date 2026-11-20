@@ -764,6 +764,64 @@ private fun getOpenSourceLicenses(): List<OpenSourceLicenseItem> {
                 See the License for the specific language governing permissions and
                 limitations under the License.
             """.trimIndent()
+        ),
+        OpenSourceLicenseItem(
+            name = "Lottie Android & Compose",
+            author = "Airbnb, Inc.",
+            licenseType = "Apache License 2.0",
+            icon = PhosphorIcons.Sparkle,
+            description = "Native real-time vector animation engine rendering After Effects and Lottie motion graphics on Android.",
+            copyrightNotice = "Copyright 2018 Airbnb, Inc.",
+            fullLicenseText = """
+                Apache License, Version 2.0
+
+                Copyright 2018 Airbnb, Inc.
+
+                Licensed under the Apache License, Version 2.0 (the "License");
+                you may not use this file except in compliance with the License.
+                You may obtain a copy of the License at
+
+                    http://www.apache.org/licenses/LICENSE-2.0
+
+                Unless required by applicable law or agreed to in writing, software
+                distributed under the License is distributed on an "AS IS" BASIS,
+                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                See the License for the specific language governing permissions and
+                limitations under the License.
+            """.trimIndent()
+        ),
+        OpenSourceLicenseItem(
+            name = "Paperplane Flight Animation",
+            author = "LottieFiles Community",
+            licenseType = "Lottie Simple License",
+            icon = PhosphorIcons.Compass,
+            description = "Vector paperplane flight motion graphic powering the NomadCompass minimal loading screen.",
+            copyrightNotice = "Copyright (c) LottieFiles & Community Contributors",
+            fullLicenseText = """
+                Lottie Simple License (FL 9.13.21)
+
+                Copyright (c) LottieFiles & Community Contributors
+
+                Permission is hereby granted, free of charge, to any person obtaining a copy
+                of the public animation file and associated documentation files (the "Animation"),
+                to deal in the Animation without restriction, including without limitation the
+                rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                copies of the Animation, and to permit persons to whom the Animation is
+                furnished to do so, subject to the following conditions:
+
+                The above copyright notice and this permission notice shall be included in all
+                copies or substantial portions of the Animation.
+
+                THE ANIMATION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                ANIMATION.
+
+                More details: https://lottiefiles.com/page/license
+            """.trimIndent()
         )
     )
 }

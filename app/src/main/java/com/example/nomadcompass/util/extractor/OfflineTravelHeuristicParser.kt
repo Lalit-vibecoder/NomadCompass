@@ -2,6 +2,7 @@ package com.example.nomadcompass.util.extractor
 
 import com.example.nomadcompass.domain.model.DraftItineraryEvent
 import com.example.nomadcompass.domain.model.ItineraryCategory
+import com.example.nomadcompass.domain.model.toDraftEvents
 import com.google.mlkit.nl.entityextraction.EntityAnnotation
 import com.google.mlkit.nl.entityextraction.EntityExtraction
 import com.google.mlkit.nl.entityextraction.EntityExtractionParams
@@ -93,10 +94,20 @@ object OfflineTravelHeuristicParser {
     suspend fun parse(rawText: String, defaultTripDestination: String = ""): List<DraftItineraryEvent> = withContext(Dispatchers.Default) {
         if (rawText.isBlank()) return@withContext emptyList()
 
-        val results = mutableListOf<DraftItineraryEvent>()
-
         // Step 1: Run ML Kit Entity Extraction if available
         val mlKitEntities = tryExtractWithMlKit(rawText)
+
+        // Check if rawText contains hierarchical day structure (Day 1 -> Location -> Places)
+        if (SpatialItineraryParser.DAY_ANCHOR_PATTERN.matcher(rawText).find()) {
+            val hierarchicalResult = SpatialItineraryParser.parse(rawText, mlKitEntities)
+            val dayEvents = hierarchicalResult.toDraftEvents(defaultTripDestination)
+            if (dayEvents.isNotEmpty()) {
+                dayEvents.forEach { enrichWithMlKit(it, mlKitEntities) }
+                return@withContext dayEvents
+            }
+        }
+
+        val results = mutableListOf<DraftItineraryEvent>()
 
         // Step 2: Split text into paragraphs/sections to isolate individual itinerary items
         val sections = splitIntoLogicalSections(rawText)
@@ -331,9 +342,10 @@ object OfflineTravelHeuristicParser {
     }
 
     private fun splitIntoLogicalSections(text: String): List<String> {
-        val paragraphs = text.split(Regex("(?m)^\\s*(?:Day\\s*\\d+|Segment\\s*\\d+|Leg\\s*\\d+|Item\\s*\\d+)\\s*[:#-]?"))
+        val unwrapped = SpatialItineraryParser.unwrapLines(text.lines()).joinToString("\n")
+        val paragraphs = unwrapped.split(Regex("(?m)^\\s*(?:Day\\s*\\d+|Segment\\s*\\d+|Leg\\s*\\d+|Item\\s*\\d+)\\s*[:#-]?"))
         val filtered = paragraphs.map { it.trim() }.filter { it.length > 20 }
-        return if (filtered.size > 1) filtered else text.split(Regex("\n\n+")).map { it.trim() }.filter { it.length > 20 }
+        return if (filtered.size > 1) filtered else unwrapped.split(Regex("\n\n+")).map { it.trim() }.filter { it.length > 20 }
     }
 
     private fun formatDateTime(date: String, time: String): String {

@@ -10,6 +10,8 @@ import androidx.compose.foundation.border
 import androidx.compose.ui.res.painterResource
 import com.example.nomadcompass.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,10 +75,15 @@ import com.example.nomadcompass.ui.theme.SurfaceContainer
 import com.example.nomadcompass.ui.theme.SurfaceContainerHigh
 import com.example.nomadcompass.ui.theme.SurfaceContainerLow
 import com.example.nomadcompass.util.extractor.CategorizedItineraryText
+import com.example.nomadcompass.util.extractor.GeminiItineraryParser
 import com.example.nomadcompass.util.extractor.ItineraryCategorizer
 import com.example.nomadcompass.util.extractor.OfflineDocumentExtractor
-import com.example.nomadcompass.util.extractor.OfflineTravelHeuristicParser
 import kotlinx.coroutines.launch
+
+private enum class ExtractorMainMode(val title: String, val emoji: String) {
+    AI_GENERATE("AI Generator", "✨"),
+    IMPORT_DOCUMENT("Import Document", "📄")
+}
 
 private enum class ExtractorSourceTab(val title: String, val emoji: String) {
     SCREENSHOT("Screenshot / Photo", "🖼️"),
@@ -110,6 +117,9 @@ fun ItineraryExtractorModal(
     val scope = rememberCoroutineScope()
     val isDark = LocalThemeController.current.isDarkMode
 
+    var activeMainMode by remember { mutableStateOf(ExtractorMainMode.AI_GENERATE) }
+    var aiPlacesInput by remember { mutableStateOf("") }
+    var aiDurationDays by remember { mutableStateOf(5) }
     var activeSourceTab by remember { mutableStateOf(ExtractorSourceTab.SCREENSHOT) }
     var pastedText by remember { mutableStateOf("") }
     var isExtracting by remember { mutableStateOf(false) }
@@ -129,7 +139,29 @@ fun ItineraryExtractorModal(
     // Helper to process extracted raw text into categorized sections and draft events
     fun processExtractedText(rawExtracted: String) {
         scope.launch {
-            statusMessage = "Categorizing into Flights, Accommodations & Plans..."
+            if (GeminiItineraryParser.isApiKeyConfigured()) {
+                statusMessage = "Analyzing itinerary with Gemini AI..."
+                val aiResult = GeminiItineraryParser.parseItinerary(rawExtracted, destinationName)
+                if (aiResult.isSuccess && !aiResult.getOrNull().isNullOrEmpty()) {
+                    val events = aiResult.getOrNull()!!
+                    draftEvents.clear()
+                    draftEvents.addAll(events)
+                    fullEditableText = events.joinToString("\n\n") { event ->
+                        "• [${event.category.name}] ${event.title}" +
+                            (if (event.startDateTime.isNotBlank()) "\n  Date: ${event.startDateTime}" else "") +
+                            (if (event.location.isNotBlank()) "\n  Location: ${event.location}" else "") +
+                            (if (event.confirmationCode.isNotBlank()) "\n  Booking Ref: ${event.confirmationCode}" else "") +
+                            (if (event.notes.isNotBlank()) "\n  Notes: ${event.notes}" else "")
+                    }
+                    reviewFormat = ReviewDisplayFormat.STRUCTURED_CARDS
+                    isReviewMode = true
+                    isExtracting = false
+                    statusMessage = null
+                    return@launch
+                }
+            }
+
+            statusMessage = "Structuring hierarchical day plans on-device..."
             val categorized = ItineraryCategorizer.categorizeRawText(rawExtracted)
             categorizedText = categorized
             fullEditableText = categorized.toFormattedString()
@@ -261,13 +293,13 @@ fun ItineraryExtractorModal(
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Column {
                                     Text(
-                                        text = if (isReviewMode) "Review & Adjust Itinerary" else "Offline Itinerary Extractor",
+                                        text = if (isReviewMode) "Review & Adjust Itinerary" else "AI Itinerary Generator",
                                         style = MaterialTheme.typography.titleMedium,
                                         color = OnSurface,
                                         fontWeight = FontWeight.Bold
                                     )
                                     Text(
-                                        text = "Google ML Kit OCR & PDFBox • 100% On-Device",
+                                        text = if (GeminiItineraryParser.isApiKeyConfigured()) "Powered by Gemini Flash • AI Itinerary" else "Google ML Kit OCR & PDFBox • 100% On-Device",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = Primary,
                                         fontWeight = FontWeight.Medium
@@ -287,42 +319,36 @@ fun ItineraryExtractorModal(
                         Spacer(modifier = Modifier.height(14.dp))
 
                         if (!isReviewMode) {
-                            // ── STEP 1: EXTRACTION SOURCE SELECTION ──
-                            Text(
-                                text = "Select Document Source:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = OnSurfaceVariant,
-                                letterSpacing = 1.sp
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            // Source Tabs
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier.fillMaxWidth()
+                            // ── MODE SELECTOR: AI GENERATOR vs IMPORT DOCUMENT ──
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(9999.dp))
+                                    .background(Color.White.copy(alpha = if (isDark) 0.08f else 0.15f))
+                                    .border(
+                                        1.dp,
+                                        Color.White.copy(alpha = if (isDark) 0.15f else 0.25f),
+                                        RoundedCornerShape(9999.dp)
+                                    )
+                                    .padding(4.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                items(ExtractorSourceTab.entries) { tab ->
-                                    val isSelected = tab == activeSourceTab
+                                ExtractorMainMode.entries.forEach { mode ->
+                                    val isSelected = mode == activeMainMode
                                     Box(
                                         modifier = Modifier
+                                            .weight(1f)
                                             .clip(RoundedCornerShape(9999.dp))
-                                            .background(
-                                                if (isSelected) PrimaryContainer else Color.White.copy(alpha = if (isDark) 0.10f else 0.18f)
-                                            )
-                                            .border(
-                                                width = 1.dp,
-                                                color = if (isSelected) Primary else Color.White.copy(alpha = if (isDark) 0.20f else 0.35f),
-                                                shape = RoundedCornerShape(9999.dp)
-                                            )
+                                            .background(if (isSelected) PrimaryContainer else Color.Transparent)
                                             .clickable {
-                                                activeSourceTab = tab
+                                                activeMainMode = mode
                                                 extractionError = null
                                             }
-                                            .padding(horizontal = 14.dp, vertical = 8.dp),
+                                            .padding(vertical = 8.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = "${tab.emoji} ${tab.title}",
+                                            text = "${mode.emoji} ${mode.title}",
                                             style = MaterialTheme.typography.labelSmall,
                                             color = if (isSelected) OnPrimary else OnSurface,
                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
@@ -331,55 +357,84 @@ fun ItineraryExtractorModal(
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(14.dp))
 
-                            // Tab Ingestion Content
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxWidth()
                             ) {
-                                when (activeSourceTab) {
-                                    ExtractorSourceTab.SCREENSHOT -> {
-                                        SourcePickerCard(
-                                            icon = PhosphorIcons.FileImage,
-                                            title = "Screenshots & Photos (ML Kit)",
-                                            subtitle = "Extracts flight tickets, boarding passes, and hotel vouchers using Google ML Kit on-device text recognition.",
-                                            buttonText = "Select Screenshot / Photo",
-                                            onSelect = { imagePicker.launch("image/*") }
-                                        )
-                                    }
-                                    ExtractorSourceTab.PDF_DOC -> {
-                                        SourcePickerCard(
-                                            icon = PhosphorIcons.FileText,
-                                            title = "PDF Travel Documents (PDFBox)",
-                                            subtitle = "Extracts text from digital PDF flight itineraries, e-visas, or travel vouchers on-device without cloud uploads.",
-                                            buttonText = "Select PDF File",
-                                            onSelect = { pdfPicker.launch("application/pdf") }
-                                        )
-                                    }
-                                    ExtractorSourceTab.PASTE_TEXT -> {
-                                        Column(modifier = Modifier.fillMaxSize()) {
+                                if (activeMainMode == ExtractorMainMode.AI_GENERATE) {
+                                    // ── AI ITINERARY GENERATOR (COUNTRY & PLACES) ──
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .verticalScroll(rememberScrollState()),
+                                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                                    ) {
+                                        // Country Summary Card
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(PrimaryContainer.copy(alpha = 0.20f))
+                                                .border(1.dp, Primary.copy(alpha = 0.35f), RoundedCornerShape(16.dp))
+                                                .padding(14.dp)
+                                        ) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(40.dp)
+                                                        .clip(CircleShape)
+                                                        .background(Primary.copy(alpha = 0.15f)),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Icon(
+                                                        imageVector = PhosphorIcons.Compass,
+                                                        contentDescription = null,
+                                                        tint = Primary,
+                                                        modifier = Modifier.size(22.dp)
+                                                    )
+                                                }
+                                                Spacer(modifier = Modifier.width(12.dp))
+                                                Column {
+                                                    Text(
+                                                        text = "Destination: $destinationName",
+                                                        style = MaterialTheme.typography.titleSmall,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = OnSurface
+                                                    )
+                                                    Text(
+                                                        text = "Gemini will craft a balanced, day-by-day travel plan for this country.",
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = OnSurfaceVariant
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        // Optional Places/Highlights Input
+                                        Column {
                                             Text(
-                                                text = "Paste email confirmations, flight details, or hotel booking text below:",
-                                                style = MaterialTheme.typography.bodySmall,
-                                                color = OnSurfaceVariant
+                                                text = "Must-See Places or Themes (Optional):",
+                                                style = MaterialTheme.typography.labelMedium,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = OnSurface
                                             )
-                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Spacer(modifier = Modifier.height(6.dp))
                                             OutlinedTextField(
-                                                value = pastedText,
-                                                onValueChange = { pastedText = it },
+                                                value = aiPlacesInput,
+                                                onValueChange = { aiPlacesInput = it },
                                                 placeholder = {
                                                     Text(
-                                                        "Example:\nFlight SQ 321 from SIN to LHR on 15 Oct 2026 at 09:00, PNR: 7J9KL2\nStay at Grand Hyatt Bali, Check-in: 2026-10-18, Check-out: 2026-10-25\nTemple Tour Uluwatu on 2026-10-19 at 14:00...",
+                                                        "e.g. Tokyo, Kyoto, Mount Fuji, Shibuya, local street food...",
                                                         style = MaterialTheme.typography.bodySmall,
-                                                        color = OnSurfaceVariant.copy(alpha = 0.5f)
+                                                        color = OnSurfaceVariant.copy(alpha = 0.6f)
                                                     )
                                                 },
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .weight(1f)
-                                                    .clip(RoundedCornerShape(16.dp))
+                                                    .clip(RoundedCornerShape(14.dp))
                                                     .background(SurfaceContainerLow),
                                                 colors = OutlinedTextFieldDefaults.colors(
                                                     focusedBorderColor = Primary,
@@ -387,41 +442,232 @@ fun ItineraryExtractorModal(
                                                     focusedTextColor = OnSurface,
                                                     unfocusedTextColor = OnSurface,
                                                     cursorColor = Primary
-                                                )
+                                                ),
+                                                minLines = 2,
+                                                maxLines = 3
                                             )
-                                            Spacer(modifier = Modifier.height(14.dp))
-                                            GlassPillButton(
-                                                onClick = {
-                                                    scope.launch {
-                                                        isExtracting = true
-                                                        extractionError = null
-                                                        statusMessage = "Parsing travel text on-device..."
-                                                        val result = OfflineDocumentExtractor.extractFromRawText(pastedText)
-                                                        result.onSuccess { text ->
-                                                            processExtractedText(text)
-                                                        }.onFailure { err ->
-                                                            isExtracting = false
-                                                            extractionError = err.message ?: "Failed to parse text"
-                                                        }
-                                                    }
-                                                },
+                                        }
+
+                                        // Duration Selection
+                                        Column {
+                                            Text(
+                                                text = "Trip Duration:",
+                                                style = MaterialTheme.typography.labelMedium,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = OnSurface
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Row(
                                                 modifier = Modifier.fillMaxWidth(),
-                                                contentPadding = PaddingValues(vertical = 14.dp)
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
-                                                Icon(imageVector = PhosphorIcons.Sparkle, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                                Text("Parse & Extract Itinerary", color = Primary, fontWeight = FontWeight.Bold)
+                                                listOf(3, 5, 7, 10).forEach { days ->
+                                                    val isSelected = aiDurationDays == days
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .weight(1f)
+                                                            .clip(RoundedCornerShape(12.dp))
+                                                            .background(if (isSelected) PrimaryContainer else SurfaceContainerLow)
+                                                            .border(
+                                                                1.dp,
+                                                                if (isSelected) Primary else Color.White.copy(alpha = 0.2f),
+                                                                RoundedCornerShape(12.dp)
+                                                            )
+                                                            .clickable { aiDurationDays = days }
+                                                            .padding(vertical = 10.dp),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        Text(
+                                                            text = "$days Days",
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            color = if (isSelected) OnPrimary else OnSurface,
+                                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                                        )
+                                                    }
+                                                }
                                             }
                                         }
+
+                                        Spacer(modifier = Modifier.height(6.dp))
+
+                                        // Action Button
+                                        GlassPillButton(
+                                            onClick = {
+                                                scope.launch {
+                                                    isExtracting = true
+                                                    extractionError = null
+                                                    statusMessage = "Generating personalized $aiDurationDays-day itinerary for $destinationName with Gemini AI..."
+                                                    val result = GeminiItineraryParser.generateItineraryForCountry(
+                                                        countryName = destinationName,
+                                                        placesOrPreferences = aiPlacesInput,
+                                                        durationDays = aiDurationDays
+                                                    )
+                                                    result.onSuccess { events ->
+                                                        draftEvents.clear()
+                                                        draftEvents.addAll(events)
+                                                        fullEditableText = events.joinToString("\n\n") { event ->
+                                                            "• [${event.category.name}] ${event.title}" +
+                                                                (if (event.startDateTime.isNotBlank()) "\n  Date: ${event.startDateTime}" else "") +
+                                                                (if (event.location.isNotBlank()) "\n  Location: ${event.location}" else "") +
+                                                                (if (event.notes.isNotBlank()) "\n  Notes: ${event.notes}" else "")
+                                                        }
+                                                        reviewFormat = ReviewDisplayFormat.STRUCTURED_CARDS
+                                                        isReviewMode = true
+                                                        isExtracting = false
+                                                        statusMessage = null
+                                                    }.onFailure { err ->
+                                                        isExtracting = false
+                                                        extractionError = err.message ?: "Failed to generate itinerary with AI."
+                                                    }
+                                                }
+                                            },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentPadding = PaddingValues(vertical = 14.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = PhosphorIcons.Sparkle,
+                                                contentDescription = null,
+                                                tint = Primary,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                text = "Generate Itinerary with Gemini",
+                                                color = Primary,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
                                     }
-                                    ExtractorSourceTab.HTML_FILE -> {
-                                        SourcePickerCard(
-                                            icon = PhosphorIcons.GlobeSimple,
-                                            title = "Saved Web / HTML File",
-                                            subtitle = "Parses web itineraries, saved booking pages, or local HTML documents via Jsoup.",
-                                            buttonText = "Select HTML File",
-                                            onSelect = { htmlPicker.launch("text/html") }
-                                        )
+                                } else {
+                                    // ── DOCUMENT INGESTION TABS (PDF / IMAGE / HTML / PASTE) ──
+                                    Column(modifier = Modifier.fillMaxSize()) {
+                                        LazyRow(
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            items(ExtractorSourceTab.entries) { tab ->
+                                                val isSelected = tab == activeSourceTab
+                                                Box(
+                                                    modifier = Modifier
+                                                        .clip(RoundedCornerShape(9999.dp))
+                                                        .background(
+                                                            if (isSelected) PrimaryContainer else Color.White.copy(alpha = if (isDark) 0.10f else 0.18f)
+                                                        )
+                                                        .border(
+                                                            width = 1.dp,
+                                                            color = if (isSelected) Primary else Color.White.copy(alpha = if (isDark) 0.20f else 0.35f),
+                                                            shape = RoundedCornerShape(9999.dp)
+                                                        )
+                                                        .clickable {
+                                                            activeSourceTab = tab
+                                                            extractionError = null
+                                                        }
+                                                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Text(
+                                                        text = "${tab.emoji} ${tab.title}",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = if (isSelected) OnPrimary else OnSurface,
+                                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        Spacer(modifier = Modifier.height(14.dp))
+
+                                        Box(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .fillMaxWidth()
+                                        ) {
+                                            when (activeSourceTab) {
+                                                ExtractorSourceTab.SCREENSHOT -> {
+                                                    SourcePickerCard(
+                                                        icon = PhosphorIcons.FileImage,
+                                                        title = "Screenshots & Photos (ML Kit)",
+                                                        subtitle = "Extracts flight tickets, boarding passes, and hotel vouchers using Google ML Kit on-device text recognition.",
+                                                        buttonText = "Select Screenshot / Photo",
+                                                        onSelect = { imagePicker.launch("image/*") }
+                                                    )
+                                                }
+                                                ExtractorSourceTab.PDF_DOC -> {
+                                                    SourcePickerCard(
+                                                        icon = PhosphorIcons.FileText,
+                                                        title = "PDF Travel Documents (PDFBox)",
+                                                        subtitle = "Extracts text from digital PDF flight itineraries, e-visas, or travel vouchers on-device without cloud uploads.",
+                                                        buttonText = "Select PDF File",
+                                                        onSelect = { pdfPicker.launch("application/pdf") }
+                                                    )
+                                                }
+                                                ExtractorSourceTab.PASTE_TEXT -> {
+                                                    Column(modifier = Modifier.fillMaxSize()) {
+                                                        Text(
+                                                            text = "Paste email confirmations, flight details, or hotel booking text below:",
+                                                            style = MaterialTheme.typography.bodySmall,
+                                                            color = OnSurfaceVariant
+                                                        )
+                                                        Spacer(modifier = Modifier.height(8.dp))
+                                                        OutlinedTextField(
+                                                            value = pastedText,
+                                                            onValueChange = { pastedText = it },
+                                                            placeholder = {
+                                                                Text(
+                                                                    "Example:\nFlight SQ 321 from SIN to LHR on 15 Oct 2026 at 09:00, PNR: 7J9KL2\nStay at Grand Hyatt Bali, Check-in: 2026-10-18, Check-out: 2026-10-25\nTemple Tour Uluwatu on 2026-10-19 at 14:00...",
+                                                                    style = MaterialTheme.typography.bodySmall,
+                                                                    color = OnSurfaceVariant.copy(alpha = 0.5f)
+                                                                )
+                                                            },
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .weight(1f)
+                                                                .clip(RoundedCornerShape(16.dp))
+                                                                .background(SurfaceContainerLow),
+                                                            colors = OutlinedTextFieldDefaults.colors(
+                                                                focusedBorderColor = Primary,
+                                                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                                                                focusedTextColor = OnSurface,
+                                                                unfocusedTextColor = OnSurface,
+                                                                cursorColor = Primary
+                                                            )
+                                                        )
+                                                        Spacer(modifier = Modifier.height(14.dp))
+                                                        GlassPillButton(
+                                                            onClick = {
+                                                                scope.launch {
+                                                                    isExtracting = true
+                                                                    extractionError = null
+                                                                    statusMessage = "Parsing travel text on-device..."
+                                                                    val result = OfflineDocumentExtractor.extractFromRawText(pastedText)
+                                                                    result.onSuccess { text ->
+                                                                        processExtractedText(text)
+                                                                    }.onFailure { err ->
+                                                                        isExtracting = false
+                                                                        extractionError = err.message ?: "Failed to parse text"
+                                                                    }
+                                                                }
+                                                            },
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            contentPadding = PaddingValues(vertical = 14.dp)
+                                                        ) {
+                                                            Icon(imageVector = PhosphorIcons.Sparkle, contentDescription = null, tint = Primary, modifier = Modifier.size(18.dp))
+                                                            Spacer(modifier = Modifier.width(8.dp))
+                                                            Text("Parse & Extract Itinerary", color = Primary, fontWeight = FontWeight.Bold)
+                                                        }
+                                                    }
+                                                }
+                                                ExtractorSourceTab.HTML_FILE -> {
+                                                    SourcePickerCard(
+                                                        icon = PhosphorIcons.GlobeSimple,
+                                                        title = "Saved Web / HTML File",
+                                                        subtitle = "Parses web itineraries, saved booking pages, or local HTML documents via Jsoup.",
+                                                        buttonText = "Select HTML File",
+                                                        onSelect = { htmlPicker.launch("text/html") }
+                                                    )
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -752,14 +998,13 @@ fun ItineraryExtractorModal(
                                 GlassPillButton(
                                     onClick = {
                                         scope.launch {
-                                            // Always sync and save from latest adjusted state
-                                            val confirmedDrafts = if (reviewFormat == ReviewDisplayFormat.EDITABLE_TEXT) {
-                                                ItineraryCategorizer.parseToDraftEvents(categorizedText, destinationName)
-                                            } else {
-                                                draftEvents.filter { it.isSelected }
+                                            // ponytail: draftEvents holds the cards to save; only parse if empty
+                                            if (draftEvents.isEmpty()) {
+                                                val synced = ItineraryCategorizer.parseToDraftEvents(categorizedText, destinationName)
+                                                draftEvents.addAll(synced)
                                             }
 
-                                            val confirmedEvents = confirmedDrafts.map { draft ->
+                                            val confirmedEvents = draftEvents.filter { it.isSelected }.map { draft ->
                                                 ItineraryEvent(
                                                     tripId = tripId,
                                                     title = draft.title.ifBlank { "Travel Event" },

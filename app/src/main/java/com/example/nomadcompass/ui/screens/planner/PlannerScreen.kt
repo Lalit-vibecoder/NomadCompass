@@ -890,29 +890,29 @@ private fun EditTripDetailsDialog(
                 thickness = 0.8.dp
             )
 
-            // Dates Row (Start Date & End Date with Calendar View)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Start Date
-                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        text = "START DATE",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = OnSurfaceVariant,
-                        letterSpacing = 1.sp
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(SurfaceContainerLow.copy(alpha = 0.85f))
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                            .clickable { showDateRangePicker = true }
-                            .padding(horizontal = 12.dp),
-                        contentAlignment = Alignment.CenterStart
+            // Single Date Range Pill ("Select Date")
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = "SELECT DATE",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = OnSurfaceVariant,
+                    letterSpacing = 1.sp
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                        .clickable { showDateRangePicker = true }
+                        .padding(horizontal = 14.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -920,56 +920,30 @@ private fun EditTripDetailsDialog(
                         ) {
                             Icon(
                                 imageVector = PhosphorIcons.CalendarBlank,
-                                contentDescription = "Select Start Date",
+                                contentDescription = "Select Dates",
                                 tint = Primary,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(20.dp)
                             )
+                            val dateDisplay = if (startDate.isNotBlank() && endDate.isNotBlank()) {
+                                "$startDate  →  $endDate"
+                            } else if (startDate.isNotBlank()) {
+                                startDate
+                            } else {
+                                "Select trip dates"
+                            }
                             Text(
-                                text = startDate.ifBlank { "YYYY-MM-DD" },
+                                text = dateDisplay,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = if (startDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
                                 fontWeight = FontWeight.Medium
                             )
                         }
-                    }
-                }
-
-                // End Date
-                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        text = "END DATE",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = OnSurfaceVariant,
-                        letterSpacing = 1.sp
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(SurfaceContainerLow.copy(alpha = 0.85f))
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                            .clickable { showDateRangePicker = true }
-                            .padding(horizontal = 12.dp),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            Icon(
-                                imageVector = PhosphorIcons.CalendarBlank,
-                                contentDescription = "Select End Date",
-                                tint = Primary,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Text(
-                                text = endDate.ifBlank { "YYYY-MM-DD" },
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = if (endDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
+                        Icon(
+                            imageVector = PhosphorIcons.CaretDown,
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 }
             }
@@ -1402,28 +1376,29 @@ private fun AddTripDialog(
                     }
                 }
 
-                // Dates Row (Start & End with Calendar View)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    // Start Date
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                // Single Date Range Pill ("Select Date")
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        text = "SELECT DATE",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnSurfaceVariant,
+                        letterSpacing = 1.sp
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(SurfaceContainerLow.copy(alpha = 0.85f))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                            .clickable { showDateRangePicker = true }
+                            .padding(horizontal = 14.dp),
+                        contentAlignment = Alignment.CenterStart
                     ) {
-                        Text(text = "START DATE", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, letterSpacing = 1.sp)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp)
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(SurfaceContainerLow.copy(alpha = 0.85f))
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                                .clickable { showDateRangePicker = true }
-                                .padding(horizontal = 12.dp),
-                            contentAlignment = Alignment.CenterStart
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -1431,54 +1406,30 @@ private fun AddTripDialog(
                             ) {
                                 Icon(
                                     imageVector = PhosphorIcons.CalendarBlank,
-                                    contentDescription = "Select Start Date",
+                                    contentDescription = "Select Dates",
                                     tint = Primary,
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
+                                val dateDisplay = if (uiState.startDate.isNotBlank() && uiState.endDate.isNotBlank()) {
+                                    "${uiState.startDate}  →  ${uiState.endDate}"
+                                } else if (uiState.startDate.isNotBlank()) {
+                                    uiState.startDate
+                                } else {
+                                    "Select trip dates"
+                                }
                                 Text(
-                                    text = uiState.startDate.ifBlank { "YYYY-MM-DD" },
+                                    text = dateDisplay,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = if (uiState.startDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
                                     fontWeight = FontWeight.Medium
                                 )
                             }
-                        }
-                    }
-
-                    // End Date
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(text = "END DATE", style = MaterialTheme.typography.labelSmall, color = OnSurfaceVariant, letterSpacing = 1.sp)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp)
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(SurfaceContainerLow.copy(alpha = 0.85f))
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                                .clickable { showDateRangePicker = true }
-                                .padding(horizontal = 12.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                Icon(
-                                    imageVector = PhosphorIcons.CalendarBlank,
-                                    contentDescription = "Select End Date",
-                                    tint = Primary,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Text(
-                                    text = uiState.endDate.ifBlank { "YYYY-MM-DD" },
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = if (uiState.endDate.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
+                            Icon(
+                                imageVector = PhosphorIcons.CaretDown,
+                                contentDescription = null,
+                                tint = Primary,
+                                modifier = Modifier.size(18.dp)
+                            )
                         }
                     }
                 }

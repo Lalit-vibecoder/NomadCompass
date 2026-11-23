@@ -110,7 +110,7 @@ fun ExploreScreen(
         }
     }
 
-    val pills = listOf("All", "My Favs", "Europe", "Asia", "Americas", "Africa", "Oceania")
+    val pills = listOf("All", "Europe", "Asia", "Americas", "Africa", "Oceania", "My Favs")
 
     val currentDateText = remember {
         val now = LocalDate.now()

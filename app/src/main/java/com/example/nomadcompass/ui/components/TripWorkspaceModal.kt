@@ -26,6 +26,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -696,7 +697,7 @@ private fun DocsTabContent(
                                 )
                                 Text(
                                     text = if (trip.startDate.isNotBlank() && trip.endDate.isNotBlank()) {
-                                        "${trip.startDate} – ${trip.endDate}"
+                                        formatTripDateRange(trip.startDate, trip.endDate)
                                     } else {
                                         "Dates not set"
                                     },
@@ -708,7 +709,7 @@ private fun DocsTabContent(
                                 )
                             }
 
-                            // Monthly Budget inline
+                            // Budget inline (no /mo suffix)
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -722,7 +723,7 @@ private fun DocsTabContent(
                                     color = OnSurfaceVariant
                                 )
                                 Text(
-                                    text = "${formatCurrencyAmount(trip.budgetUsd, currencyCode)}/mo",
+                                    text = formatCurrencyAmount(trip.budgetUsd, currencyCode),
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontSize = 13.sp,
                                         fontWeight = FontWeight.Bold
@@ -733,6 +734,9 @@ private fun DocsTabContent(
                         }
 
                         if (trip.notes.isNotBlank()) {
+                            val cleanNotes = remember(trip.notes) {
+                                trip.notes.replace("^[^a-zA-Z0-9]+".toRegex(), "").trim().ifBlank { trip.notes.trim() }
+                            }
                             HorizontalDivider(
                                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f),
                                 thickness = 0.5.dp
@@ -742,14 +746,14 @@ private fun DocsTabContent(
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Icon(
-                                    imageVector = PhosphorIcons.FileText,
+                                    imageVector = PhosphorIcons.Tag,
                                     contentDescription = null,
-                                    tint = OnSurfaceVariant,
-                                    modifier = Modifier.size(12.dp)
+                                    tint = Primary,
+                                    modifier = Modifier.size(13.dp)
                                 )
                                 Text(
-                                    text = trip.notes,
-                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                                    text = cleanNotes,
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
                                     color = OnSurfaceVariant,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
@@ -760,97 +764,102 @@ private fun DocsTabContent(
                 }
             }
 
-            // Directive 2: Standard Height Search Bar without Category Chips
-            item(key = "search_bar") {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    placeholder = {
-                        Text(
-                            text = "Search documents, file type (PDF, image, note)...",
-                            fontSize = 13.sp,
-                            color = OnSurfaceVariant.copy(alpha = 0.6f)
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = PhosphorIcons.MagnifyingGlass,
-                            contentDescription = "Search",
-                            tint = Primary,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    },
-                    trailingIcon = {
-                        if (searchQuery.isNotEmpty()) {
-                            IconButton(onClick = { searchQuery = "" }) {
-                                Icon(
-                                    imageVector = PhosphorIcons.XCircle,
-                                    contentDescription = "Clear search",
-                                    tint = OnSurfaceVariant,
-                                    modifier = Modifier.size(18.dp)
-                                )
+            // Search Bar & Header only visible when documents exist
+            if (attachments.isNotEmpty()) {
+                item(key = "search_bar") {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 48.dp),
+                        placeholder = {
+                            Text(
+                                text = "Search documents, file type (PDF, image, note)...",
+                                fontSize = 13.sp,
+                                color = OnSurfaceVariant.copy(alpha = 0.6f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = PhosphorIcons.MagnifyingGlass,
+                                contentDescription = "Search",
+                                tint = Primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchQuery = "" }) {
+                                    Icon(
+                                        imageVector = PhosphorIcons.XCircle,
+                                        contentDescription = "Clear search",
+                                        tint = OnSurfaceVariant,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
                             }
-                        }
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(14.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                        focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow,
-                        focusedTextColor = OnSurface,
-                        unfocusedTextColor = OnSurface,
-                        cursorColor = Primary,
-                    )
-                )
-            }
-
-            // Directive 4: Section Header with Standardized Typography
-            item(key = "list_header") {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 2.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "DOCUMENTS & NOTES (${filteredAttachments.size})",
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.6.sp
-                        ),
-                        color = Primary
-                    )
-                    if (filteredAttachments.isNotEmpty()) {
-                        Text(
-                            text = "Tap to preview in-app",
-                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
-                            color = OnSurfaceVariant
+                        },
+                        singleLine = true,
+                        shape = RoundedCornerShape(14.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            focusedContainerColor = SurfaceContainerLow,
+                            unfocusedContainerColor = SurfaceContainerLow,
+                            focusedTextColor = OnSurface,
+                            unfocusedTextColor = OnSurface,
+                            cursorColor = Primary,
                         )
+                    )
+                }
+
+                item(key = "list_header") {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 2.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "DOCUMENTS & NOTES (${filteredAttachments.size})",
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.6.sp
+                            ),
+                            color = Primary
+                        )
+                        if (filteredAttachments.isNotEmpty()) {
+                            Text(
+                                text = "Tap to preview in-app",
+                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                                color = OnSurfaceVariant
+                            )
+                        }
                     }
                 }
             }
 
-            // Directive 3: Empty State Revamp with "Start Building Your Workspace" above prominent plus button
+            // Empty State (wrapped in subtle glassmorphic ClayCard with signature gradient button)
             if (filteredAttachments.isEmpty()) {
                 item(key = "empty_state") {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 36.dp),
-                        contentAlignment = Alignment.Center
+                    ClayCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        cornerRadius = 20.dp,
+                        backgroundColor = SurfaceContainerLow
                     ) {
-                        if (searchQuery.isNotBlank()) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            if (searchQuery.isNotBlank()) {
                                 Icon(
                                     imageVector = PhosphorIcons.MagnifyingGlass,
                                     contentDescription = null,
@@ -876,67 +885,76 @@ private fun DocsTabContent(
                                 TextButton(onClick = { searchQuery = "" }) {
                                     Text(text = "Clear Search", color = Primary, fontWeight = FontWeight.SemiBold)
                                 }
-                            }
-                        } else {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
+                            } else {
                                 Box(
                                     modifier = Modifier
-                                        .size(60.dp)
+                                        .size(54.dp)
                                         .clip(CircleShape)
-                                        .background(Primary.copy(alpha = 0.12f))
-                                        .border(1.dp, Primary.copy(alpha = 0.28f), CircleShape),
+                                        .background(Primary.copy(alpha = 0.15f))
+                                        .border(1.dp, Primary.copy(alpha = 0.35f), CircleShape),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
                                         imageVector = PhosphorIcons.FolderSimpleDashed,
                                         contentDescription = null,
                                         tint = Primary,
-                                        modifier = Modifier.size(30.dp)
+                                        modifier = Modifier.size(28.dp)
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(14.dp))
                                 Text(
                                     text = "Start Building Your Workspace",
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
-                                    ),
+                                    style = MaterialTheme.typography.titleMedium,
                                     color = OnSurface,
+                                    fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
                                     text = "Keep visas, tickets, lodging vouchers, and trip notes organized.",
-                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                                    style = MaterialTheme.typography.bodySmall,
                                     color = OnSurfaceVariant,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(horizontal = 24.dp)
+                                    modifier = Modifier.padding(horizontal = 8.dp)
                                 )
                                 Spacer(modifier = Modifier.height(20.dp))
-                                ClayButton(
-                                    onClick = onAddChoiceClick,
-                                    containerColor = ActionPrimary,
-                                    contentColor = Color.White,
-                                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 13.dp)
+
+                                // Signature Cyan-to-Emerald Gradient Button
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .bounceClick(scaleDown = 0.97f, onClick = onAddChoiceClick)
+                                        .clip(RoundedCornerShape(9999.dp))
+                                        .background(
+                                            brush = Brush.horizontalGradient(
+                                                colors = listOf(
+                                                    Color(0xFF06B6D4),
+                                                    Color(0xFF10B981)
+                                                )
+                                            )
+                                        )
+                                        .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(9999.dp))
+                                        .padding(vertical = 12.dp, horizontal = 20.dp),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
-                                        imageVector = PhosphorIcons.Plus,
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = "Add Document or Note",
-                                        color = Color.White,
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            fontSize = 14.sp,
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = PhosphorIcons.Plus,
+                                            contentDescription = null,
+                                            tint = Color.White,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "+ Add Document or Note",
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = Color.White,
                                             fontWeight = FontWeight.Bold
                                         )
-                                    )
+                                    }
                                 }
                             }
                         }
@@ -970,7 +988,14 @@ private fun DocsTabContent(
                     .padding(bottom = 12.dp, end = 12.dp)
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(ActionPrimary)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF06B6D4),
+                                Color(0xFF10B981)
+                            )
+                        )
+                    )
                     .border(1.5.dp, Color.White.copy(alpha = 0.35f), CircleShape)
                     .clickable(onClick = onAddChoiceClick),
                 contentAlignment = Alignment.Center

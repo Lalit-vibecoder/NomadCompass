@@ -1028,6 +1028,27 @@ object PhosphorIcons {
         }
     }
 
+    val Tag: ImageVector = phosphorVector("Tag") {
+        strokePath(strokeWidth = 16f) {
+            moveTo(43.89f, 138.11f)
+            lineTo(138.11f, 43.89f)
+            arcTo(16f, 16f, 0f, false, true, 149.43f, 39.2f)
+            lineTo(208f, 40f)
+            arcTo(8f, 8f, 0f, false, true, 216f, 48f)
+            lineTo(216.8f, 106.57f)
+            arcTo(16f, 16f, 0f, false, true, 212.11f, 117.89f)
+            lineTo(117.89f, 212.11f)
+            arcTo(16f, 16f, 0f, false, true, 95.26f, 212.11f)
+            lineTo(43.89f, 160.74f)
+            arcTo(16f, 16f, 0f, false, true, 43.89f, 138.11f)
+            close()
+            moveTo(176f, 80f)
+            arcTo(12f, 12f, 0f, true, true, 164f, 68f)
+            arcTo(12f, 12f, 0f, false, true, 176f, 80f)
+            close()
+        }
+    }
+
     // ── Status, Security & Utilities ──
 
     val WifiSlash: ImageVector = phosphorVector("WifiSlash") {

@@ -126,15 +126,15 @@ fun <T> ClaySlidingTabRow(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        PillInactiveBackground.copy(alpha = if (isDark) 0.28f else 0.16f),
-                        PillInactiveBackground.copy(alpha = if (isDark) 0.16f else 0.08f)
+                        PillInactiveBackground.copy(alpha = if (isDark) 0.32f else 0.26f),
+                        PillInactiveBackground.copy(alpha = if (isDark) 0.22f else 0.18f)
                     )
                 ),
                 shape = trackShape
             )
             .border(
                 width = 1.dp,
-                color = PillInactiveBorder.copy(alpha = if (isDark) 0.35f else 0.22f),
+                color = PillInactiveBorder.copy(alpha = if (isDark) 0.42f else 0.32f),
                 shape = trackShape
             )
             .padding(trackPadding),

@@ -229,7 +229,7 @@ fun TripWorkspaceModal(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFF0B0F19).copy(alpha = 0.88f))
+                    .background(Color(0xFF0B0F19).copy(alpha = 0.60f))
                     .statusBarsPadding()
                     .padding(16.dp),
                 contentAlignment = Alignment.Center

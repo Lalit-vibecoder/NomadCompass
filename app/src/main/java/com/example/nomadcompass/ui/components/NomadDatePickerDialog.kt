@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -25,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -233,6 +236,219 @@ fun NomadDatePickerDialog(
                 ) {
                     Text(
                         text = "Select Date",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun parseDateStringToMillis(dateStr: String): Long? {
+    return try {
+        if (dateStr.isNotBlank()) {
+            val parts = dateStr.trim().split("-")
+            if (parts.size == 3) {
+                val year = parts[0].toInt()
+                val month = parts[1].toInt()
+                val day = parts[2].toInt()
+                val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                    clear()
+                    set(year, month - 1, day)
+                }
+                cal.timeInMillis
+            } else null
+        } else null
+    } catch (_: Exception) {
+        null
+    }
+}
+
+private fun formatMillisToDateString(millis: Long): String {
+    val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+        timeInMillis = millis
+    }
+    return String.format(
+        Locale.US,
+        "%04d-%02d-%02d",
+        cal.get(Calendar.YEAR),
+        cal.get(Calendar.MONTH) + 1,
+        cal.get(Calendar.DAY_OF_MONTH)
+    )
+}
+
+/**
+ * Single frosted glass calendar date range picker allowing the user to select both
+ * start and end dates from one calendar without jumping between multiple pickers.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NomadDateRangePickerDialog(
+    initialStartDate: String,
+    initialEndDate: String,
+    title: String = "Select Trip Dates",
+    onDatesSelected: (startDate: String, endDate: String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val initialStartMillis = remember(initialStartDate) {
+        parseDateStringToMillis(initialStartDate) ?: System.currentTimeMillis()
+    }
+    val initialEndMillis = remember(initialEndDate) {
+        parseDateStringToMillis(initialEndDate) ?: initialStartMillis
+    }
+
+    val dateRangePickerState = rememberDateRangePickerState(
+        initialSelectedStartDateMillis = initialStartMillis,
+        initialSelectedEndDateMillis = initialEndMillis,
+        initialDisplayMode = DisplayMode.Picker
+    )
+
+    FrostedGlassDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier
+            .fillMaxWidth(0.96f)
+            .wrapContentHeight()
+            .padding(vertical = 12.dp),
+        cornerRadius = 28.dp,
+        backgroundColor = SurfaceContainer.copy(alpha = 0.95f)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Frosted Glass Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(CircleShape)
+                            .background(Primary.copy(alpha = 0.18f))
+                            .border(1.dp, Primary.copy(alpha = 0.40f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = PhosphorIcons.CalendarBlank,
+                            contentDescription = null,
+                            tint = Primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = OnSurface,
+                            fontWeight = FontWeight.Bold
+                        )
+                        val startStr = dateRangePickerState.selectedStartDateMillis?.let { formatMillisToDateString(it) } ?: initialStartDate
+                        val endStr = dateRangePickerState.selectedEndDateMillis?.let { formatMillisToDateString(it) } ?: initialEndDate
+                        val subtitle = if (startStr.isNotBlank() && endStr.isNotBlank()) {
+                            "$startStr  →  $endStr"
+                        } else if (startStr.isNotBlank()) {
+                            "$startStr  →  Select end date"
+                        } else {
+                            "Select trip date range"
+                        }
+                        Text(
+                            text = subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(SurfaceContainerHigh.copy(alpha = 0.6f))
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.X,
+                        contentDescription = "Close",
+                        tint = OnSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
+                thickness = 0.8.dp
+            )
+
+            // Transparent Material 3 DateRangePicker with frosted glass backdrop showing through
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(370.dp)
+            ) {
+                DateRangePicker(
+                    state = dateRangePickerState,
+                    title = null,
+                    headline = null,
+                    showModeToggle = false,
+                    colors = DatePickerDefaults.colors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = OnSurface,
+                        headlineContentColor = OnSurface,
+                        weekdayContentColor = OnSurfaceVariant,
+                        subheadContentColor = OnSurfaceVariant,
+                        yearContentColor = OnSurface,
+                        currentYearContentColor = Primary,
+                        selectedYearContentColor = OnPrimaryContainer,
+                        selectedYearContainerColor = Primary,
+                        dayContentColor = OnSurface,
+                        selectedDayContentColor = OnPrimaryContainer,
+                        selectedDayContainerColor = Primary,
+                        todayContentColor = Primary,
+                        todayDateBorderColor = Primary
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
+                thickness = 0.8.dp
+            )
+
+            // Dialog Action Buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(onClick = onDismiss) {
+                    Text("Cancel", color = OnSurfaceVariant, fontWeight = FontWeight.Medium)
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                ClayButton(
+                    onClick = {
+                        val start = dateRangePickerState.selectedStartDateMillis?.let { formatMillisToDateString(it) } ?: initialStartDate
+                        val end = dateRangePickerState.selectedEndDateMillis?.let { formatMillisToDateString(it) } ?: start
+                        onDatesSelected(start, end)
+                        onDismiss()
+                    },
+                    contentPadding = PaddingValues(horizontal = 22.dp, vertical = 10.dp)
+                ) {
+                    Text(
+                        text = "Select Dates",
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )

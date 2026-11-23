@@ -60,7 +60,7 @@ data class PlannerUiState(
     val startDate: String = "2026-10-01",
     val endDate: String = "2026-10-31",
     val budgetUsd: String = "2500",
-    val notes: String = "Co-working space access & high-speed Wi-Fi",
+    val notes: String = "🏖️ Vacation & Tourism",
     val isSaving: Boolean = false,
     val activeWorkspaceTrip: Trip? = null,
     val activeWorkspaceTab: WorkspaceTab = WorkspaceTab.EXPENSES,
@@ -442,7 +442,8 @@ class PlannerViewModel @Inject constructor(
     fun openAddDialog(cca3: String? = null) {
         _uiState.value = _uiState.value.copy(
             isAddDialogOpen = true,
-            selectedCca3 = cca3 ?: _uiState.value.selectedCca3
+            selectedCca3 = cca3 ?: _uiState.value.selectedCca3,
+            notes = if (_uiState.value.notes.isBlank() || _uiState.value.notes.contains("Co-working")) "🏖️ Vacation & Tourism" else _uiState.value.notes
         )
     }
 

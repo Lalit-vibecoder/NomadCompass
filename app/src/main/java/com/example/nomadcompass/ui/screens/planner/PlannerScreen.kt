@@ -81,6 +81,7 @@ import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.FrostedGlassDialog
 import com.example.nomadcompass.ui.components.GlassPillButton
 import com.example.nomadcompass.ui.components.NomadDatePickerDialog
+import com.example.nomadcompass.ui.components.NomadDateRangePickerDialog
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
 import com.example.nomadcompass.ui.components.NomadNavTab
 import com.example.nomadcompass.ui.components.TripWorkspaceModal
@@ -764,31 +765,18 @@ private fun EditTripDetailsDialog(
     var startDate by remember { mutableStateOf(trip.startDate) }
     var endDate by remember { mutableStateOf(trip.endDate) }
     var budgetText by remember { mutableStateOf(trip.budgetUsd.toString().removeSuffix(".0")) }
-    var showStartDatePicker by remember { mutableStateOf(false) }
-    var showEndDatePicker by remember { mutableStateOf(false) }
+    var showDateRangePicker by remember { mutableStateOf(false) }
 
-    if (showStartDatePicker) {
-        NomadDatePickerDialog(
-            initialDate = startDate,
-            title = "Select Start Date",
-            onDateSelected = { selectedDate ->
-                startDate = selectedDate
-                if (endDate.isNotBlank() && selectedDate > endDate) {
-                    endDate = selectedDate
-                }
+    if (showDateRangePicker) {
+        NomadDateRangePickerDialog(
+            initialStartDate = startDate,
+            initialEndDate = endDate,
+            title = "Select Trip Dates",
+            onDatesSelected = { start, end ->
+                startDate = start
+                endDate = end
             },
-            onDismiss = { showStartDatePicker = false }
-        )
-    }
-
-    if (showEndDatePicker) {
-        NomadDatePickerDialog(
-            initialDate = endDate.ifBlank { startDate },
-            title = "Select End Date",
-            onDateSelected = { selectedDate ->
-                endDate = selectedDate
-            },
-            onDismiss = { showEndDatePicker = false }
+            onDismiss = { showDateRangePicker = false }
         )
     }
 
@@ -922,7 +910,7 @@ private fun EditTripDetailsDialog(
                             .clip(RoundedCornerShape(14.dp))
                             .background(SurfaceContainerLow.copy(alpha = 0.85f))
                             .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                            .clickable { showStartDatePicker = true }
+                            .clickable { showDateRangePicker = true }
                             .padding(horizontal = 12.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
@@ -961,7 +949,7 @@ private fun EditTripDetailsDialog(
                             .clip(RoundedCornerShape(14.dp))
                             .background(SurfaceContainerLow.copy(alpha = 0.85f))
                             .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                            .clickable { showEndDatePicker = true }
+                            .clickable { showDateRangePicker = true }
                             .padding(horizontal = 12.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
@@ -1098,31 +1086,18 @@ private fun AddTripDialog(
         }
     }
 
-    var showStartDatePicker by remember { mutableStateOf(false) }
-    var showEndDatePicker by remember { mutableStateOf(false) }
+    var showDateRangePicker by remember { mutableStateOf(false) }
 
-    if (showStartDatePicker) {
-        NomadDatePickerDialog(
-            initialDate = uiState.startDate,
-            title = "Select Start Date",
-            onDateSelected = { selectedDate ->
-                onStartDateChanged(selectedDate)
-                if (uiState.endDate.isNotBlank() && selectedDate > uiState.endDate) {
-                    onEndDateChanged(selectedDate)
-                }
+    if (showDateRangePicker) {
+        NomadDateRangePickerDialog(
+            initialStartDate = uiState.startDate,
+            initialEndDate = uiState.endDate,
+            title = "Select Trip Dates",
+            onDatesSelected = { start, end ->
+                onStartDateChanged(start)
+                onEndDateChanged(end)
             },
-            onDismiss = { showStartDatePicker = false }
-        )
-    }
-
-    if (showEndDatePicker) {
-        NomadDatePickerDialog(
-            initialDate = uiState.endDate.ifBlank { uiState.startDate },
-            title = "Select End Date",
-            onDateSelected = { selectedDate ->
-                onEndDateChanged(selectedDate)
-            },
-            onDismiss = { showEndDatePicker = false }
+            onDismiss = { showDateRangePicker = false }
         )
     }
 
@@ -1446,7 +1421,7 @@ private fun AddTripDialog(
                                 .clip(RoundedCornerShape(14.dp))
                                 .background(SurfaceContainerLow.copy(alpha = 0.85f))
                                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                                .clickable { showStartDatePicker = true }
+                                .clickable { showDateRangePicker = true }
                                 .padding(horizontal = 12.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
@@ -1483,7 +1458,7 @@ private fun AddTripDialog(
                                 .clip(RoundedCornerShape(14.dp))
                                 .background(SurfaceContainerLow.copy(alpha = 0.85f))
                                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                                .clickable { showEndDatePicker = true }
+                                .clickable { showDateRangePicker = true }
                                 .padding(horizontal = 12.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
@@ -1547,19 +1522,17 @@ private fun AddTripDialog(
                 // Travelling For Dropdown Field
                 val travelReasons = remember {
                     listOf(
-                        "💻 Digital Nomad / Remote Work",
                         "🏖️ Vacation & Tourism",
+                        "💻 Digital Nomad / Remote Work",
                         "🏡 Workation (Work + Leisure)",
                         "💼 Business & Networking",
                         "🎒 Solo Backpacking & Exploration",
                         "📍 Relocation & Scouting",
                         "🎓 Study & Research",
-                        "🎪 Conference & Events",
-                        "✨ Other / Custom..."
+                        "🎪 Conference & Events"
                     )
                 }
                 var isTravellingForExpanded by remember { mutableStateOf(false) }
-                var isCustomReason by remember { mutableStateOf(false) }
 
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
@@ -1590,9 +1563,9 @@ private fun AddTripDialog(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = uiState.notes.ifBlank { "Select reason for travel..." },
+                                text = uiState.notes.ifBlank { "🏖️ Vacation & Tourism" },
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = if (uiState.notes.isNotBlank()) OnSurface else OnSurfaceVariant.copy(alpha = 0.5f),
+                                color = OnSurface,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f)
@@ -1625,39 +1598,12 @@ private fun AddTripDialog(
                                         )
                                     },
                                     onClick = {
-                                        if (reason.contains("Custom")) {
-                                            isCustomReason = true
-                                            onNotesChanged("")
-                                        } else {
-                                            isCustomReason = false
-                                            onNotesChanged(reason)
-                                        }
+                                        onNotesChanged(reason)
                                         isTravellingForExpanded = false
                                     }
                                 )
                             }
                         }
-                    }
-
-                    // If user selects custom or has entered custom notes
-                    if (isCustomReason || (uiState.notes.isNotBlank() && travelReasons.none { it == uiState.notes })) {
-                        OutlinedTextField(
-                            value = uiState.notes,
-                            onValueChange = onNotesChanged,
-                            placeholder = { Text("Enter custom travel purpose or notes...", color = OnSurfaceVariant.copy(alpha = 0.5f), fontSize = 13.sp) },
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                focusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                                unfocusedContainerColor = SurfaceContainerLow.copy(alpha = 0.85f),
-                                focusedTextColor = OnSurface,
-                                unfocusedTextColor = OnSurface,
-                                cursorColor = Primary,
-                            )
-                        )
                     }
                 }
 

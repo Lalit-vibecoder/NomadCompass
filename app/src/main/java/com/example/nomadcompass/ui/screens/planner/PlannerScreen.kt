@@ -1206,7 +1206,7 @@ private fun AddTripDialog(
                         value = if (isDestinationEditing) {
                             destinationSearchText
                         } else {
-                            selectedCountry?.let { "${it.flagEmoji}  ${it.commonName}" } ?: ""
+                            selectedCountry?.commonName ?: ""
                         },
                         onValueChange = { newText ->
                             isDestinationEditing = true

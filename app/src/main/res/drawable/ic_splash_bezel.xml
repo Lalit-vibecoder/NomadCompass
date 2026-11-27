@@ -1,0 +1,74 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Outer Ambient Glow Ring -->
+    <path
+        android:strokeColor="#1FFFFFFF"
+        android:strokeWidth="1.5"
+        android:pathData="M 256, 16 A 240,240 0 1,0 256, 496 A 240,240 0 1,0 256, 16 Z" />
+
+    <!-- Main Outer Dial Bezel -->
+    <path
+        android:strokeColor="#4DFFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M 256, 36 A 220,220 0 1,0 256, 476 A 220,220 0 1,0 256, 36 Z" />
+
+    <!-- Inner Track Ring -->
+    <path
+        android:strokeColor="#2EFFFFFF"
+        android:strokeWidth="1.5"
+        android:pathData="M 256, 56 A 200,200 0 1,0 256, 456 A 200,200 0 1,0 256, 56 Z" />
+
+    <!-- Major Cardinal Markers (N, E, S, W Triangles) -->
+    <!-- North Marker -->
+    <path
+        android:fillColor="#06B6D4"
+        android:pathData="M 256, 38 L 263, 54 L 249, 54 Z" />
+    <!-- South Marker -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M 256, 474 L 263, 458 L 249, 458 Z" />
+    <!-- East Marker -->
+    <path
+        android:fillColor="#80FFFFFF"
+        android:pathData="M 474, 256 L 458, 249 L 458, 263 Z" />
+    <!-- West Marker -->
+    <path
+        android:fillColor="#80FFFFFF"
+        android:pathData="M 38, 256 L 54, 249 L 54, 263 Z" />
+
+    <!-- 30-degree Major Ticks -->
+    <!-- 30 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 356, 82 L 346, 99" />
+    <!-- 60 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 430, 156 L 413, 166" />
+    <!-- 120 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 430, 356 L 413, 346" />
+    <!-- 150 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 356, 430 L 346, 413" />
+    <!-- 210 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 156, 430 L 166, 413" />
+    <!-- 240 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 82, 356 L 99, 346" />
+    <!-- 300 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 82, 156 L 99, 166" />
+    <!-- 330 deg -->
+    <path android:strokeColor="#99FFFFFF" android:strokeWidth="2" android:pathData="M 156, 82 L 166, 99" />
+
+    <!-- 15-degree Minor Sub-ticks -->
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 307, 60 L 302, 72" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 397, 115 L 388, 124" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 452, 205 L 440, 210" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 452, 307 L 440, 302" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 397, 397 L 388, 388" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 307, 452 L 302, 440" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 205, 452 L 210, 440" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 115, 397 L 124, 388" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 60, 307 L 72, 302" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 60, 205 L 72, 210" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 115, 115 L 124, 124" />
+    <path android:strokeColor="#40FFFFFF" android:strokeWidth="1" android:pathData="M 205, 60 L 210, 72" />
+</vector>

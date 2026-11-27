@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- North Needle - Left Facet (Deep Cyan) -->
+    <path
+        android:fillColor="#06B6D4"
+        android:pathData="M 256, 68 L 243, 256 L 256, 256 Z" />
+
+    <!-- North Needle - Right Facet (Bright Cyan Highlight) -->
+    <path
+        android:fillColor="#22D3EE"
+        android:pathData="M 256, 68 L 256, 256 L 269, 256 Z" />
+
+    <!-- South Needle - Left Facet (Deep Coral) -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M 256, 444 L 243, 256 L 256, 256 Z" />
+
+    <!-- South Needle - Right Facet (Bright Coral Highlight) -->
+    <path
+        android:fillColor="#FB7185"
+        android:pathData="M 256, 444 L 256, 256 L 269, 256 Z" />
+
+    <!-- Center Spine Ridge (Crisp 1px White Glint) -->
+    <path
+        android:strokeColor="#66FFFFFF"
+        android:strokeWidth="1.2"
+        android:pathData="M 256, 76 L 256, 436" />
+</vector>

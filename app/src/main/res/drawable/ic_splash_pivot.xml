@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Outer Translucent Glass Halo -->
+    <path
+        android:fillColor="#26FFFFFF"
+        android:pathData="M 256, 222 A 34,34 0 1,0 256, 290 A 34,34 0 1,0 256, 222 Z" />
+
+    <!-- Chrome Outer Rim -->
+    <path
+        android:fillColor="#E2E8F0"
+        android:pathData="M 256, 234 A 22,22 0 1,0 256, 278 A 22,22 0 1,0 256, 234 Z" />
+
+    <!-- Inner Emerald Core -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M 256, 242 A 14,14 0 1,0 256, 270 A 14,14 0 1,0 256, 242 Z" />
+
+    <!-- Pure White Center Glint -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M 253, 249 A 4,4 0 1,0 253, 257 A 4,4 0 1,0 253, 249 Z" />
+</vector>

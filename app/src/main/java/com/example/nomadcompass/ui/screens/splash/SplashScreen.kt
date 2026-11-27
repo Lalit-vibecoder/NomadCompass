@@ -68,11 +68,11 @@ fun SplashScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // App Logo
-                Image(
-                    painter = painterResource(id = R.drawable.app_logo),
-                    contentDescription = "Nomad Compass Logo",
-                    modifier = Modifier.size(240.dp)
+                // Animated Layered Compass (Canva layers + magnetic spring physics)
+                NomadLayeredSplashAnimation(
+                    progress = uiState.progress / 100f,
+                    isComplete = uiState.isComplete,
+                    compassSize = 230.dp
                 )
 
                 Spacer(modifier = Modifier.height(28.dp))

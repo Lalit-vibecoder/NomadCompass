@@ -248,7 +248,7 @@ fun TripWorkspaceModal(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.94f)
-                            .blur(workspaceBlur),
+                            .then(if (workspaceBlur > 0.dp) Modifier.blur(workspaceBlur) else Modifier),
                         cornerRadius = 28.dp,
                         backgroundColor = SurfaceContainer
                     ) {

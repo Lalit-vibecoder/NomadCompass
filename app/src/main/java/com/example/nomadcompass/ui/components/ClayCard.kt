@@ -187,14 +187,17 @@ fun Modifier.clayShadow(
     ambientShadowColor: Color = Color.Black.copy(alpha = 0.5f),
     spotShadowColor: Color = Color.Black.copy(alpha = 0.6f),
     blurRadius: Dp = 14.dp,
-): Modifier = this.graphicsLayer {
-    val elevationPx = blurRadius.toPx()
-    if (elevationPx > 0f) {
-        this.shadowElevation = elevationPx
-        this.shape = RoundedCornerShape(cornerRadius)
-        this.clip = false
-        this.ambientShadowColor = ambientShadowColor
-        this.spotShadowColor = spotShadowColor
+): Modifier {
+    val shape = RoundedCornerShape(cornerRadius)
+    return this.graphicsLayer {
+        val elevationPx = blurRadius.toPx()
+        if (elevationPx > 0f) {
+            this.shadowElevation = elevationPx
+            this.shape = shape
+            this.clip = false
+            this.ambientShadowColor = ambientShadowColor
+            this.spotShadowColor = spotShadowColor
+        }
     }
 }
 

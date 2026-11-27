@@ -120,7 +120,7 @@ fun PlannerScreen(
     )
 
     Scaffold(
-        modifier = Modifier.blur(backgroundBlur),
+        modifier = if (backgroundBlur > 0.dp) Modifier.blur(backgroundBlur) else Modifier,
         topBar = {
             val photoUri = uiState.userProfile?.photoUri
             val photoFile = if (!photoUri.isNullOrBlank()) File(photoUri) else null

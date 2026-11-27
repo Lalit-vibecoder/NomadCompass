@@ -147,7 +147,7 @@ fun ExpensesTab(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .blur(logSheetBlur)
+            .then(if (logSheetBlur > 0.dp) Modifier.blur(logSheetBlur) else Modifier)
     ) {
         LazyColumn(
             modifier = Modifier

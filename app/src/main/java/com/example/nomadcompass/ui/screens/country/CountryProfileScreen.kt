@@ -102,7 +102,7 @@ fun CountryProfileScreen(
     )
 
     Scaffold(
-        modifier = Modifier.blur(converterBlur),
+        modifier = if (converterBlur > 0.dp) Modifier.blur(converterBlur) else Modifier,
         topBar = {
             if (!uiState.isLoading && uiState.detail != null) {
                 val isDark = LocalThemeController.current.isDarkMode

@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -55,6 +56,7 @@ fun AppBackground(
                 .fillMaxSize()
                 .graphicsLayer {
                     clip = true
+                    compositingStrategy = CompositingStrategy.Offscreen
                 }
         ) {
             val imageModifier = Modifier

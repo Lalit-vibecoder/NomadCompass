@@ -45,10 +45,45 @@ class SplashViewModel @Inject constructor(
 
     private fun startHydration() {
         viewModelScope.launch {
-            countryRepository.seedIfNeeded()
+            val startTime = System.currentTimeMillis()
+            val minSplashDurationMs = 4000L
+
+            // Run database hydration concurrently
+            val hydrationJob = launch {
+                countryRepository.seedIfNeeded()
+            }
+
+            // Smoothly animate progress and status messages across the duration
+            val stages = listOf(
+                Pair(18, "Seeding offline database..."),
+                Pair(42, "Mapping terrain clusters..."),
+                Pair(65, "Indexing safety protocols..."),
+                Pair(84, "Optimizing navigation mesh..."),
+                Pair(96, "Finalizing local environment...")
+            )
+
+            val stepDurationMs = 650L // 5 * 650ms = 3250ms
+            for ((progress, message) in stages) {
+                _uiState.value = _uiState.value.copy(
+                    progress = progress,
+                    statusMessage = message
+                )
+                delay(stepDurationMs)
+            }
+
+            // Ensure database work has finished
+            hydrationJob.join()
+
             val savedProfile = profileRepository.getProfile().firstOrNull()
             val hasProfile = savedProfile != null
             val isSecurityLocked = savedProfile != null && (savedProfile.isBiometricEnabled || savedProfile.accessCode.isNotBlank())
+
+            // Ensure the splash screen stays for at least 4 full seconds
+            val elapsed = System.currentTimeMillis() - startTime
+            val remaining = minSplashDurationMs - elapsed
+            if (remaining > 0) {
+                delay(remaining)
+            }
 
             _uiState.value = SplashUiState(
                 progress = 100,

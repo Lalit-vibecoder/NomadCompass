@@ -33,6 +33,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import android.graphics.SurfaceTexture
+import android.media.MediaPlayer
+import android.view.Surface
+import android.view.TextureView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -78,7 +88,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Full-bleed Canva Splash Screen Artwork
+        // 1. Poster fallback (prevents black flash while video initializes)
         Image(
             painter = painterResource(id = R.drawable.app_splash_canva),
             contentDescription = "Nomad Compass Splash",
@@ -86,6 +96,12 @@ fun SplashScreen(
                 .fillMaxSize()
                 .scale(zoomScale),
             contentScale = ContentScale.Crop
+        )
+
+        // 2. Canva Video Animation (Plays the animated 4-second motion from Canva)
+        SplashVideoPlayer(
+            modifier = Modifier.fillMaxSize(),
+            videoRawResId = R.raw.app_splash_video
         )
 
         // Subtle gradient vignette at the bottom to ensure high contrast for loading bar and footer
@@ -184,4 +200,60 @@ fun SplashScreen(
             )
         }
     }
+}
+
+/**
+ * Seamless video animation player for the Canva splash motion sequence.
+ * Uses TextureView + MediaPlayer with hardware scale-to-crop for instant zero-latency playback.
+ */
+@Composable
+private fun SplashVideoPlayer(
+    modifier: Modifier = Modifier,
+    videoRawResId: Int = R.raw.app_splash_video
+) {
+    var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            TextureView(ctx).apply {
+                surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+                    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+                        try {
+                            val player = MediaPlayer().apply {
+                                val afd = ctx.resources.openRawResourceFd(videoRawResId)
+                                setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                                afd.close()
+                                setSurface(Surface(surface))
+                                isLooping = true
+                                setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+                                setOnPreparedListener { mp ->
+                                    mp.start()
+                                }
+                                prepareAsync()
+                            }
+                            mediaPlayer = player
+                        } catch (e: Exception) {
+                            // Silently fall back to underlying poster image
+                        }
+                    }
+
+                    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
+                    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+                        mediaPlayer?.release()
+                        mediaPlayer = null
+                        return true
+                    }
+                    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
+                }
+            }
+        },
+        modifier = modifier
+    )
 }

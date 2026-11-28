@@ -34,6 +34,7 @@ import com.example.nomadcompass.ui.theme.icons.PhosphorIcons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -217,30 +218,58 @@ fun PlannerScreen(
                 }
             }
         },
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            // Floating Action Button with #FF2E63 ActionPrimary styling
-            ClayButton(
-                onClick = { viewModel.openAddDialog() },
-                containerColor = ActionPrimary,
-                contentColor = Color.White,
+            // Signature Cyan-to-Emerald Wide Pill Sticky Button
+            Box(
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
                     .navigationBarsPadding()
-                    .padding(bottom = 88.dp),
-                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
+                    .padding(bottom = 76.dp)
+                    .height(52.dp)
+                    .bounceClick(scaleDown = 0.97f, onClick = { viewModel.openAddDialog() })
+                    .clayShadow(
+                        cornerRadius = 9999.dp,
+                        ambientShadowColor = Color(0xFF06B6D4).copy(alpha = 0.35f),
+                        spotShadowColor = Color(0xFF10B981).copy(alpha = 0.45f),
+                        blurRadius = 12.dp
+                    )
+                    .clip(RoundedCornerShape(9999.dp))
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF06B6D4), // Cyan
+                                Color(0xFF10B981)  // Emerald
+                            )
+                        )
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = Color.White.copy(alpha = 0.35f),
+                        shape = RoundedCornerShape(9999.dp)
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = PhosphorIcons.Plus,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "PLAN NEW TRIP",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.Plus,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Plan New Trip",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.5.sp
+                    )
+                }
             }
         },
         containerColor = Color.Transparent
@@ -272,7 +301,7 @@ fun PlannerScreen(
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "Organize upcoming destinations, monthly travel budgets, and remote work arrangements.",
+                        text = "Organize upcoming destinations, travel budgets, and offline itineraries in one place.",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 14.sp
                         ),
@@ -298,17 +327,19 @@ fun PlannerScreen(
                         ),
                         color = OnSurface
                     )
-                    Text(
-                        text = "+ New Trip",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = Primary,
-                        modifier = Modifier
-                            .clickable { viewModel.openAddDialog() }
-                            .padding(4.dp)
-                    )
+                    if (uiState.trips.isNotEmpty()) {
+                        Text(
+                            text = "+ New Trip",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = Primary,
+                            modifier = Modifier
+                                .clickable { viewModel.openAddDialog() }
+                                .padding(4.dp)
+                        )
+                    }
                 }
             }
 
@@ -317,19 +348,42 @@ fun PlannerScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 40.dp),
+                            .padding(horizontal = 20.dp, vertical = 20.dp)
+                            .clayShadow(
+                                cornerRadius = 20.dp,
+                                ambientShadowColor = Color.Black.copy(alpha = 0.35f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.45f),
+                                blurRadius = 16.dp
+                            )
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(Color(0xFF0B121D).copy(alpha = 0.85f))
+                            .border(
+                                width = 1.dp,
+                                color = Color.White.copy(alpha = 0.10f),
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                            .padding(horizontal = 24.dp, vertical = 36.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = PhosphorIcons.AirplaneTilt,
-                                contentDescription = null,
-                                tint = OnSurfaceVariant,
-                                modifier = Modifier.size(48.dp)
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(56.dp)
+                                    .clip(CircleShape)
+                                    .background(Primary.copy(alpha = 0.15f))
+                                    .border(1.dp, Primary.copy(alpha = 0.35f), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = PhosphorIcons.AirplaneTilt,
+                                    contentDescription = null,
+                                    tint = Primary,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = "No Trips Planned Yet",
@@ -342,39 +396,13 @@ fun PlannerScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "Map out your next destination, dates, and budget to keep your nomad travel organized.",
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize = 14.sp,
+                                    lineHeight = 20.sp
+                                ),
                                 color = OnSurfaceVariant,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                                textAlign = TextAlign.Center
                             )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            GlassPillButton(
-                                onClick = { viewModel.openAddDialog() },
-                                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .clip(CircleShape)
-                                        .background(Primary.copy(alpha = if (isDark) 0.25f else 0.15f))
-                                        .border(1.dp, Primary.copy(alpha = if (isDark) 0.45f else 0.30f), CircleShape),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = PhosphorIcons.Plus,
-                                        contentDescription = null,
-                                        tint = Primary,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Text(
-                                    text = "Plan First Trip",
-                                    color = Primary,
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
                         }
                     }
                 }

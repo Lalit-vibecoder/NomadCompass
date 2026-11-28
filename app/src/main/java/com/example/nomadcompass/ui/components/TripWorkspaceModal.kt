@@ -965,7 +965,7 @@ private fun DocsTabContent(
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            text = "+ Add Document or Note",
+                                            text = "Add Document or Note",
                                             style = MaterialTheme.typography.labelLarge,
                                             color = Color.White,
                                             fontWeight = FontWeight.Bold

@@ -131,6 +131,7 @@ fun GlassPillButton(
 fun GradientPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
     content: @Composable RowScope.() -> Unit,
 ) {
     val pillShape = RoundedCornerShape(9999.dp)
@@ -149,7 +150,8 @@ fun GradientPrimaryButton(
                     colors = listOf(Color(0xFF06B6D4), Color(0xFF10B981))
                 )
             )
-            .border(1.dp, Color.White.copy(alpha = 0.35f), pillShape),
+            .border(1.dp, Color.White.copy(alpha = 0.35f), pillShape)
+            .padding(contentPadding),
         contentAlignment = Alignment.Center
     ) {
         Row(

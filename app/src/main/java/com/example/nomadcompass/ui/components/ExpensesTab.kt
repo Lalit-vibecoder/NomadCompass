@@ -200,26 +200,24 @@ fun ExpensesTab(
                             .padding(vertical = 36.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        ClayButton(
+                        GradientPrimaryButton(
                             onClick = { isLogSheetOpen = true },
-                            modifier = Modifier.wrapContentWidth()
+                            modifier = Modifier.wrapContentWidth(),
+                            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    imageVector = PhosphorIcons.Plus,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = "Log your first expense",
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
+                            Icon(
+                                imageVector = PhosphorIcons.Plus,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Log your first expense",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }

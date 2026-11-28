@@ -1879,40 +1879,46 @@ private fun AddPackingItemDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "🧳 Add Packing Item",
-                style = MaterialTheme.typography.titleMedium,
+                text = "Add Packing Item",
+                style = MaterialTheme.typography.titleLarge,
+                color = OnSurface,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
-            Column {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 Text(
                     text = "Enter custom item to add to your packing list:",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = OnSurfaceVariant
                 )
-                Spacer(modifier = Modifier.height(12.dp))
                 OutlinedTextField(
                     value = itemName,
                     onValueChange = { itemName = it },
+                    label = { Text("Packing Item") },
                     placeholder = { Text("e.g. Swimsuit, Drone, Passports", color = OnSurfaceVariant.copy(alpha = 0.6f)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                         focusedContainerColor = SurfaceContainerLow,
                         unfocusedContainerColor = SurfaceContainerLow,
                         focusedTextColor = OnSurface,
                         unfocusedTextColor = OnSurface,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceVariant,
                         cursorColor = Primary,
                     )
                 )
             }
         },
         confirmButton = {
-            TextButton(
+            ClayButton(
                 onClick = {
                     val trimmed = itemName.trim()
                     if (trimmed.isNotBlank()) {
@@ -1921,14 +1927,15 @@ private fun AddPackingItemDialog(
                 },
                 enabled = itemName.isNotBlank()
             ) {
-                Text("Save", fontWeight = FontWeight.Bold)
+                Text("Add Item", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancel", color = OnSurfaceVariant)
             }
-        }
+        },
+        containerColor = SurfaceContainer
     )
 }
 

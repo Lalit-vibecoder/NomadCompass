@@ -37,8 +37,8 @@ class TripRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun addTrip(trip: Trip) {
-        tripDao.insertTrip(
+    override suspend fun addTrip(trip: Trip): Long {
+        return tripDao.insertTrip(
             TripEntity(
                 id = trip.id,
                 destinationCca3 = trip.destinationCca3,

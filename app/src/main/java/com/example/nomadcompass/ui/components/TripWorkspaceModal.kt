@@ -496,9 +496,23 @@ fun TripWorkspaceModal(
 
     // Offline Itinerary Extractor Modal
     if (isExtractorModalOpen) {
+        val tripDurationDays = remember(trip.startDate, trip.endDate) {
+            try {
+                val start = java.time.LocalDate.parse(trip.startDate.trim())
+                val end = java.time.LocalDate.parse(trip.endDate.trim())
+                val days = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1
+                days.toInt().coerceIn(1, 30)
+            } catch (_: Exception) {
+                5
+            }
+        }
+
         ItineraryExtractorModal(
             tripId = trip.id.toLong(),
             destinationName = trip.countryName,
+            initialDurationDays = tripDurationDays,
+            tripStartDate = trip.startDate,
+            tripEndDate = trip.endDate,
             bgPhotoUri = bgPhotoUri,
             bgBlurRadius = bgBlurRadius,
             onDismiss = { isExtractorModalOpen = false },

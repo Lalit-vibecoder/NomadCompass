@@ -500,8 +500,15 @@ class PlannerViewModel @Inject constructor(
                 notes = _uiState.value.notes,
                 status = "Planned"
             )
-            tripRepository.addTrip(trip)
-            _uiState.value = _uiState.value.copy(isSaving = false, isAddDialogOpen = false)
+            val newTripId = tripRepository.addTrip(trip)
+            val savedTrip = trip.copy(id = newTripId.toInt())
+            _activeTripId.value = newTripId.toInt()
+            _uiState.value = _uiState.value.copy(
+                isSaving = false,
+                isAddDialogOpen = false,
+                activeWorkspaceTrip = savedTrip,
+                activeWorkspaceTab = WorkspaceTab.ITINERARY
+            )
         }
     }
 

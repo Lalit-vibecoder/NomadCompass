@@ -1411,7 +1411,15 @@ private fun AddTripDialog(
                                     modifier = Modifier.size(20.dp)
                                 )
                                 val dateDisplay = if (uiState.startDate.isNotBlank() && uiState.endDate.isNotBlank()) {
-                                    "${uiState.startDate}  →  ${uiState.endDate}"
+                                    val durationSuffix = try {
+                                        val s = java.time.LocalDate.parse(uiState.startDate.trim())
+                                        val e = java.time.LocalDate.parse(uiState.endDate.trim())
+                                        val days = java.time.temporal.ChronoUnit.DAYS.between(s, e) + 1
+                                        " • $days ${if (days == 1L) "Day" else "Days"}"
+                                    } catch (_: Exception) {
+                                        ""
+                                    }
+                                    "${uiState.startDate}  →  ${uiState.endDate}$durationSuffix"
                                 } else if (uiState.startDate.isNotBlank()) {
                                     uiState.startDate
                                 } else {

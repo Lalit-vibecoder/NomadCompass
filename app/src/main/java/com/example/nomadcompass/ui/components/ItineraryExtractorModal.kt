@@ -10,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.ui.res.painterResource
 import com.example.nomadcompass.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,6 +110,9 @@ private enum class ReviewDisplayFormat {
 fun ItineraryExtractorModal(
     tripId: Long,
     destinationName: String,
+    initialDurationDays: Int = 5,
+    tripStartDate: String = "",
+    tripEndDate: String = "",
     bgPhotoUri: String? = LocalAppBackground.current.bgPhotoUri,
     bgBlurRadius: Float = LocalAppBackground.current.bgBlurRadius,
     onDismiss: () -> Unit,
@@ -117,9 +122,12 @@ fun ItineraryExtractorModal(
     val scope = rememberCoroutineScope()
     val isDark = LocalThemeController.current.isDarkMode
 
+    val effectiveDefaultDays = remember(initialDurationDays) {
+        if (initialDurationDays in 1..30) initialDurationDays else 5
+    }
     var activeMainMode by remember { mutableStateOf(ExtractorMainMode.AI_GENERATE) }
     var aiPlacesInput by remember { mutableStateOf("") }
-    var aiDurationDays by remember { mutableStateOf(5) }
+    var aiDurationDays by remember(effectiveDefaultDays) { mutableStateOf(effectiveDefaultDays) }
     var activeSourceTab by remember { mutableStateOf(ExtractorSourceTab.SCREENSHOT) }
     var pastedText by remember { mutableStateOf("") }
     var isExtracting by remember { mutableStateOf(false) }
@@ -450,22 +458,49 @@ fun ItineraryExtractorModal(
 
                                         // Duration Selection
                                         Column {
-                                            Text(
-                                                text = "Trip Duration:",
-                                                style = MaterialTheme.typography.labelMedium,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = OnSurface
-                                            )
-                                            Spacer(modifier = Modifier.height(8.dp))
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = "Trip Duration:",
+                                                    style = MaterialTheme.typography.labelMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = OnSurface
+                                                )
+                                                if (effectiveDefaultDays > 0) {
+                                                    Text(
+                                                        text = "Trip: $effectiveDefaultDays ${if (effectiveDefaultDays == 1) "Day" else "Days"}",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = Primary,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                }
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dp))
+
+                                            val durationOptions = remember(effectiveDefaultDays) {
+                                                val base = mutableListOf(3, 5, 7, 10)
+                                                if (effectiveDefaultDays !in base && effectiveDefaultDays in 1..30) {
+                                                    base.add(effectiveDefaultDays)
+                                                    base.sort()
+                                                }
+                                                base
+                                            }
+
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .then(if (durationOptions.size > 4) Modifier.horizontalScroll(rememberScrollState()) else Modifier),
                                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
-                                                listOf(3, 5, 7, 10).forEach { days ->
+                                                durationOptions.forEach { days ->
                                                     val isSelected = aiDurationDays == days
+                                                    val isTripPlanned = days == effectiveDefaultDays
                                                     Box(
                                                         modifier = Modifier
-                                                            .weight(1f)
+                                                            .then(if (durationOptions.size <= 4) Modifier.weight(1f) else Modifier.defaultMinSize(minWidth = 72.dp))
                                                             .clip(RoundedCornerShape(12.dp))
                                                             .background(if (isSelected) PrimaryContainer else SurfaceContainerLow)
                                                             .border(
@@ -474,11 +509,11 @@ fun ItineraryExtractorModal(
                                                                 RoundedCornerShape(12.dp)
                                                             )
                                                             .clickable { aiDurationDays = days }
-                                                            .padding(vertical = 10.dp),
+                                                            .padding(vertical = 10.dp, horizontal = if (durationOptions.size > 4) 10.dp else 4.dp),
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         Text(
-                                                            text = "$days Days",
+                                                            text = if (isTripPlanned && durationOptions.size > 4) "$days d ★" else "$days Days",
                                                             style = MaterialTheme.typography.labelSmall,
                                                             color = if (isSelected) OnPrimary else OnSurface,
                                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
@@ -500,7 +535,9 @@ fun ItineraryExtractorModal(
                                                     val result = GeminiItineraryParser.generateItineraryForCountry(
                                                         countryName = destinationName,
                                                         placesOrPreferences = aiPlacesInput,
-                                                        durationDays = aiDurationDays
+                                                        durationDays = aiDurationDays,
+                                                        startDate = tripStartDate,
+                                                        endDate = tripEndDate
                                                     )
                                                     result.onSuccess { events ->
                                                         draftEvents.clear()

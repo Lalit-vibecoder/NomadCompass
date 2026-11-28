@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TripRepository {
     fun getAllTrips(): Flow<List<Trip>>
-    suspend fun addTrip(trip: Trip)
+    suspend fun addTrip(trip: Trip): Long
     suspend fun deleteTrip(tripId: Int)
 
     fun getAttachmentsForTrip(tripId: Int): Flow<List<TripAttachment>>

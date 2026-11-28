@@ -97,7 +97,9 @@ object GeminiItineraryParser {
     suspend fun generateItineraryForCountry(
         countryName: String,
         placesOrPreferences: String = "",
-        durationDays: Int = 5
+        durationDays: Int = 5,
+        startDate: String = "",
+        endDate: String = ""
     ): Result<List<DraftItineraryEvent>> = withContext(Dispatchers.IO) {
         if (!isApiKeyConfigured()) {
             return@withContext Result.failure(
@@ -106,11 +108,17 @@ object GeminiItineraryParser {
         }
 
         try {
+            val dateContext = if (startDate.isNotBlank() && endDate.isNotBlank()) {
+                " from $startDate to $endDate"
+            } else if (startDate.isNotBlank()) {
+                " starting on $startDate"
+            } else ""
+
             val prompt = """
-                You are an expert travel planner. Create a realistic, highly enjoyable, day-by-day travel itinerary for a $durationDays-day trip to $countryName.
+                You are an expert travel planner. Create a realistic, highly enjoyable, day-by-day travel itinerary for a $durationDays-day trip to $countryName$dateContext.
                 ${if (placesOrPreferences.isNotBlank()) "Include these specific cities, attractions, or travel preferences: $placesOrPreferences" else ""}
                 
-                For each day, generate 2-4 well-paced events (e.g., Morning Activity, Lunch/Dining, Afternoon Highlight, Evening Event or Accommodation check-in).
+                For each of the $durationDays days, generate 2-4 well-paced events (e.g., Morning Activity, Lunch/Dining, Afternoon Highlight, Evening Event or Accommodation check-in).
                 
                 Strictly output a JSON array of objects with the following schema:
                 [

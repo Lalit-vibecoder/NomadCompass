@@ -81,6 +81,7 @@ import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.FrostedGlassDialog
 import com.example.nomadcompass.ui.components.GlassPillButton
+import com.example.nomadcompass.ui.components.GradientPrimaryButton
 import com.example.nomadcompass.ui.components.NomadDatePickerDialog
 import com.example.nomadcompass.ui.components.NomadDateRangePickerDialog
 import com.example.nomadcompass.ui.components.NomadBottomNavigationBar
@@ -132,8 +133,8 @@ fun PlannerScreen(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF132A22).copy(alpha = 0.85f),
-                                Color(0xFF132A22).copy(alpha = 0.40f),
+                                Color(0xFF0B121D).copy(alpha = 0.85f),
+                                Color(0xFF0B121D).copy(alpha = 0.40f),
                                 Color.Transparent
                             )
                         )
@@ -150,7 +151,7 @@ fun PlannerScreen(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(42.dp)
+                            .size(44.dp)
                             .clayShadow(
                                 cornerRadius = 9999.dp,
                                 ambientShadowColor = Color.Black.copy(alpha = if (isDark) 0.35f else 0.12f),
@@ -220,56 +221,29 @@ fun PlannerScreen(
         },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            // Signature Cyan-to-Emerald Wide Pill Sticky Button
-            Box(
+            GradientPrimaryButton(
+                onClick = { viewModel.openAddDialog() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
                     .navigationBarsPadding()
                     .padding(bottom = 76.dp)
                     .height(52.dp)
-                    .bounceClick(scaleDown = 0.97f, onClick = { viewModel.openAddDialog() })
-                    .clayShadow(
-                        cornerRadius = 9999.dp,
-                        ambientShadowColor = Color(0xFF06B6D4).copy(alpha = 0.35f),
-                        spotShadowColor = Color(0xFF10B981).copy(alpha = 0.45f),
-                        blurRadius = 12.dp
-                    )
-                    .clip(RoundedCornerShape(9999.dp))
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF06B6D4), // Cyan
-                                Color(0xFF10B981)  // Emerald
-                            )
-                        )
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = Color.White.copy(alpha = 0.35f),
-                        shape = RoundedCornerShape(9999.dp)
-                    ),
-                contentAlignment = Alignment.Center
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = PhosphorIcons.Plus,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Plan New Trip",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.5.sp
-                    )
-                }
+                Icon(
+                    imageVector = PhosphorIcons.Plus,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Plan New Trip",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.5.sp
+                )
             }
         },
         containerColor = Color.Transparent

@@ -1,6 +1,8 @@
 package com.example.nomadcompass.ui.theme
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -58,6 +60,19 @@ val SurfaceBright @Composable get() = MaterialTheme.colorScheme.surfaceBright
 val OnSurface @Composable get() = MaterialTheme.colorScheme.onSurface
 val OnSurfaceVariant @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
 val OnBackground @Composable get() = MaterialTheme.colorScheme.onBackground
+
+@Composable
+fun nomadTextFieldColors(): TextFieldColors = OutlinedTextFieldDefaults.colors(
+    focusedBorderColor = MaterialTheme.colorScheme.primary,
+    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+    focusedContainerColor = SurfaceContainerLow,
+    unfocusedContainerColor = SurfaceContainerLow,
+    focusedTextColor = OnSurface,
+    unfocusedTextColor = OnSurface,
+    focusedLabelColor = MaterialTheme.colorScheme.primary,
+    unfocusedLabelColor = OnSurfaceVariant,
+    cursorColor = MaterialTheme.colorScheme.primary,
+)
 val Primary @Composable get() = MaterialTheme.colorScheme.primary
 val OnPrimary @Composable get() = MaterialTheme.colorScheme.onPrimary
 val PrimaryContainer @Composable get() = MaterialTheme.colorScheme.primaryContainer

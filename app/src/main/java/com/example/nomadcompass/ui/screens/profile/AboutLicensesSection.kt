@@ -45,8 +45,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import com.example.nomadcompass.ui.components.FrostedGlassDialog
 import com.example.nomadcompass.ui.components.ClayButton
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.bounceClick
@@ -396,26 +395,13 @@ private fun LicenseViewerDialog(
     onDismiss: () -> Unit,
     onCopy: () -> Unit
 ) {
-    Dialog(
+    FrostedGlassDialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxWidth()
     ) {
-        val rimBrush = Brush.verticalGradient(
-            colors = listOf(
-                Color.White.copy(alpha = 0.25f),
-                Color.White.copy(alpha = 0.05f)
-            )
-        )
-
-        Box(
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .background(SurfaceContainer)
-                .border(1.dp, rimBrush, RoundedCornerShape(24.dp))
-                .padding(20.dp)
-        ) {
+        Box(modifier = Modifier.padding(20.dp)) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(14.dp)

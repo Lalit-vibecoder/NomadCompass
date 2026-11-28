@@ -127,8 +127,8 @@ fun ExploreScreen(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF132A22).copy(alpha = 0.85f),
-                                Color(0xFF132A22).copy(alpha = 0.40f),
+                                Color(0xFF0B121D).copy(alpha = 0.85f),
+                                Color(0xFF0B121D).copy(alpha = 0.40f),
                                 Color.Transparent
                             )
                         )

@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.nomadcompass.ui.components.ClayButton
+import com.example.nomadcompass.ui.components.GradientPrimaryButton
 import com.example.nomadcompass.ui.components.ClayCard
 import com.example.nomadcompass.ui.components.ClayPill
 import com.example.nomadcompass.ui.components.GlassPillButton
@@ -119,8 +120,8 @@ fun CountryProfileScreen(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF132A22).copy(alpha = 0.85f),
-                                Color(0xFF132A22).copy(alpha = 0.40f),
+                                Color(0xFF0B121D).copy(alpha = 0.85f),
+                                Color(0xFF0B121D).copy(alpha = 0.40f),
                                 Color.Transparent
                             )
                         )
@@ -234,7 +235,7 @@ fun CountryProfileScreen(
         floatingActionButton = {
             if (!uiState.isLoading && uiState.detail != null) {
                 // Sticky Plan Trip Bar positioned just above the bottom navigation bar
-                ClayButton(
+                GradientPrimaryButton(
                     onClick = {
                         val currentCca3 = uiState.detail?.country?.cca3
                         if (currentCca3 != null) {
@@ -243,14 +244,11 @@ fun CountryProfileScreen(
                             onPlannerClick()
                         }
                     },
-                    containerColor = ActionPrimary,
-                    contentColor = Color.White,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)
                         .padding(bottom = 68.dp)
                         .height(52.dp),
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
                 ) {
                     Icon(
                         imageVector = PhosphorIcons.Plus,

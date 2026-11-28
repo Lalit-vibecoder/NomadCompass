@@ -1541,17 +1541,7 @@ private fun AddEditItineraryEventDialog(
     var confirmationCode by remember { mutableStateOf(existingEvent?.confirmationCode ?: "") }
     var notes by remember { mutableStateOf(existingEvent?.notes ?: "") }
 
-    val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Primary,
-        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-        focusedContainerColor = SurfaceContainerLow,
-        unfocusedContainerColor = SurfaceContainerLow,
-        focusedTextColor = OnSurface,
-        unfocusedTextColor = OnSurface,
-        focusedLabelColor = Primary,
-        unfocusedLabelColor = OnSurfaceVariant,
-        cursorColor = Primary
-    )
+    val fieldColors = com.example.nomadcompass.ui.theme.nomadTextFieldColors()
 
     FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,

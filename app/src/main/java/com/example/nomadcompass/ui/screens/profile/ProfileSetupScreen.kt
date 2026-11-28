@@ -144,25 +144,48 @@ fun ProfileSetupScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Header Title
-            Column(
+            // Header Title with Glass Icon Badge matching PlannerScreen
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalAlignment = Alignment.Start
+                    .padding(top = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = "Nomad Settings",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = OnSurface,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Profile preferences, security, FAQs, and support",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = OnSurfaceVariant
-                )
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.14f))
+                        .border(
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = 0.28f),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = PhosphorIcons.GearSix,
+                        contentDescription = null,
+                        tint = Primary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Column {
+                    Text(
+                        text = "Nomad Settings",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = OnSurface
+                    )
+                    Text(
+                        text = "Profile preferences, security, FAQs, and support",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = OnSurfaceVariant
+                    )
+                }
             }
 
             // Tab Selector: Preferences vs Help & Support vs About & Licenses

@@ -124,4 +124,40 @@ fun GlassPillButton(
     }
 }
 
+/**
+ * Wide pill primary CTA with NomadCompass's signature Cyan-to-Emerald gradient.
+ */
+@Composable
+fun GradientPrimaryButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit,
+) {
+    val pillShape = RoundedCornerShape(9999.dp)
+    Box(
+        modifier = modifier
+            .bounceClick(scaleDown = 0.97f, onClick = onClick)
+            .clayShadow(
+                cornerRadius = 9999.dp,
+                ambientShadowColor = Color(0xFF06B6D4).copy(alpha = 0.35f),
+                spotShadowColor = Color(0xFF10B981).copy(alpha = 0.45f),
+                blurRadius = 12.dp
+            )
+            .clip(pillShape)
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color(0xFF06B6D4), Color(0xFF10B981))
+                )
+            )
+            .border(1.dp, Color.White.copy(alpha = 0.35f), pillShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            content = content
+        )
+    }
+}
+
 

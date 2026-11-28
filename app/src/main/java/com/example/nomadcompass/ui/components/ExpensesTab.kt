@@ -1,6 +1,5 @@
 package com.example.nomadcompass.ui.components
 
-import android.app.DatePickerDialog
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -743,6 +742,31 @@ private fun LogExpenseBottomSheet(
         }
     }
 
+    var showExpenseDatePicker by remember { mutableStateOf(false) }
+
+    if (showExpenseDatePicker) {
+        val initialDateStr = remember(selectedDateMillis) {
+            SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(selectedDateMillis))
+        }
+        NomadDatePickerDialog(
+            initialDate = initialDateStr,
+            title = "Select Expense Date",
+            onDateSelected = { dateStr ->
+                try {
+                    val parsed = SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dateStr)
+                    if (parsed != null) {
+                        val cal = Calendar.getInstance().apply {
+                            time = parsed
+                            set(Calendar.HOUR_OF_DAY, 12)
+                        }
+                        selectedDateMillis = cal.timeInMillis
+                    }
+                } catch (_: Exception) { }
+            },
+            onDismiss = { showExpenseDatePicker = false }
+        )
+    }
+
     FrostedGlassDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier
@@ -1056,25 +1080,7 @@ private fun LogExpenseBottomSheet(
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(SurfaceContainerLow)
                                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
-                                .clickable {
-                                    DatePickerDialog(
-                                        context,
-                                        { _, y, m, d ->
-                                            val newCal = Calendar.getInstance().apply {
-                                                set(y, m, d, 12, 0, 0)
-                                            }
-                                            selectedDateMillis = newCal.timeInMillis
-                                        },
-                                        cal.get(Calendar.YEAR),
-                                        cal.get(Calendar.MONTH),
-                                        cal.get(Calendar.DAY_OF_MONTH)
-                                    ).apply {
-                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                                            window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-                                            window?.attributes = window?.attributes?.apply { blurBehindRadius = 32 }
-                                        }
-                                    }.show()
-                                }
+                                .clickable { showExpenseDatePicker = true }
                                 .padding(horizontal = 12.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {

@@ -466,9 +466,11 @@ fun TripWorkspaceModal(
                         isDeleteTripConfirmOpen = false
                         onDeleteTrip()
                         onDismiss()
-                    }
+                    },
+                    containerColor = Color(0xFFEF4444),
+                    contentColor = Color.White
                 ) {
-                    Text("Delete Trip", color = Color(0xFFEF5350), fontWeight = FontWeight.Bold)
+                    Text("Delete Trip", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
@@ -1539,12 +1541,25 @@ private fun AddEditItineraryEventDialog(
     var confirmationCode by remember { mutableStateOf(existingEvent?.confirmationCode ?: "") }
     var notes by remember { mutableStateOf(existingEvent?.notes ?: "") }
 
+    val fieldColors = OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = Primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+        focusedContainerColor = SurfaceContainerLow,
+        unfocusedContainerColor = SurfaceContainerLow,
+        focusedTextColor = OnSurface,
+        unfocusedTextColor = OnSurface,
+        focusedLabelColor = Primary,
+        unfocusedLabelColor = OnSurfaceVariant,
+        cursorColor = Primary
+    )
+
     FrostedGlassAlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
                 text = if (existingEvent != null) "Edit Itinerary Event" else "Add Itinerary Event",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
+                color = OnSurface,
                 fontWeight = FontWeight.Bold
             )
         },
@@ -1560,15 +1575,7 @@ private fun AddEditItineraryEventDialog(
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                        focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow,
-                        focusedTextColor = OnSurface,
-                        unfocusedTextColor = OnSurface,
-                        cursorColor = Primary
-                    )
+                    colors = fieldColors
                 )
 
                 // Category Selector
@@ -1628,15 +1635,7 @@ private fun AddEditItineraryEventDialog(
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                        focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow,
-                        focusedTextColor = OnSurface,
-                        unfocusedTextColor = OnSurface,
-                        cursorColor = Primary
-                    )
+                    colors = fieldColors
                 )
 
                 Row(
@@ -1651,15 +1650,7 @@ private fun AddEditItineraryEventDialog(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.weight(1f),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            focusedContainerColor = SurfaceContainerLow,
-                            unfocusedContainerColor = SurfaceContainerLow,
-                            focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface,
-                            cursorColor = Primary
-                        )
+                        colors = fieldColors
                     )
                     OutlinedTextField(
                         value = endDateTime,
@@ -1669,15 +1660,7 @@ private fun AddEditItineraryEventDialog(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.weight(1f),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            focusedContainerColor = SurfaceContainerLow,
-                            unfocusedContainerColor = SurfaceContainerLow,
-                            focusedTextColor = OnSurface,
-                            unfocusedTextColor = OnSurface,
-                            cursorColor = Primary
-                        )
+                        colors = fieldColors
                     )
                 }
 
@@ -1688,15 +1671,7 @@ private fun AddEditItineraryEventDialog(
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                        focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow,
-                        focusedTextColor = OnSurface,
-                        unfocusedTextColor = OnSurface,
-                        cursorColor = Primary
-                    )
+                    colors = fieldColors
                 )
 
                 OutlinedTextField(
@@ -1706,20 +1681,12 @@ private fun AddEditItineraryEventDialog(
                     maxLines = 3,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                        focusedContainerColor = SurfaceContainerLow,
-                        unfocusedContainerColor = SurfaceContainerLow,
-                        focusedTextColor = OnSurface,
-                        unfocusedTextColor = OnSurface,
-                        cursorColor = Primary
-                    )
+                    colors = fieldColors
                 )
             }
         },
         confirmButton = {
-            TextButton(
+            ClayButton(
                 onClick = {
                     if (title.isNotBlank()) {
                         val event = ItineraryEvent(
@@ -1735,16 +1702,18 @@ private fun AddEditItineraryEventDialog(
                         )
                         onSave(event)
                     }
-                }
+                },
+                enabled = title.isNotBlank()
             ) {
-                Text("Save", color = Primary, fontWeight = FontWeight.Bold)
+                Text("Save Event", color = com.example.nomadcompass.ui.theme.OnPrimaryContainer, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text("Cancel", color = OnSurfaceVariant)
             }
-        }
+        },
+        containerColor = SurfaceContainer
     )
 }
 
